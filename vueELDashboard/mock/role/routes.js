@@ -247,8 +247,8 @@ const asyncRoutes = [{
             icon: 'chart'
         },
         children: [{
-            path: 'keyboard',
-            component: 'views/retes/reteDock',
+            path: 'reteDock',
+            component: 'views/retes/Examples/',
             name: 'ReteDock',
             meta: { title: 'Rete Dock', noCache: true }
         }]

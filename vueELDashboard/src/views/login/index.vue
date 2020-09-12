@@ -62,8 +62,7 @@
         type="primary"
         style="width:100%;margin-bottom:10px;"
         @click.native.prevent="handleLogin"
-        >Login</el-button
-      >
+      >Login</el-button>
 
       <div style="position:relative">
         <el-button
@@ -71,8 +70,7 @@
           type="primary"
           style="width:100%;margin-bottom:10px;"
           @click="showDialogSignup = true"
-          >Sign up</el-button
-        >
+        >Sign up</el-button>
         <div class="tips">
           <span>Username : admin</span>
           <span>Password : any</span>
@@ -94,9 +92,9 @@
     <el-dialog title="Or connect with" :visible.sync="showDialog">
       Can not be simulated on local, so please combine you own business
       simulation! ! !
-      <br />
-      <br />
-      <br />
+      <br>
+      <br>
+      <br>
       <social-sign />
     </el-dialog>
 
@@ -114,9 +112,9 @@
             <svg-icon icon-class="user" />
           </span>
           <el-input
-            style="color: black;"
             ref="username"
             v-model="signupForm.username"
+            style="color: black;"
             placeholder="Username"
             name="username"
             type="text"
@@ -137,9 +135,9 @@
             </span>
             <el-input
               :key="passwordType"
-              class="fixinput"
               ref="password"
               v-model="signupForm.password"
+              class="fixinput"
               :type="passwordType"
               placeholder="Password"
               name="password"
@@ -161,17 +159,16 @@
           type="primary"
           style="width:100%;margin-bottom:10px;"
           @click.native.prevent="handleSignup"
-          >Sign up</el-button
-        >
+        >Sign up</el-button>
       </el-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate';
-import SocialSign from './components/SocialSignin';
-import { Message } from 'element-ui';
+import { validUsername } from '@/utils/validate'
+import SocialSign from './components/SocialSignin'
+import { Message } from 'element-ui'
 
 export default {
   name: 'Login',
@@ -179,32 +176,32 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'));
+        callback(new Error('Please enter the correct user name'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'));
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111',
+        username: 'minh343',
+        password: 'r07latoi4A%c'
       },
       signupForm: {
         username: '',
-        password: '',
+        password: ''
       },
       loginRules: {
         // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         // password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         username: [{ required: true, trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur' }],
+        password: [{ required: true, trigger: 'blur' }]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -212,29 +209,29 @@ export default {
       showDialog: false,
       showDialogSignup: false,
       redirect: undefined,
-      otherQuery: {},
-    };
+      otherQuery: {}
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        const query = route.query;
+        const query = route.query
         if (query) {
-          this.redirect = query.redirect;
-          this.otherQuery = this.getOtherQuery(query);
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
     if (this.loginForm.username === '') {
-      this.$refs.username.focus();
+      this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
-      this.$refs.password.focus();
+      this.$refs.password.focus()
     }
   },
   destroyed() {
@@ -242,45 +239,45 @@ export default {
   },
   methods: {
     checkCapslock(e) {
-      const { key } = e;
-      this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z';
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
     },
     showPwd() {
       if (this.passwordType === 'password') {
-        this.passwordType = '';
+        this.passwordType = ''
       } else {
-        this.passwordType = 'password';
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
             .dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({
                 path: this.redirect || '/',
-                query: this.otherQuery,
-              });
-              this.loading = false;
+                query: this.otherQuery
+              })
+              this.loading = false
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     handleSignup() {
       this.$refs.signupForm.validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
             .dispatch('user/signup', this.signupForm)
             .then(res => {
@@ -289,30 +286,30 @@ export default {
               //   query: this.otherQuery,
               // });
               Message({
-                message: "SUCCESS",
+                message: 'SUCCESS',
                 type: 'success',
-                duration: 5 * 1000,
-              });
-              this.loading = false;
-              this.showDialogSignup = false;
+                duration: 5 * 1000
+              })
+              this.loading = false
+              this.showDialogSignup = false
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
         if (cur !== 'redirect') {
-          acc[cur] = query[cur];
+          acc[cur] = query[cur]
         }
-        return acc;
-      }, {});
-    },
+        return acc
+      }, {})
+    }
     // afterQRScan() {
     //   if (e.key === 'x-admin-oauth-code') {
     //     const code = getQueryObject(e.newValue)
@@ -331,8 +328,8 @@ export default {
     //     }
     //   }
     // }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss">
@@ -402,6 +399,7 @@ $light_gray: #eee;
     overflow: hidden;
   }
   .login-form-log {
+    padding: 10px ;
   }
 
   .tips {
