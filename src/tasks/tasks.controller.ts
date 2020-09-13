@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -25,6 +26,7 @@ import { TasksService } from './tasks.service';
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
+  private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
 
   @Get()
@@ -32,6 +34,11 @@ export class TasksController {
     @Query(ValidationPipe) getTasksFilterDto: GetTasksFilterDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
+    this.logger.verbose(
+      `User ${user.username} retriveing all tasks with filter ${JSON.stringify(
+        getTasksFilterDto,
+      )}`,
+    );
     return this.tasksService.getTasks(getTasksFilterDto, user);
   }
 
