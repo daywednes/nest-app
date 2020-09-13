@@ -14,11 +14,18 @@ const retesRouter = {
   },
   children: [{
     path: 'reteDock',
+    hidden: true,
     component: () =>
       import ('@/views/retes/Examples/'),
     name: 'ReteDock',
     meta: { title: 'Rete Dock', noCache: true },
     children: examplesRoute
+  },{
+    path: 'reteDock/basic',
+    component: () =>
+    import ('@/views/retes/Examples/'),
+    name: 'Basic',
+    meta: { title: 'Rete Dock', noCache: true },
   }]
 }
 
