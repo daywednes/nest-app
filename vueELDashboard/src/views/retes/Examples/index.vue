@@ -1,5 +1,4 @@
 <template lang="pug">
-
 .examples
   Tabs(v-model="tab", @on-click="open(tab)", :animated="false")
     TabPane(v-for="item in list"

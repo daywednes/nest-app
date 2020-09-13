@@ -1,4 +1,5 @@
 // Just a mock data
+import examplesRoute from '@/views/retes/Examples/route';
 
 const constantRoutes = [{
         path: '/redirect',
@@ -250,7 +251,8 @@ const asyncRoutes = [{
             path: 'reteDock',
             component: 'views/retes/Examples/',
             name: 'ReteDock',
-            meta: { title: 'Rete Dock', noCache: true }
+            meta: { title: 'Rete Dock', noCache: true },
+            children: examplesRoute
         }]
     },
     {

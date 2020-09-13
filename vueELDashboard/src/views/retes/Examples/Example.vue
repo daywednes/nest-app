@@ -1,19 +1,32 @@
 <template lang="pug">
 .example
-  //- Info(:item="example")
+  Info(:item="example")
   .view
     div(ref="view")
     div(ref="extra")
 </template>
 
+
 <script>
-import Info from './Info'
+import Info from './Info';
 
 export default {
-  components: {
-    Info
-  },
   props: ['example'],
+  methods: {
+    async init() {
+      this.$refs.view.innerHTML = '';
+      this.$refs.extra.innerHTML = '';
+      this.$refs.extra.className = '';
+
+      if(this.editor) this.editor.destroy();
+      if(this.engine) this.engine.destroy();
+
+      const { editor, engine } = await this.example.init(this.$refs.view, this.$refs.extra);
+
+      this.editor = editor;
+      this.engine = engine;
+    }
+  },
   data() {
     return {
       editor: null,
@@ -21,25 +34,13 @@ export default {
     }
   },
   mounted() {
-    this.init()
+    this.init();
   },
   updated() {
-    this.init()
+    this.init(); 
   },
-  methods: {
-    async init() {
-      this.$refs.view.innerHTML = ''
-      this.$refs.extra.innerHTML = ''
-      this.$refs.extra.className = ''
-
-      if (this.editor) this.editor.destroy()
-      if (this.engine) this.engine.destroy()
-
-      const { editor, engine } = await this.example.init(this.$refs.view, this.$refs.extra)
-
-      this.editor = editor
-      this.engine = engine
-    }
+  components: {
+    Info
   }
 }
 </script>
