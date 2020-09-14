@@ -1,6 +1,6 @@
 <template lang="pug">
 .example
-  Info(:item="example")
+  //- Info(:item="example")
   .view
     div(ref="view")
     div(ref="extra")
@@ -63,8 +63,9 @@ export default {
     flex: 2
     position: relative
     overflow: hidden
-    max-height: 80vh
-    min-height: 50vh
+    max-height: 100vh
+    min-height: 80vh
+    margin: 20px
     +phone
       max-height: 60vh
 </style>

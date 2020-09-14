@@ -38,6 +38,7 @@ export default {
 
 <style lang="sass" scoped>
 .examples
+  height: 80vh
   text-align: left
   margin: 2em 1em
   .links
