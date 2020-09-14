@@ -42,7 +42,9 @@ Vue.use(Element, {
 Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key])
 })
-
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+Vue.use(iView);
 Vue.config.productionTip = false
 
 new Vue({

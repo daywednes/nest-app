@@ -1,5 +1,4 @@
 <template lang="pug">
-
 .examples
   Tabs(v-model="tab", @on-click="open(tab)", :animated="false")
     TabPane(v-for="item in list"
@@ -39,6 +38,7 @@ export default {
 
 <style lang="sass" scoped>
 .examples
+  height: 80vh
   text-align: left
   margin: 2em 1em
   .links

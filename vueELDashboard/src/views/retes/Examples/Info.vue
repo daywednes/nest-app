@@ -5,14 +5,12 @@
   Card.packages-card(:title="'Пакеты'" :padding="0" shadow)
     CellGroup
       Cell(v-for="pkg in item.packages" :title="pkg", :key="pkg" :to="'https://www.npmjs.com/package/'+pkg" target="_blank")
-        img(:src="'https://img.shields.io/npm/v/'+pkg+'.svg'" slot="extra"  alt="npm version" height="22")
+        img(:src="'https://img.shields.io/npm/v/'+pkg+'.svg'" slot="extra"  alt="npm version" height="22")     
   p {{text.description}}
 </template>
 
 <script>
-
-// - :title="$t('Пакеты')"
-import getText from './text'
+import getText from './text';
 
 export default {
   props: {
@@ -20,7 +18,7 @@ export default {
   },
   computed: {
     text() {
-      return getText(this.item.key)
+      return getText(this.item.key);
     }
   }
 }

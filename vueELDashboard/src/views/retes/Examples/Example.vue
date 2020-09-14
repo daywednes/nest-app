@@ -6,14 +6,27 @@
     div(ref="extra")
 </template>
 
+
 <script>
-import Info from './Info'
+import Info from './Info';
 
 export default {
-  components: {
-    Info
-  },
   props: ['example'],
+  methods: {
+    async init() {
+      this.$refs.view.innerHTML = '';
+      this.$refs.extra.innerHTML = '';
+      this.$refs.extra.className = '';
+
+      if(this.editor) this.editor.destroy();
+      if(this.engine) this.engine.destroy();
+
+      const { editor, engine } = await this.example.init(this.$refs.view, this.$refs.extra);
+
+      this.editor = editor;
+      this.engine = engine;
+    }
+  },
   data() {
     return {
       editor: null,
@@ -21,25 +34,13 @@ export default {
     }
   },
   mounted() {
-    this.init()
+    this.init();
   },
   updated() {
-    this.init()
+    this.init(); 
   },
-  methods: {
-    async init() {
-      this.$refs.view.innerHTML = ''
-      this.$refs.extra.innerHTML = ''
-      this.$refs.extra.className = ''
-
-      if (this.editor) this.editor.destroy()
-      if (this.engine) this.engine.destroy()
-
-      const { editor, engine } = await this.example.init(this.$refs.view, this.$refs.extra)
-
-      this.editor = editor
-      this.engine = engine
-    }
+  components: {
+    Info
   }
 }
 </script>
@@ -62,8 +63,9 @@ export default {
     flex: 2
     position: relative
     overflow: hidden
-    max-height: 80vh
-    min-height: 50vh
+    max-height: 100vh
+    min-height: 80vh
+    margin: 20px
     +phone
       max-height: 60vh
 </style>
