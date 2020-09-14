@@ -9,6 +9,7 @@ import Layout from '@/layout'
 /* Router Modules */
 // import chartsRouter from './modules/charts'
 import retesRouter from './modules/retes'
+import deviceRouter from './modules/devices'
 // import holdcomponentRouter from './modules/holdcomponent'
 // import tableRouter from './modules/table'
 
@@ -124,6 +125,7 @@ export const asyncRoutes = [
     // componentsRouter,
     // chartsRouter,
     retesRouter,
+    deviceRouter,
     // holdcomponentRouter,
     // nestedRouter,
     // tableRouter,
