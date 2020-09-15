@@ -84,6 +84,28 @@ export const constantRoutes = [{
             name: 'Dashboard',
             meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
         }]
+    }, {
+        path: '/devices',
+        component: Layout,
+        redirect: '/devices',
+        children: [{
+            path: '/devices',
+            component: () =>
+                import ('@/views/devices/index'),
+            name: 'Devices',
+            meta: { title: 'Devices', icon: 'guide', affix: true }
+        }]
+    }, {
+        path: '/zones',
+        component: Layout,
+        redirect: '/zones',
+        children: [{
+            path: '/zones',
+            component: () =>
+                import ('@/views/zones/index'),
+            name: 'Zones',
+            meta: { title: 'Zones', icon: 'icon', affix: true }
+        }]
     },
 
     // {
@@ -125,7 +147,7 @@ export const asyncRoutes = [
     // componentsRouter,
     // chartsRouter,
     retesRouter,
-    deviceRouter,
+    // deviceRouter,
     // holdcomponentRouter,
     // nestedRouter,
     // tableRouter,
