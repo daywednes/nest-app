@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card" style="margin-top:40px; width: 300px; float:left;">
+  <el-card class="box-card" style=" width: 300px; float:left;">
     <div slot="header" class="clearfix">
       <svg-icon icon-class="international" />
       <span style="margin-left:10px;font-size: x-large;">TITTLE</span>

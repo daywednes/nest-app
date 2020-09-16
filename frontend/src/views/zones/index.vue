@@ -80,13 +80,12 @@ export default {
         }
       ],
       tableData: [
-        { attr: "Created", label: "Created time", width: 250 },
+        { attr: "Created", label: "Created time", permission: "READ", width: 250 },
         { attr: "Name", label: "Name", width: 250 },
-        { attr: "Device", label: "Device type", width: 250 },
+        { attr: "Asset", label: "Asset type", width: 250 },
         { attr: "Label", label: "Label", width: 250 },
         { attr: "Customer", label: "Customer", width: 250 },
         { attr: "Public", label: "Public", width: 250 },
-        { attr: "Gateway", label: "Is Gateway", width: 200 },
         { attr: "addrId", permission: "N" },
         { attr: "_index", permission: "N" },
         { attr: "_checked", permission: "N" }
