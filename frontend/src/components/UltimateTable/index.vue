@@ -103,7 +103,7 @@
                         column.permission,
                         adding ? 'INSERT!' : 'UPDATE!'
                       )"
-                    style="width: 200px;"
+                    style="width: 200px; float: right; margin-right: 5px;"
                     class="filter-item"
                   />
                 </template>

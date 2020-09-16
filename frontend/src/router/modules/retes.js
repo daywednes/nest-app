@@ -4,29 +4,37 @@ import Layout from '@/layout'
 import examplesRoute from '@/views/retes/Examples/route';
 
 const retesRouter = {
-    path: '/retes',
+    path: '/automation',
     component: Layout,
-    redirect: 'noRedirect',
-    name: 'Retes',
+    redirect: '/',
+    name: 'Automation',
     meta: {
-        title: 'Retes',
+        title: 'Automation',
         icon: 'chart'
     },
-    children: [{
-        path: 'reteDock',
-        hidden: true,
-        component: () =>
-            import ('@/views/retes/Examples/'),
-        name: 'ReteDock',
-        meta: { title: 'Rete Dock', noCache: true },
-        children: examplesRoute
-    }, {
-        path: 'reteDock/basic',
-        component: () =>
-            import ('@/views/retes/Examples/'),
-        name: 'Basic',
-        meta: { title: 'Rete Dock', noCache: true },
-    }]
+    children:
+
+    //UI Automation on Navigation bar
+    // examplesRoute
+
+    //Default UI
+        [{
+            path: 'View',
+            hidden: true,
+            component: () =>
+                import ('@/views/retes/Examples/'),
+            name: 'View ',
+            meta: { title: 'View', noCache: true },
+            children: examplesRoute
+        }, {
+            path: 'View/Zone1%20Name1',
+            component: () =>
+                import ('@/views/retes/Examples/'),
+            name: 'Zone1%20Name1',
+            meta: { title: 'Automation', noCache: true },
+        },
+
+    ]
 }
 
 export default retesRouter
