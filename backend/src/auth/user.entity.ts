@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import { DeviceEntity } from 'src/org/device.entity';
+import { OrgEntity } from 'src/org/org.entity';
 import { Task } from 'src/tasks/task.entity';
 import {
   BaseEntity,
@@ -30,6 +32,20 @@ export class User extends BaseEntity {
     { eager: true },
   )
   tasks: Task[];
+
+  @OneToMany(
+    type => DeviceEntity,
+    device => device.user,
+    { eager: true },
+  )
+  devices: DeviceEntity[];
+
+  @OneToMany(
+    type => OrgEntity,
+    org => org.user,
+    { eager: true },
+  )
+  orgs: OrgEntity[];
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
