@@ -7,6 +7,7 @@
     <div class="leftPanel-background" />
     <FontResizableContainer increment="2px" class="leftPanel">
       <div
+        v-if="showLeft"
         class="handle-button"
         :style="{ 'background-color': theme }"
         @click="showLeft = !showLeft"
@@ -34,10 +35,15 @@ export default {
       default: false,
       type: Boolean,
     },
+    showLeft: {
+      default: false,
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      showLeft: false,
+      // showLeft: false,
     };
   },
   computed: {
@@ -97,15 +103,16 @@ export default {
   }
 }
 .handle-button {
-  width: 26px;
+  width: 36px;
   height: 36px;
   position: absolute;
-  left: -30px;
+  left: -36px;
   text-align: center;
   font-size: 16px;
-  // border-radius: p16px 0px 0x 16px !important;
+  border-radius: 36px 36px 36px 36px !important;
   z-index: 0;
   pointer-events: auto;
+  background: red;
   cursor: pointer;
   color: #fff;
   line-height: 40px;

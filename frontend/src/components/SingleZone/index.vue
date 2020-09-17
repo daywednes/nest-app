@@ -4,12 +4,12 @@
       <!-- <svg-icon icon-class="international" /> -->
       <!-- <span style="margin-left:10px;font-size: x-large;">TITTLE</span> -->
       
-      <el-checkbox  label="Test Device" style="font-size: xx-large;">
+      <el-checkbox  label="Test Zone" style="font-size: xx-large;">
         
       </el-checkbox>
     </div>
     <div>
-      <!-- <el-checkbox  label="Test Device" style="margin:10px 0px 30px 0px;display:block; font-size: x-large;">
+      <!-- <el-checkbox  label="Test Zone" style="margin:10px 0px 30px 0px;display:block; font-size: x-large;">
         
       </el-checkbox> -->
       <span style="margin:10px 0px 30px 0px;display:block; font-size: large;">Description</span>

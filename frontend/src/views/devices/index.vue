@@ -15,8 +15,8 @@
         @functionDeletePage="fn_delete"
       />
       <SingleDevice
-        @click="fn_compoClick"
-        style="margin: 10px;"
+        @click.native="fn_compoClick"
+        style="margin: 15px;"
         v-for="route in permission_routes"
         :key="route.path"
         :item="route"
@@ -103,66 +103,29 @@
       </el-dialog>
     </div>
     <RightPanelExtra
+      :showLeft="isShowLeft"
       @leftPanelIsShow="leftPanelIsShow"
       @leftPanelIsHide="leftPanelIsHide"
     >
-      <CommonFunction
-        :isShowINIT="true"
-        :isShowADD="true"
-        :isShowDELETE="true"
-        :isShowEdit="true"
-        @functionAddPage="tableConfig[0].adding = true"
-        @functionEditPage="tableConfig[0].updating = true"
-        @functionImportPage="tableConfig[0].uploading = true"
-        @functionInitPage="fn_init"
-        @functionDeletePage="fn_delete"
-        @functionExportPage="fn_export"
-      />
-
-      <div class="filter-container" style="float:left; width:100%">
-        <!-- grid table -->
-        <div
-          style="postion: relative; margin-left: 5px; float:right; width:100%;"
-        >
-          <div class="label-title" style="min-height: 30px;">
-            <el-col :span="12">
-              <!-- <i class="icon el-icon-star-on" /> -->
-              <!-- <FontResizableContainer tag="label" increment="4px" class="label">{{$t('LoadDispTitle')}}</FontResizableContainer> -->
-            </el-col>
-          </div>
-          <UltimateTable
-            :lockingPopup="tableConfig[0].lockingPopup"
-            :progress="uploadProgress"
-            :dataValue="ds_master"
-            :dataModel="tableData"
-            v-loading="tableConfig[0].loading"
-            :rowKey="row => (row ? row._index : null)"
-            :currentRowKey="selectedDevice._index"
-            :commonCodes="ds_commonCode"
-            :adding="tableConfig[0].adding"
-            :updating="tableConfig[0].updating"
-            :uploading="tableConfig[0].uploading"
-            :paginationData="tableConfig[0]"
-            :permission="
-              ['INSERT', selectedDevice._index != -1 ? 'UPDATE' : ''].join('|')
-            "
-            :newItem="{
-              _checked: false,
-            }"
-            @row-click="fn_rowClick"
-            @stop-insert="tableConfig[0].adding = false"
-            @stop-update="tableConfig[0].updating = false"
-            @stop-upload="tableConfig[0].uploading = false"
-            @on-insert="fn_add"
-            @on-paging="fn_select"
-          />
-        </div>
-        <!-- end grid table -->
+      <div class="tab-container">
+        <el-tabs v-model="editableTabsValue" type="border-card">
+          <el-tab-pane name="1" label="Details">
+            <keep-alive>
+              <DeviceDetails ref="deviceDetails" />
+            </keep-alive>
+          </el-tab-pane>
+          <!-- <el-tab-pane name="2" label="List Devices">
+            <keep-alive>
+              <DevicesOfZone ref="devicesOfZone" />
+            </keep-alive>
+          </el-tab-pane> -->
+        </el-tabs>
       </div>
     </RightPanelExtra>
   </div>
 </template>
 <script>
+import DeviceDetails from '@/views/devices/DeviceDetails';
 import RightPanelExtra from '@/components/RightPanelExtra';
 import SingleDevice from '@/components/SingleDevice';
 import CommonFunction from '@/components/CommonFunction';
@@ -177,6 +140,7 @@ export default {
     UltimateTable,
     SingleDevice,
     RightPanelExtra,
+    DeviceDetails,
   },
   data() {
     return {
@@ -186,8 +150,8 @@ export default {
         deviceLabel: '',
         deviceDescription: '',
       },
-      isShowLeft: true,
       showDialogDeices: false,
+      editableTabsValue: '1',
       tableConfig: [
         {
           adding: false,
@@ -291,7 +255,7 @@ export default {
       this.selectedDevice = currentRow;
     },
     fn_compoClick: function(currentRow) {
-      alert('click');
+      this.isShowLeft= true
     },
     fn_findRoute: function(command) {},
   },

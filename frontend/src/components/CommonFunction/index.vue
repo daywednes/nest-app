@@ -3,6 +3,7 @@
     class="filter-container common-function"
     style="text-align:right;
     display: inline-block;
+    margin-left: 10px;
     height: 100%;"
   >
     <slot></slot>

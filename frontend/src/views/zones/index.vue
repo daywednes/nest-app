@@ -1,72 +1,156 @@
 <template>
   <div class="components-container">
-    <CommonFunction
-      :isShowINIT="true"
-      :isShowADD="true"
-      :isShowDELETE="true"
-      :isShowEdit="true"
-      @functionAddPage="tableConfig[0].adding = true"
-      @functionEditPage="tableConfig[0].updating = true"
-      @functionImportPage="tableConfig[0].uploading = true"
-      @functionInitPage="fn_init"
-      @functionDeletePage="fn_delete"
-      @functionExportPage="fn_export"
-    />
+    <div
+      style="postion: relative; margin-left: 5px; float:left;"
+      :style="{
+        width: this.isShowLeft ? 'calc(100% - 700px)' : '100%',
+        transition: this.isShowLeft ? '0.2s ease' : '0.6s ease',
+      }"
+    >
+      <CommonFunction
+        style="float: left; margin-left: 10px; text-align: left; width:100%;"
+        :isShowADD="true"
+        :isShowDELETE="true"
+        @functionAddPage="showDialogDeices = true"
+        @functionDeletePage="fn_delete"
+      />
+      <SingleZone
+        @click.native="fn_compoClick"
+        style="margin: 15px;"
+        v-for="route in permission_routes"
+        :key="route.path"
+        :item="route"
+        :base-path="route.path"
+      />
+      <el-dialog title="New Zone" :visible.sync="showDialogDeices">
+        <el-form class="login-form-log" autocomplete="on" label-position="left">
+          <el-form-item prop="ZoneName">
+            <span style="margin-left:10px;font-size: large;"> Name</span>
+            <el-input
+              ref="ZoneName"
+              v-model="ZoneForm.ZoneName"
+              style="color: black;"
+              placeholder="Zone Name"
+              name="ZoneName"
+              type="text"
+              tabindex="1"
+              autocomplete="on"
+            />
+          </el-form-item>
+          <el-form-item prop="description">
+            <span style="margin-left:10px;font-size: large;"> Description</span>
+            <el-input
+              ref="ZoneType"
+              v-model="ZoneForm.ZoneType"
+              style="color: black;"
+              placeholder="Zone Description"
+              name="ZoneType"
+              type="text"
+              tabindex="2"
+              autocomplete="on"
+            />
+          </el-form-item>
+          <el-form-item prop="label">
+            <span style="margin-left:10px;font-size: large;"> Label</span>
+            <el-input
+              ref="ZoneType"
+              v-model="ZoneForm.ZoneLabel"
+              style="color: black;"
+              placeholder="Label"
+              name="Label"
+              type="text"
+              tabindex="2"
+              autocomplete="on"
+            />
+          </el-form-item>
+          <el-form-item prop="label">
+            <el-checkbox
+              label="Test Zone"
+              style="display:block; font-size: large;"
+            >
+            </el-checkbox>
+          </el-form-item>
+          <el-form-item prop="description">
+            <span style="margin-left:10px;font-size: large;"> Description</span>
+            <el-input
+              ref="ZoneForm"
+              v-model="ZoneForm.ZoneDescription"
+              style="color: black;"
+              placeholder="Description"
+              name="ZoneDescription"
+              type="textarea"
+              tabindex="2"
+              :rows="3"
+              autocomplete="on"
+            />
+          </el-form-item>
 
-    <div class="filter-container" style="float:left; width:100%">
-      <!-- grid table -->
-      <div
-        style="postion: relative; margin-left: 5px; float:right; width:100%;"
-      >
-         <div class="label-title" style="min-height: 30px;">
-          <el-col :span="12">
-            <!-- <i class="icon el-icon-star-on" /> -->
-              <!-- <FontResizableContainer tag="label" increment="4px" class="label">{{$t('LoadDispTitle')}}</FontResizableContainer> -->
-          </el-col>
-        </div>
-        <UltimateTable
-          :lockingPopup="tableConfig[0].lockingPopup"
-          :progress="uploadProgress"
-          :dataValue="ds_master"
-          :dataModel="tableData"
-          v-loading="tableConfig[0].loading"
-          :rowKey="row => row ? row._index : null"
-          :currentRowKey="selectedDevice._index"
-          :commonCodes="ds_commonCode"
-          :adding="tableConfig[0].adding"
-          :updating="tableConfig[0].updating"
-          :uploading="tableConfig[0].uploading"
-          :paginationData="tableConfig[0]"
-          :permission="['INSERT', selectedDevice._index != -1 ? 'UPDATE' : ''].join('|')"
-          :newItem="{
-            _checked: false
-          }"
-          @row-click="fn_rowClick"
-          @stop-insert="tableConfig[0].adding = false"
-          @stop-update="tableConfig[0].updating = false"
-          @stop-upload="tableConfig[0].uploading = false"
-          @on-insert="fn_add"
-          @on-update="fn_updateRoute"
-          @on-paging="fn_select"
-        />
-      </div>
-      <!-- end grid table -->
+          <!-- <el-tooltip
+          v-model="capsTooltip"
+          content="Caps lock is On"
+          placement="right"
+          manual
+        >
+        </el-tooltip> -->
+          <el-button type="primary" style="width:100%;margin-bottom:10px;"
+            >Create Zone</el-button
+          >
+        </el-form>
+      </el-dialog>
     </div>
+    <RightPanelExtra
+      :showLeft="isShowLeft"
+      @leftPanelIsShow="leftPanelIsShow"
+      @leftPanelIsHide="leftPanelIsHide"
+    >
+      <div class="tab-container">
+        <el-tabs v-model="editableTabsValue" type="border-card">
+          <el-tab-pane name="1" label="Details">
+            <keep-alive>
+              <ZoneDetails ref="zoneDetails" />
+            </keep-alive>
+          </el-tab-pane>
+          <el-tab-pane name="2" label="List Devices">
+            <keep-alive>
+              <DevicesOfZone ref="devicesOfZone" />
+            </keep-alive>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </RightPanelExtra>
   </div>
 </template>
 <script>
-import CommonFunction from "@/components/CommonFunction";
-import FontResizableContainer from "@/components/FontResizableContainer";
-import UltimateTable from "@/components/UltimateTable";
+import RightPanelExtra from '@/components/RightPanelExtra';
+import DevicesOfZone from '@/views/zones/DevicesOfZone';
+import ZoneDetails from '@/views/zones/ZoneDetails';
+import SingleZone from '@/components/SingleZone';
+import CommonFunction from '@/components/CommonFunction';
+import FontResizableContainer from '@/components/FontResizableContainer';
+import UltimateTable from '@/components/UltimateTable';
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "Zones",
+  name: 'Zones',
   components: {
     CommonFunction,
-    UltimateTable
+    UltimateTable,
+    SingleZone,
+    RightPanelExtra,
+    ZoneDetails,
+    DevicesOfZone,
   },
   data() {
     return {
+      ZoneForm: {
+        ZoneName: '',
+        ZoneType: '',
+        ZoneLabel: '',
+        ZoneDescription: '',
+      },
+      showDialogDeices: false,
+      editableTabsValue: '1',
+      isShowLeft: false,
       tableConfig: [
         {
           adding: false,
@@ -76,33 +160,45 @@ export default {
           lockingPopup: false,
           total: 0,
           page: 1,
-          limit: 20
-        }
+          limit: 20,
+        },
       ],
       tableData: [
-        { attr: "Created", label: "Created time", permission: "READ", width: 250 },
-        { attr: "Name", label: "Name", width: 250 },
-        { attr: "Asset", label: "Asset type", width: 250 },
-        { attr: "Label", label: "Label", width: 250 },
-        { attr: "Customer", label: "Customer", width: 250 },
-        { attr: "Public", label: "Public", width: 250 },
-        { attr: "addrId", permission: "N" },
-        { attr: "_index", permission: "N" },
-        { attr: "_checked", permission: "N" }
+        {
+          attr: 'Created',
+          label: 'Created time',
+          permission: 'READ',
+          width: 250,
+        },
+        { attr: 'Name', label: 'Name', width: 250 },
+        { attr: 'Asset', label: 'Asset type', width: 250 },
+        { attr: 'Label', label: 'Label', width: 250 },
+        { attr: 'Customer', label: 'Customer', width: 250 },
+        { attr: 'Public', label: 'Public', width: 250 },
+        { attr: 'addrId', permission: 'N' },
+        { attr: '_index', permission: 'N' },
+        { attr: '_checked', permission: 'N' },
       ],
-      isShowLeft: true,
       multipleSelection: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
-      selectedDevice: { ...DEFAULT_ITEM },
+      selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      selectedDeviceCd: null,
-      uploadProgress: { ...DEFAULT_PROGRESS }
+      selectedZoneCd: null,
+      uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {
+  mounted: function() {},
+  computed: {
+    ...mapGetters(['permission_routes']),
   },
   methods: {
+    leftPanelIsShow: function() {
+      this.isShowLeft = true;
+    },
+    leftPanelIsHide: function() {
+      this.isShowLeft = false;
+    },
     checkDuplicate: function(row) {
       // NetworkService.NETWORK.validateZoneCode(row.zoneCd).then(res => {
       //   if (!isGtoResponseSuccess(res)) {
@@ -113,17 +209,15 @@ export default {
       // });
       return true;
     },
-    fn_select: function() {
-      
-    },
+    fn_select: function() {},
     fn_init: function() {
-      this.uploadProgress= { ...DEFAULT_PROGRESS };
+      this.uploadProgress = { ...DEFAULT_PROGRESS };
       this.multipleSelection = [];
       this.queryCondition = { ...DEFAULT_SEARCH_QUERY };
-      this.selectedDevice = { ...DEFAULT_ITEM };
+      this.selectedZone = { ...DEFAULT_ITEM };
       this.ds_master = [];
       this.ds_master2 = [];
-      this.selectedDeviceCd = null;
+      this.selectedZoneCd = null;
       this.tableConfig = [
         {
           adding: false,
@@ -132,49 +226,41 @@ export default {
           loading: false,
           total: 0,
           page: 1,
-          limit: 20
+          limit: 20,
         },
-        { adding: false, updating: false, loading: false }
+        { adding: false, updating: false, loading: false },
       ];
     },
     fn_add: function(item) {
-      item.isCreate = true;
-      this.tableConfig[0].lockingPopup = true
-      NetworkService.NETWORK.createShippingLocation(item).then(res => {
-        this.tableConfig[0].lockingPopup = false
-        if (!isGtoResponseSuccess(res)) {
-          return;
-        }
-        this.fn_select();
-        this.tableConfig[0].adding = false;
-      });
+      // item.isCreate = true;
+      // this.tableConfig[0].lockingPopup = true;
+      // NetworkService.NETWORK.createShippingLocation(item).then(res => {
+      //   this.tableConfig[0].lockingPopup = false;
+      //   if (!isGtoResponseSuccess(res)) {
+      //     return;
+      //   }
+      //   this.fn_select();
+      //   this.tableConfig[0].adding = false;
+      // });
     },
-    fn_updateRoute: function(item) {
-      this.tableConfig[0].lockingPopup = true
-      NetworkService.NETWORK.updateFindRoute(item).then(res => {
-        this.tableConfig[0].lockingPopup = false
-        if (!isGtoResponseSuccess(res)) {
-          return;
-        }
-        this.fn_select();
-        this.tableConfig[0].updating = false;
-      });
-    },
-    fn_delete: function() {
-    },
+    fn_delete: function() {},
     fn_export: function() {
-      let date = new Date()
-      exportByDataModel(this.ds_master, 
-        this.tableData, 
-        `[Zones]_[${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}]`)
+      let date = new Date();
+      exportByDataModel(
+        this.ds_master,
+        this.tableData,
+        `[ZoneS]_[${date.getFullYear()}${date.getMonth() +
+          1}${date.getDate()}]`,
+      );
     },
     fn_rowClick: function(currentRow) {
-      this.selectedDevice = currentRow;
+      this.selectedZone = currentRow;
     },
-    fn_findRoute: function(command) {
-
-    }
-  }
+    fn_compoClick: function(currentRow) {
+      this.isShowLeft = true;
+    },
+    fn_findRoute: function(command) {},
+  },
 };
 const DEFAULT_SEARCH_QUERY = {
   ctKey: null,
@@ -189,16 +275,16 @@ const DEFAULT_SEARCH_QUERY = {
     startIndex: 0,
     pageSize: 100,
     sortConditions: [],
-    orCondition: false
-  }
+    orCondition: false,
+  },
 };
 const DEFAULT_ITEM = {
   _index: -1,
-  _checked: false
+  _checked: false,
 };
 const DEFAULT_PROGRESS = {
   showed: false,
   percent: 0,
-  message: ""
+  message: '',
 };
 </script>
