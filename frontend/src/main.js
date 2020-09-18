@@ -44,8 +44,28 @@ Object.keys(filters).forEach(key => {
 })
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import VueWamp from 'vue-wamp'
 Vue.use(iView);
+Vue.use(VueWamp, {
+    debug: true,
+    url: 'ws://demo.crossbar.io/ws',
+    realm: 'realm1',
+    onopen: function(session, details) {
+        console.log('WAMP connected', session, details);
+    },
+    onclose: function(reason, details) {
+        console.log('WAMP closed: ' + reason, details);
+    }
+});
 Vue.config.productionTip = false
+
+Vue.Wamp.subscribe('some-topic', function(args, kwArgs, details) {
+    // context is empty
+}, {
+    acknowledge: true // option needed for promise
+}).then(function(s) {
+    console.log('AutobahnJS Subscription object: ', s);
+});
 
 new Vue({
     el: '#app',

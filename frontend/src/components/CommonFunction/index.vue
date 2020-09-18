@@ -3,7 +3,7 @@
     class="filter-container common-function"
     style="text-align:right;
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 10px;`
     height: 100%;"
   >
     <slot></slot>
@@ -20,28 +20,32 @@
       type="primary"
       icon="el-icon-search"
       @click="fn_select()"
-    >SEARCH</el-button>
+      >SEARCH</el-button
+    >
     <el-button
       v-if="isShowEXCELDOWN"
       class="filter-item"
       type="primary"
       icon="el-icon-document-copy"
       @click="fn_excel()"
-    >EXCELDOWN</el-button>
+      >EXCELDOWN</el-button
+    >
     <el-button
       v-if="isShowINIT"
       class="filter-item"
       type="primary"
       icon="el-icon-refresh-right"
       @click="fn_init()"
-    >INIT</el-button>
+      >INIT</el-button
+    >
     <el-button
-      v-if="isShowRun"
+      v-if="isShowDeploy"
       class="filter-item"
       type="primary"
       icon="el-icon-video-play"
-      @click="fn_run()"
-    >EngineRunBtn</el-button>
+      @click="fn_deploy()"
+      >Deploy</el-button
+    >
     <el-button
       v-if="isShowAllDistances"
       class="filter-item"
@@ -49,7 +53,8 @@
       icon="el-icon-share"
       :disabled="isDisableAllDistances"
       @click="fn_calAllDistance()"
-    >AllDistances</el-button>
+      >AllDistances</el-button
+    >
     <el-button
       v-if="isShowLoad"
       class="filter-item"
@@ -57,7 +62,8 @@
       icon="el-icon-video-play"
       :disabled="isDisableLoad"
       @click="fn_load()"
-    >DispViewLoadBtn</el-button>
+      >DispViewLoadBtn</el-button
+    >
     <el-button
       v-if="isShowADD"
       class="filter-item"
@@ -65,7 +71,8 @@
       icon="el-icon-plus"
       :disabled="isDisableAdd"
       @click="fn_add()"
-    >ADD</el-button>
+      >ADD</el-button
+    >
     <el-button
       v-if="isShowEdit"
       class="filter-item"
@@ -73,7 +80,8 @@
       icon="el-icon-edit"
       :disabled="isDisableEdit"
       @click="fn_edit()"
-    >EDIT</el-button>
+      >EDIT</el-button
+    >
     <el-button
       v-if="isShowDELETE"
       class="filter-item"
@@ -81,7 +89,8 @@
       icon="el-icon-delete-solid"
       :disabled="isDisableDelete"
       @click="fn_delete()"
-    >DELETE</el-button>
+      >DELETE</el-button
+    >
     <el-button
       v-if="isShowLoadDistance"
       class="filter-item"
@@ -89,7 +98,8 @@
       icon="el-icon-video-play"
       :disabled="isDisableLoadDistance"
       @click="fn_loadDistance()"
-    >EngineLoadRealDistBtn</el-button>
+      >EngineLoadRealDistBtn</el-button
+    >
     <el-button
       v-if="isShowViewMap"
       class="filter-item"
@@ -97,7 +107,8 @@
       icon="el-icon-map-location"
       :disabled="isDisableViewMap"
       @click="fn_pushMap()"
-    >DispViewViewMapBtn</el-button>
+      >DispViewViewMapBtn</el-button
+    >
     <el-button
       v-if="isShowViewChart"
       class="filter-item"
@@ -105,14 +116,16 @@
       icon="el-icon-pie-chart"
       :disabled="isDisableViewChart"
       @click="fn_showChart()"
-    >DispViewViewChartBtn</el-button>
+      >DispViewViewChartBtn</el-button
+    >
     <el-button
       v-if="isShowImport"
       class="filter-item"
       type="primary"
       icon="el-icon-upload2"
       @click="fn_import()"
-    >DispViewImportBtn</el-button>
+      >DispViewImportBtn</el-button
+    >
     <el-button
       v-if="isShowRouteCompare"
       class="filter-item"
@@ -120,7 +133,8 @@
       icon="el-icon-cherry"
       :disabled="isDisableRouteCompare"
       @click="fn_routeCompare()"
-    >CompareSRouteBtn</el-button>
+      >CompareSRouteBtn</el-button
+    >
     <el-button
       v-if="isShowExport"
       class="filter-item"
@@ -128,35 +142,40 @@
       icon="el-icon-download"
       @click="fn_export()"
       :disabled="isDisableExport"
-    >DispViewExportBtn</el-button>
+      >DispViewExportBtn</el-button
+    >
     <el-button
       v-if="isShowSAVE"
       class="filter-item"
       type="primary"
       icon="el-icon-download"
       @click="fn_save()"
-    >SAVE</el-button>
+      >SAVE</el-button
+    >
     <el-button
       v-if="isShowLoadDefaultSetting"
       class="filter-item"
       type="primary"
       icon="el-icon-download"
       @click="fn_loadDefaultSetting()"
-    >LOADDEFAULTSETTING</el-button>
+      >LOADDEFAULTSETTING</el-button
+    >
     <el-button
       v-if="isShowAnalyze"
       class="filter-item"
       type="primary"
       icon="el-icon-video-play"
       @click="fn_analyze()"
-    >Analyze</el-button>
+      >Analyze</el-button
+    >
     <el-button
       v-if="isShowChangeCenter"
       class="filter-item"
       type="primary"
       icon="el-icon-video-play"
       @click="fn_changeCenter()"
-    >ChangeShipmentCenter</el-button>
+      >ChangeShipmentCenter</el-button
+    >
     <el-dropdown
       class="filter-item"
       split-button
@@ -188,16 +207,17 @@
       type="primary"
       icon="el-icon-close"
       @click="fn_close()"
-    >CLOSE</el-button>
+      >CLOSE</el-button
+    >
   </div>
 </template>
 
 <script>
-import { addClass, removeClass } from "@/utils";
-import gmsUtils from "@/utils/gms-utils";
+import { addClass, removeClass } from '@/utils';
+import gmsUtils from '@/utils/gms-utils';
 
 export default {
-  name: "CommonFunction",
+  name: 'CommonFunction',
   props: {
     isShowFAVORITE: {
       default: false,
@@ -259,7 +279,7 @@ export default {
       default: false,
       type: Boolean,
     },
-    isShowRun: {
+    isShowDeploy: {
       default: false,
       type: Boolean,
     },
@@ -339,7 +359,6 @@ export default {
   },
   computed: {
     userloginInfo() {
-      
       return null;
     },
     webScenarioID() {
@@ -347,94 +366,94 @@ export default {
     },
   },
   methods: {
-    checkPermission: function () {
-      return true
+    checkPermission: function() {
+      return true;
     },
 
-    fn_favorite: function () {
-      this.$emit("functionFavoritePage");
+    fn_favorite: function() {
+      this.$emit('functionFavoritePage');
     },
-    fn_excel: function () {
-      this.$emit("functionExcelPage");
+    fn_excel: function() {
+      this.$emit('functionExcelPage');
     },
-    fn_select: function () {
-      this.$emit("functionSearchPage");
+    fn_select: function() {
+      this.$emit('functionSearchPage');
     },
-    fn_init: function () {
-      this.$emit("functionInitPage");
+    fn_init: function() {
+      this.$emit('functionInitPage');
     },
-    fn_add: function () {
+    fn_add: function() {
       if (this.checkPermission()) {
-        this.$emit("functionAddPage");
+        this.$emit('functionAddPage');
       }
     },
-    fn_edit: function () {
+    fn_edit: function() {
       if (this.checkPermission()) {
-        this.$emit("functionEditPage");
+        this.$emit('functionEditPage');
       }
     },
-    fn_delete: function () {
+    fn_delete: function() {
       if (this.checkPermission()) {
-        this.$emit("functionDeletePage");
+        this.$emit('functionDeletePage');
       }
     },
-    fn_save: function () {
+    fn_save: function() {
       if (this.checkPermission()) {
-        this.$emit("functionSavePage");
+        this.$emit('functionSavePage');
       }
     },
-    fn_import: function () {
+    fn_import: function() {
       if (this.checkPermission()) {
-        this.$emit("functionImportPage");
+        this.$emit('functionImportPage');
       }
     },
-    fn_export: function () {
-      this.$emit("functionExportPage");
+    fn_export: function() {
+      this.$emit('functionExportPage');
     },
-    fn_loadDistance: function () {
-      this.$emit("functionLoadDistancePage");
+    fn_loadDistance: function() {
+      this.$emit('functionLoadDistancePage');
     },
-    fn_load: function () {
-      this.$emit("functionLoadPage");
+    fn_load: function() {
+      this.$emit('functionLoadPage');
     },
-    fn_calculateAll: function (command) {
+    fn_calculateAll: function(command) {
       if (this.checkPermission()) {
-        this.$emit("functionCalculateAllPage");
+        this.$emit('functionCalculateAllPage');
       }
     },
-    fn_calculate: function () {
+    fn_calculate: function() {
       if (this.checkPermission()) {
-        this.$emit("functionCalculatePage");
+        this.$emit('functionCalculatePage');
       }
     },
-    fn_findRoute: function (command) {
-      this.$emit("functionFindRoute", command);
+    fn_findRoute: function(command) {
+      this.$emit('functionFindRoute', command);
     },
-    fn_changeCenter: function (command) {
-      this.$emit("functionChangeCenter", command);
+    fn_changeCenter: function(command) {
+      this.$emit('functionChangeCenter', command);
     },
-    fn_analyze: function (command) {
-      this.$emit("functionAnalyze", command);
+    fn_analyze: function(command) {
+      this.$emit('functionAnalyze', command);
     },
-    fn_run: function (command) {
-      this.$emit("functionRun", command);
+    fn_deploy: function(command) {
+      this.$emit('functionDeploy', command);
     },
-    fn_pushMap: function (command) {
-      this.$emit("functionPushMap", command);
+    fn_pushMap: function(command) {
+      this.$emit('functionPushMap', command);
     },
-    fn_showChart: function (command) {
-      this.$emit("functionShowChart", command);
+    fn_showChart: function(command) {
+      this.$emit('functionShowChart', command);
     },
-    fn_calAllDistance: function (command) {
+    fn_calAllDistance: function(command) {
       if (this.checkPermission()) {
-        this.$emit("functionCalAllDistances");
+        this.$emit('functionCalAllDistances');
       }
     },
-    fn_routeCompare: function (command) {
-      this.$emit("funcitonRouteCompare", command);
+    fn_routeCompare: function(command) {
+      this.$emit('funcitonRouteCompare', command);
     },
-    fn_close: function () {
-      this.$store.dispatch("tagsView/delSelectedView").then(() => {
+    fn_close: function() {
+      this.$store.dispatch('tagsView/delSelectedView').then(() => {
         let latestView = this.$store.state.tagsView.visitedViews.slice(-1)[0];
         if (latestView) {
           this.$router.push(latestView.fullPath);
@@ -442,18 +461,18 @@ export default {
           // now the default is to redirect to the home page if there is no tags-view,
           // you can adjust it according to your needs.
           if (latestView == null || latestView === undefined) {
-            this.$router.push("/");
-          } else if (latestView.name === "Dashboard") {
+            this.$router.push('/');
+          } else if (latestView.name === 'Dashboard') {
             // to reload home page
-            this.$router.replace({ path: "/redirect" + view.fullPath });
+            this.$router.replace({ path: '/redirect' + view.fullPath });
           } else {
-            this.$router.push("/");
+            this.$router.push('/');
           }
         }
       });
     },
-    fn_loadDefaultSetting: function () {
-      this.$emit("functionLoadDefaultSetting");
+    fn_loadDefaultSetting: function() {
+      this.$emit('functionLoadDefaultSetting');
     },
   },
 };
