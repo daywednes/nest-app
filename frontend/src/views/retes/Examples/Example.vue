@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import Vue from "vue"
 import Info from './Info';
 import CommonFunction from '@/components/CommonFunction';
 
@@ -35,13 +36,16 @@ export default {
       this.engine = engine;
     },
     fn_deploy() {
-      alert('deploy');
+      let msg = 'Hello World from Nest App ' + this.counter
+      Vue.$wamp.publish("com.myapp.hello", [msg])
+      this.counter = this.counter + 1
     },
   },
   data() {
     return {
       editor: null,
       engine: null,
+      counter: 1
     };
   },
   mounted() {

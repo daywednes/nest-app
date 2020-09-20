@@ -46,9 +46,10 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import VueWamp from 'vue-wamp'
 Vue.use(iView);
+const WAMP_URL = process.env.VUE_APP_WAMP_URL
 Vue.use(VueWamp, {
     debug: true,
-    url: 'ws://demo.crossbar.io/ws',
+    url: WAMP_URL,
     realm: 'realm1',
     onopen: function(session, details) {
         console.log('WAMP connected', session, details);
