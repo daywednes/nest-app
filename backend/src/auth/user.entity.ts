@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { DeviceEntity } from 'src/org/device.entity';
+import { DeviceEntity } from 'src/device/device.entity';
 import { OrgEntity } from 'src/org/org.entity';
 import { Task } from 'src/tasks/task.entity';
 import {
