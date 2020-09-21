@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DeviceEntity } from './device.entity';
-import { OrgEntity } from './org.entity';
+import { DeviceEntity } from '../device/device.entity';
+import { OrgEntity } from '../org/org.entity';
 
 @Entity()
 export class ZoneEntity extends BaseEntity {
