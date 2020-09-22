@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ZoneEntity } from '../zone/zone.entity';
+import { DeviceEntity } from 'src/device/device.entity';
 
 @Entity()
 export class OrgEntity extends BaseEntity {
@@ -36,4 +37,11 @@ export class OrgEntity extends BaseEntity {
     { eager: true },
   )
   zones: ZoneEntity[];
+
+  @OneToMany(
+    type => DeviceEntity,
+    devices => devices.org,
+    { eager: true },
+  )
+  devices: DeviceEntity[];
 }

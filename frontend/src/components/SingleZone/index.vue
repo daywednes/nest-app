@@ -27,7 +27,7 @@
 .box-card {
   width: 600px;
   max-width: 100%;
-  margin: 20px auto;
+  margin: 10px auto;
 }
 .item-btn {
   margin-bottom: 15px;
