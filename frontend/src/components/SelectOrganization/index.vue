@@ -9,19 +9,22 @@
     >
       <el-option
         style="align-self: center; text-align-last: left;"
-        value="1"
-        label="Organization 1"
+        v-for="item in orgList"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id"
       >
         <el-button
           style="float: left; 
             margin: 3px; 
             background: transparent;"
           class="show-icon"
-          @click="fn_delete"
+          @click="fn_delete(item.id)"
         >
           <i class="el-icon-close" /> </el-button
-        >Organization 1 </el-option
-      ><el-option
+        > {{item.name}}</el-option
+      >
+      <!-- <el-option
         style="align-self: center; text-align-last: left;"
         value="2"
         label="Organization 2"
@@ -50,7 +53,7 @@
         >
           <i class="el-icon-close" /> </el-button
         >Organization 3
-      </el-option>
+      </el-option> -->
       <el-option
         style="align-self: center; text-align-last: left;"
         value="CreateDB"
@@ -72,7 +75,7 @@
           <span style="margin-left:10px;font-size: x-large;"> Name</span>
           <el-input
             ref="orgName"
-            v-model="organizationForm.orgName"
+            v-model="organizationForm.name"
             style="color: black;"
             placeholder="Organization Name"
             name="orgName"
@@ -85,7 +88,7 @@
           <span style="margin-left:10px;font-size: x-large;"> Description</span>
           <el-input
             ref="orgDescription"
-            v-model="organizationForm.orgDescription"
+            v-model="organizationForm.description"
             style="color: black;"
             placeholder="Organization Description"
             name="orgDescription"
@@ -103,7 +106,7 @@
           manual
         >
         </el-tooltip> -->
-        <el-button type="primary" style="width:100%;margin-bottom:10px;"
+        <el-button type="primary" style="width:100%;margin-bottom:10px;" @click="createOrganization"
           >Create Organization</el-button
         >
       </el-form>
@@ -131,16 +134,23 @@
 </style>
 
 <script>
+
+import { getOrgs,createOrg,deleteOrg } from '@/api/org'
 export default {
   data() {
     return {
-      organizationCode: '1',
+      organizationCode: '',
+      orgList: [],
       showDialog: false,
       organizationForm: {
-        orgName: '',
-        orgDescription: '',
+        name: '',
+        description: '',
       },
     };
+  },
+  
+  created() {
+    this.getOrgList()
   },
   computed: {
     language() {
@@ -151,11 +161,39 @@ export default {
     },
   },
   methods: {
-    fn_delete(tmp) {
-      alert('Delete'+ tmp)
-      return;
+    fn_delete(id) {
+      // alert('Delete'+ tmp)
+      // return;
       
+      deleteOrg(id).then(response => {
+        this.organizationCode = '';
+        this.getOrgList();
+      })
     },
+    getOrgList() {
+      getOrgs().then(response => {
+        this.orgList = response;
+        if(this.orgList && this.orgList.length > 0 && this.organizationCode.length == 0){
+          this.organizationCode = this.orgList[0].id;
+        }
+      })
+    },
+    createOrganization() {
+      if(!this.organizationForm.name
+      || this.organizationForm.name.length < 1){
+          alert('Please input name');
+          return;
+      }
+      if(!this.organizationForm.description
+      || this.organizationForm.description.length < 1){
+          alert('Please input description');
+          return;
+      }
+      createOrg(this.organizationForm).then(response => {
+        this.getOrgList();
+        this.showDialog = false;
+      })
+    }
   },
 };
 </script>

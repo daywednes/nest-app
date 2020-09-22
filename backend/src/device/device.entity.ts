@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ZoneEntity } from '../zone/zone.entity';
+import { OrgEntity } from 'src/org/org.entity';
 
 @Entity('device')
 export class DeviceEntity {
@@ -30,17 +31,23 @@ export class DeviceEntity {
     this.updated = new Date();
   }
 
-  @ManyToOne(
-    type => User,
-    user => user.devices,
-  )
-  user: User;
+  // @ManyToOne(
+  //   type => User,
+  //   user => user.devices,
+  // )
+  // user: User;
 
   @ManyToOne(
     type => ZoneEntity,
     zone => zone.devices,
   )
   zone: ZoneEntity;
+
+  @ManyToOne(
+    type => OrgEntity,
+    org => org.devices,
+  )
+  org: OrgEntity;
 
   @Column({ default: 0 })
   favoriteCount: number;
