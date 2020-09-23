@@ -66,7 +66,6 @@
 
       <div style="position:relative">
         <el-button
-          :loading="loading"
           type="primary"
           style="width:100%;margin-bottom:10px;"
           @click="showDialogSignup = true"

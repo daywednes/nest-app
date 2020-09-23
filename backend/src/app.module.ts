@@ -5,6 +5,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { OrgModule } from './org/org.module';
 import { ZoneModule } from './zone/zone.module';
 import { AuthModule } from './auth/auth.module';
+import { DeviceModule } from './device/device.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { AuthModule } from './auth/auth.module';
     TasksModule,
     ZoneModule,
     OrgModule,
-    AuthModule
+    AuthModule,
+    DeviceModule
   ],
 })
 export class AppModule {}

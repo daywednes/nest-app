@@ -1,0 +1,37 @@
+import request from '@/utils/request'
+
+export function getDevices(orgId) {
+    return request({
+        url: '/device/' + orgId,
+        method: 'get'
+    })
+}
+export function getDeviceDetails(orgId) {
+    return request({
+        url: '/device/details/' + orgId,
+        method: 'get'
+    })
+}
+
+export function createDevice(data) {
+    return request({
+        url: '/device',
+        method: 'post',
+        data
+    })
+}
+
+export function deleteDevice(id) {
+    return request({
+        url: '/device/' + id,
+        method: 'delete',
+    })
+}
+
+export function updateDevice(data) {
+    return request({
+        url: '/device/' + data.id,
+        method: 'patch',
+        data
+    })
+}

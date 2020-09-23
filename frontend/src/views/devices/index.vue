@@ -10,53 +10,50 @@
       <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
-        :isShowDELETE="true"
-        @functionAddPage="showDialogDeices = true"
+        :isShowDELETE="false"
+        @functionAddPage="showDialogDevices = true"
         @functionDeletePage="fn_delete"
       />
       <SingleDevice
-        @click.native="fn_compoClick"
+        @click.native="fn_compoClick(device)"
         style="margin: 15px;"
-        v-for="route in permission_routes"
-        :key="route.path"
-        :item="route"
-        :base-path="route.path"
+        v-for="device in devicesList"
+        :key="device.id"
+        :item="device"
       />
-      <el-dialog title="New Device" :visible.sync="showDialogDeices">
+      <el-dialog title="New Device" :visible.sync="showDialogDevices">
         <el-form class="login-form-log" autocomplete="on" label-position="left">
-          <el-form-item prop="deviceName">
+          <el-form-item prop="DeviceName">
             <span style="margin-left:10px;font-size: large;"> Name</span>
             <el-input
-              ref="deviceName"
-              v-model="deviceForm.deviceName"
+              ref="DeviceName"
+              v-model="DeviceForm.name"
               style="color: black;"
               placeholder="Device Name"
-              name="deviceName"
+              name="DeviceName"
               type="text"
               tabindex="1"
               autocomplete="on"
             />
           </el-form-item>
           <el-form-item prop="description">
-            <span style="margin-left:10px;font-size: large;">
-              Description</span
-            >
+            <span style="margin-left:10px;font-size: large;"> Description</span>
             <el-input
-              ref="deviceType"
-              v-model="deviceForm.deviceType"
+              ref="DeviceType"
+              v-model="DeviceForm.description"
               style="color: black;"
               placeholder="Device Description"
-              name="deviceType"
+              name="DeviceType"
               type="text"
               tabindex="2"
               autocomplete="on"
             />
           </el-form-item>
-          <el-form-item prop="label">
+          <!-- <el-form-item prop="label">
             <span style="margin-left:10px;font-size: large;"> Label</span>
             <el-input
-              ref="deviceType"
-              v-model="deviceForm.deviceLabel"
+              ref="DeviceType"
+              v-model="DeviceForm.DeviceLabel"
               style="color: black;"
               placeholder="Label"
               name="Label"
@@ -73,21 +70,19 @@
             </el-checkbox>
           </el-form-item>
           <el-form-item prop="description">
-            <span style="margin-left:10px;font-size: large;">
-              Description</span
-            >
+            <span style="margin-left:10px;font-size: large;"> Description</span>
             <el-input
-              ref="deviceForm"
-              v-model="deviceForm.deviceDescription"
+              ref="DeviceForm"
+              v-model="DeviceForm.DeviceDescription"
               style="color: black;"
               placeholder="Description"
-              name="deviceDescription"
+              name="DeviceDescription"
               type="textarea"
               tabindex="2"
               :rows="3"
               autocomplete="on"
             />
-          </el-form-item>
+          </el-form-item> -->
 
           <!-- <el-tooltip
           v-model="capsTooltip"
@@ -96,7 +91,10 @@
           manual
         >
         </el-tooltip> -->
-          <el-button type="primary" style="width:100%;margin-bottom:10px;"
+          <el-button
+            type="primary"
+            style="width:100%;margin-bottom:10px;"
+            @click="createDeviceEntity"
             >Create Device</el-button
           >
         </el-form>
@@ -111,27 +109,27 @@
         <el-tabs v-model="editableTabsValue" type="border-card">
           <el-tab-pane name="1" label="Details">
             <keep-alive>
-              <DeviceDetails ref="deviceDetails" />
+              <DeviceDetails
+                ref="deviceDetails"
+                :item="selectedDevice"
+                @refreshUI="refreshUI"
+              />
             </keep-alive>
           </el-tab-pane>
-          <!-- <el-tab-pane name="2" label="List Devices">
-            <keep-alive>
-              <DevicesOfZone ref="devicesOfZone" />
-            </keep-alive>
-          </el-tab-pane> -->
         </el-tabs>
       </div>
     </RightPanelExtra>
   </div>
 </template>
 <script>
-import DeviceDetails from '@/views/devices/DeviceDetails';
 import RightPanelExtra from '@/components/RightPanelExtra';
+import DeviceDetails from '@/views/devices/DeviceDetails';
 import SingleDevice from '@/components/SingleDevice';
 import CommonFunction from '@/components/CommonFunction';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
 import { mapGetters } from 'vuex';
+import { getDevices, createDevice, deleteDevice } from '@/api/device';
 
 export default {
   name: 'Devices',
@@ -144,14 +142,16 @@ export default {
   },
   data() {
     return {
-      deviceForm: {
-        deviceName: '',
-        deviceType: '',
-        deviceLabel: '',
-        deviceDescription: '',
+      DeviceForm: {
+        name: '',
+        DeviceType: '',
+        DeviceLabel: '',
+        description: '',
+        orgId: '',
       },
-      showDialogDeices: false,
+      showDialogDevices: false,
       editableTabsValue: '1',
+      isShowLeft: false,
       tableConfig: [
         {
           adding: false,
@@ -165,30 +165,55 @@ export default {
         },
       ],
       tableData: [
-        { attr: 'Created', label: 'Created time', width: 250 },
+        {
+          attr: 'Created',
+          label: 'Created time',
+          permission: 'READ',
+          width: 250,
+        },
         { attr: 'Name', label: 'Name', width: 250 },
-        { attr: 'Device', label: 'Device type', width: 250 },
+        { attr: 'Asset', label: 'Asset type', width: 250 },
         { attr: 'Label', label: 'Label', width: 250 },
         { attr: 'Customer', label: 'Customer', width: 250 },
         { attr: 'Public', label: 'Public', width: 250 },
-        { attr: 'Gateway', label: 'Is Gateway', width: 200 },
         { attr: 'addrId', permission: 'N' },
         { attr: '_index', permission: 'N' },
         { attr: '_checked', permission: 'N' },
       ],
-      isShowLeft: false,
       multipleSelection: [],
+      devicesList: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       selectedDevice: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      selectedDeviceCd: null,
+      selectedDevice: {
+        name: '',
+        DeviceType: '',
+        DeviceLabel: '',
+        description: '',
+        orgId: '',
+      },
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getDevicesList(this.orgId);
+  },
+  watch: {
+    orgId(val, old) {
+      this.DeviceForm.orgId = val;
+      this.getDevicesList(val);
+    },
+  },
   computed: {
-    ...mapGetters(['permission_routes']),
+    orgId() {
+      if (this.$store.getters.orgId == null) {
+        alert('empty');
+      }
+
+      this.DeviceForm.orgId = this.$store.getters.orgId;
+      return this.$store.getters.orgId;
+    },
   },
   methods: {
     leftPanelIsShow: function() {
@@ -198,7 +223,7 @@ export default {
       this.isShowLeft = false;
     },
     checkDuplicate: function(row) {
-      // NetworkService.NETWORK.validateZoneCode(row.zoneCd).then(res => {
+      // NetworkService.NETWORK.validateDeviceCode(row.deviceCd).then(res => {
       //   if (!isGtoResponseSuccess(res)) {
       //     return false;
       //   }
@@ -212,10 +237,9 @@ export default {
       this.uploadProgress = { ...DEFAULT_PROGRESS };
       this.multipleSelection = [];
       this.queryCondition = { ...DEFAULT_SEARCH_QUERY };
-      this.selectedDevice = { ...DEFAULT_ITEM };
       this.ds_master = [];
       this.ds_master2 = [];
-      this.selectedDeviceCd = null;
+      this.selectedDevice = null;
       this.tableConfig = [
         {
           adding: false,
@@ -247,17 +271,46 @@ export default {
       exportByDataModel(
         this.ds_master,
         this.tableData,
-        `[DEVICES]_[${date.getFullYear()}${date.getMonth() +
+        `[DeviceS]_[${date.getFullYear()}${date.getMonth() +
           1}${date.getDate()}]`,
       );
     },
     fn_rowClick: function(currentRow) {
       this.selectedDevice = currentRow;
     },
-    fn_compoClick: function(currentRow) {
-      this.isShowLeft= true
+    fn_compoClick: function(item) {
+      this.selectedDevice = item;
+      this.isShowLeft = true;
     },
     fn_findRoute: function(command) {},
+    createDeviceEntity() {
+      if (!this.DeviceForm.name || this.DeviceForm.name.length < 1) {
+        alert('Please input name');
+        return;
+      }
+      if (
+        !this.DeviceForm.description ||
+        this.DeviceForm.description.length < 1
+      ) {
+        alert('Please input description');
+        return;
+      }
+      createDevice(this.DeviceForm).then(response => {
+        this.refreshUI();
+      });
+    },
+    getDevicesList(val) {
+      getDevices(val).then(response => {
+        this.devicesList = response;
+      });
+    },
+    refreshUI() {
+      this.DeviceForm.name = '';
+      this.DeviceForm.description = '';
+      this.getDevicesList(this.orgId);
+      this.isShowLeft = false;
+      this.showDialogDevices = false;
+    },
   },
 };
 const DEFAULT_SEARCH_QUERY = {

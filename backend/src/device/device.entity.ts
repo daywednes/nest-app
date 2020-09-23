@@ -1,5 +1,6 @@
 import { User } from 'src/auth/user.entity';
 import {
+  BaseEntity,
   BeforeUpdate,
   Column,
   Entity,
@@ -10,7 +11,7 @@ import { ZoneEntity } from '../zone/zone.entity';
 import { OrgEntity } from 'src/org/org.entity';
 
 @Entity('device')
-export class DeviceEntity {
+export class DeviceEntity  extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
