@@ -31,11 +31,11 @@ export class DeviceEntity {
     this.updated = new Date();
   }
 
-  // @ManyToOne(
-  //   type => User,
-  //   user => user.devices,
-  // )
-  // user: User;
+  @ManyToOne(
+    type => User,
+    user => user.devices,
+  )
+   user: User;
 
   @ManyToOne(
     type => ZoneEntity,
