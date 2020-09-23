@@ -28,20 +28,21 @@ export class ZoneController {
   private logger = new Logger('ZoneController');
   constructor(private zonesService: ZoneService) {}
 
-  @Get()
+  @Get('/:orgId')
   getAllzones(
+    @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
   ): Promise<ZoneEntity[]> {
-    return this.zonesService.getzones(user);
+    return this.zonesService.getzones(orgId);
   }
 
-  @Get('/:id')
+  @Get('/details/:id')
   getzoneById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<ZoneEntity> {
     //Get Org from here
-    return this.zonesService.getzoneById(id, null);
+    return this.zonesService.getzoneById(id);
   }
 
   @Post()
@@ -51,7 +52,7 @@ export class ZoneController {
     @GetUser() user: User,
   ): Promise<ZoneEntity> {
     //Get Org from here
-    return this.zonesService.createzone(createzoneDto, null);
+    return this.zonesService.createzone(createzoneDto, user);
   }
 
   @Delete('/:id')
@@ -60,16 +61,16 @@ export class ZoneController {
     @GetUser() user: User,
   ): Promise<void> {
     //Get Org from here
-    return this.zonesService.deletezone(id, null);
+    return this.zonesService.deletezone(id);
   }
 
   @Patch('/:id')
   updatezone(
     @Param('id', ParseIntPipe) id: number,
-    @Body() description: string,
+    @Body() createzoneDto: CreateZoneDto,
     @GetUser() user: User,
   ): Promise<ZoneEntity> {
     //Get Org from here
-    return this.zonesService.updatezone(id, description);
+    return this.zonesService.updatezone(id, createzoneDto);
   }
 }

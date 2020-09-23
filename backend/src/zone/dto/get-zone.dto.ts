@@ -6,4 +6,5 @@ export class GetZoneFilterDto {
 
   @IsOptional()
   description: string;
+  
 }

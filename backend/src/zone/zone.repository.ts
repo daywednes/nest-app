@@ -10,10 +10,11 @@ import { ZoneEntity } from './zone.entity';
 export class ZoneRepository extends Repository<ZoneEntity> {
   private logger = new Logger('ZoneRepository');
   async getZones(
-    user: User,
+    id: number,
   ): Promise<ZoneEntity[]> {
     
     const query = this.createQueryBuilder('zone_entity');
+    query.where('zone_entity.orgId = :orgId', { orgId: id });
     try {
       const zones = await query.getMany();
       return zones;

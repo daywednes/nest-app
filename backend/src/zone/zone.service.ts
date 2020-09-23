@@ -6,19 +6,22 @@ import { CreateZoneDto } from './dto/create-zone.dto';
 import { GetZoneFilterDto } from './dto/get-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneRepository } from './zone.repository';
+import { OrgRepository } from '../org/org.repository';
 
 @Injectable()
 export class ZoneService {
   constructor(
     @InjectRepository(ZoneRepository)
     private zoneRepository: ZoneRepository,
-  ) {}
+    @InjectRepository(OrgRepository)
+    private orgRepository: OrgRepository,
+  ) { }
 
-  getzones( user: User): Promise<ZoneEntity[]> {
-    return this.zoneRepository.getZones(user);
+  getzones(orgId: number): Promise<ZoneEntity[]> {
+    return this.zoneRepository.getZones(orgId);
   }
 
-  async getzoneById(id: number, org: OrgEntity): Promise<ZoneEntity> {
+  async getzoneById(id: number): Promise<ZoneEntity> {
     const found = await this.zoneRepository.findOne({
       where: { id },
     });
@@ -28,20 +31,24 @@ export class ZoneService {
     return found;
   }
 
-  async deletezone(id: number, org: OrgEntity) {
-    const result = await this.zoneRepository.delete({ id, orgId: org.id });
+  async deletezone(id: number) {
+    const result = await this.zoneRepository.delete({ id });
     if (result.affected === 0) {
-      throw new NotFoundException(`Oranization with id: ${id} not found`);
+      throw new NotFoundException(`Zone with id: ${id} not found`);
     }
   }
 
-  async createzone(createzoneDto: CreateZoneDto, org: OrgEntity): Promise<ZoneEntity> {
+  async createzone(createzoneDto: CreateZoneDto, user: User): Promise<ZoneEntity> {
+    const org = await this.orgRepository.findOne({
+      where: { id: createzoneDto.orgId, userId: user.id },
+    });
     return await this.zoneRepository.createZone(createzoneDto, org);
   }
 
-  async updatezone(id: number,  description: string): Promise<ZoneEntity> {
-    const zone = await this.getzoneById(id, null);
-    zone.description = description;
+  async updatezone(id: number, createzoneDto: CreateZoneDto): Promise<ZoneEntity> {
+    const zone = await this.getzoneById(id);
+    zone.description = createzoneDto.description;
+    zone.name = createzoneDto.name;
     await zone.save();
     return zone;
   }

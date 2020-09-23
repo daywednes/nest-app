@@ -1,0 +1,37 @@
+import request from '@/utils/request'
+
+export function getZones(orgId) {
+    return request({
+        url: '/zone/' + orgId,
+        method: 'get'
+    })
+}
+export function getZoneDetails(orgId) {
+    return request({
+        url: '/zone/details/' + orgId,
+        method: 'get'
+    })
+}
+
+export function createZone(data) {
+    return request({
+        url: '/zone',
+        method: 'post',
+        data
+    })
+}
+
+export function deleteZone(id) {
+    return request({
+        url: '/zone/' + id,
+        method: 'delete',
+    })
+}
+
+export function updateZone(data) {
+    return request({
+        url: '/zone/' + data.id,
+        method: 'patch',
+        data
+    })
+}
