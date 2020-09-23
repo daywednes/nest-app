@@ -10,25 +10,24 @@
       <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
-        :isShowDELETE="true"
-        @functionAddPage="showDialogDeices = true"
+        :isShowDELETE="false"
+        @functionAddPage="showDialogZones = true"
         @functionDeletePage="fn_delete"
       />
       <SingleZone
-        @click.native="fn_compoClick"
+        @click.native="fn_compoClick(zone)"
         style="margin: 15px;"
-        v-for="route in permission_routes"
-        :key="route.path"
-        :item="route"
-        :base-path="route.path"
+        v-for="zone in zonesList"
+        :key="zone.id"
+        :item="zone"
       />
-      <el-dialog title="New Zone" :visible.sync="showDialogDeices">
+      <el-dialog title="New Zone" :visible.sync="showDialogZones">
         <el-form class="login-form-log" autocomplete="on" label-position="left">
           <el-form-item prop="ZoneName">
             <span style="margin-left:10px;font-size: large;"> Name</span>
             <el-input
               ref="ZoneName"
-              v-model="ZoneForm.ZoneName"
+              v-model="ZoneForm.name"
               style="color: black;"
               placeholder="Zone Name"
               name="ZoneName"
@@ -41,7 +40,7 @@
             <span style="margin-left:10px;font-size: large;"> Description</span>
             <el-input
               ref="ZoneType"
-              v-model="ZoneForm.ZoneType"
+              v-model="ZoneForm.description"
               style="color: black;"
               placeholder="Zone Description"
               name="ZoneType"
@@ -50,7 +49,7 @@
               autocomplete="on"
             />
           </el-form-item>
-          <el-form-item prop="label">
+          <!-- <el-form-item prop="label">
             <span style="margin-left:10px;font-size: large;"> Label</span>
             <el-input
               ref="ZoneType"
@@ -83,7 +82,7 @@
               :rows="3"
               autocomplete="on"
             />
-          </el-form-item>
+          </el-form-item> -->
 
           <!-- <el-tooltip
           v-model="capsTooltip"
@@ -92,7 +91,10 @@
           manual
         >
         </el-tooltip> -->
-          <el-button type="primary" style="width:100%;margin-bottom:10px;"
+          <el-button
+            type="primary"
+            style="width:100%;margin-bottom:10px;"
+            @click="createZoneEntity"
             >Create Zone</el-button
           >
         </el-form>
@@ -107,7 +109,11 @@
         <el-tabs v-model="editableTabsValue" type="border-card">
           <el-tab-pane name="1" label="Details">
             <keep-alive>
-              <ZoneDetails ref="zoneDetails" />
+              <ZoneDetails
+                ref="zoneDetails"
+                :item="selectedZone"
+                @refreshUI="refreshUI"
+              />
             </keep-alive>
           </el-tab-pane>
           <el-tab-pane name="2" label="List Devices">
@@ -129,6 +135,7 @@ import CommonFunction from '@/components/CommonFunction';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
 import { mapGetters } from 'vuex';
+import { getZones, createZone, deleteZone } from '@/api/zone';
 
 export default {
   name: 'Zones',
@@ -143,12 +150,13 @@ export default {
   data() {
     return {
       ZoneForm: {
-        ZoneName: '',
+        name: '',
         ZoneType: '',
         ZoneLabel: '',
-        ZoneDescription: '',
+        description: '',
+        orgId: '',
       },
-      showDialogDeices: false,
+      showDialogZones: false,
       editableTabsValue: '1',
       isShowLeft: false,
       tableConfig: [
@@ -180,17 +188,39 @@ export default {
         { attr: '_checked', permission: 'N' },
       ],
       multipleSelection: [],
+      zonesList: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      selectedZoneCd: null,
+      selectedZone: {
+        name: '',
+        ZoneType: '',
+        ZoneLabel: '',
+        description: '',
+        orgId: '',
+      },
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getZonesList(this.orgId);
+  },
+  watch: {
+    orgId(val, old) {
+      this.ZoneForm.orgId = val;
+      this.getZonesList(val);
+    },
+  },
   computed: {
-    ...mapGetters(['permission_routes']),
+    orgId() {
+      if (this.$store.getters.orgId == null) {
+        alert('empty');
+      }
+
+      this.ZoneForm.orgId = this.$store.getters.orgId;
+      return this.$store.getters.orgId;
+    },
   },
   methods: {
     leftPanelIsShow: function() {
@@ -214,10 +244,9 @@ export default {
       this.uploadProgress = { ...DEFAULT_PROGRESS };
       this.multipleSelection = [];
       this.queryCondition = { ...DEFAULT_SEARCH_QUERY };
-      this.selectedZone = { ...DEFAULT_ITEM };
       this.ds_master = [];
       this.ds_master2 = [];
-      this.selectedZoneCd = null;
+      this.selectedZone = null;
       this.tableConfig = [
         {
           adding: false,
@@ -256,10 +285,34 @@ export default {
     fn_rowClick: function(currentRow) {
       this.selectedZone = currentRow;
     },
-    fn_compoClick: function(currentRow) {
+    fn_compoClick: function(item) {
+      this.selectedZone = item;
       this.isShowLeft = true;
     },
     fn_findRoute: function(command) {},
+    createZoneEntity() {
+      if (!this.ZoneForm.name || this.ZoneForm.name.length < 1) {
+        alert('Please input name');
+        return;
+      }
+      if (!this.ZoneForm.description || this.ZoneForm.description.length < 1) {
+        alert('Please input description');
+        return;
+      }
+      createZone(this.ZoneForm).then(response => {
+        this.refreshUI();
+      });
+    },
+    getZonesList(val) {
+      getZones(val).then(response => {
+        this.zonesList = response;
+      });
+    },
+    refreshUI() {
+      this.getZonesList(this.orgId);
+      this.isShowLeft = false;
+      this.showDialogZones = false;
+    },
   },
 };
 const DEFAULT_SEARCH_QUERY = {

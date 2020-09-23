@@ -8,6 +8,7 @@ const state = {
     name: '',
     avatar: '',
     introduction: '',
+    orgId: '',
     roles: []
 }
 
@@ -26,6 +27,9 @@ const mutations = {
     },
     SET_ROLES: (state, roles) => {
         state.roles = roles
+    },
+    SET_ORGID: (state, orgId) => {
+        state.orgId = orgId
     }
 }
 
@@ -48,6 +52,9 @@ const actions = {
                 reject(error)
             })
         })
+    },
+    updateOrgID({ commit }, id) {
+        commit('SET_ORGID', id)
     },
 
     signup({ commit }, userInfo) {

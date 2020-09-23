@@ -5,12 +5,15 @@ import { CreateOrganizationDto } from './dto/create-Org.dto';
 import { GetOrgFilterDto } from './dto/get-Org.dto';
 import { OrgEntity } from './Org.entity';
 import { OrgRepository } from './Org.repository';
+import { ZoneRepository } from '../zone/zone.repository';
 
 @Injectable()
 export class OrgService {
   constructor(
     @InjectRepository(OrgRepository)
     private orgRepository: OrgRepository,
+    @InjectRepository(ZoneRepository)
+    private zoneRepository: ZoneRepository,
   ) {}
 
   getOrg(orgFilterDto: GetOrgFilterDto, user: User): Promise<OrgEntity[]> {
@@ -32,6 +35,7 @@ export class OrgService {
     if (result.affected === 0) {
       throw new NotFoundException(`Oranization with id: ${id} not found`);
     }
+    await this.zoneRepository.delete({orgId: id })
   }
 
   async createOrg(createOrgDto: CreateOrganizationDto, user: User): Promise<OrgEntity> {

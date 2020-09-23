@@ -4,4 +4,6 @@ export class CreateZoneDto {
   name: string;
   @IsNotEmpty()
   description: string;
+  @IsNotEmpty()
+  orgId: number;
 }

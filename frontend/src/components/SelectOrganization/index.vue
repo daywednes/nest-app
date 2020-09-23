@@ -6,6 +6,7 @@
     <el-select
       v-model="organizationCode"
       style="align-self: center; text-align-last: left;inline-size: fit-content;margin: 0 30px 0 10px;"
+      @change="updateOrgID(organizationCode)"
     >
       <el-option
         style="align-self: center; text-align-last: left;"
@@ -21,39 +22,10 @@
           class="show-icon"
           @click="fn_delete(item.id)"
         >
-          <i class="el-icon-close" /> </el-button
-        > {{item.name}}</el-option
+          <i class="el-icon-close" />
+        </el-button>
+        {{ item.name }}</el-option
       >
-      <!-- <el-option
-        style="align-self: center; text-align-last: left;"
-        value="2"
-        label="Organization 2"
-      >
-        <el-button
-          style="float: left; 
-            margin: 3px; 
-            background: transparent;"
-          class="show-icon"
-          @click="fn_delete"
-        >
-          <i class="el-icon-close" /> </el-button
-        >Organization 2
-      </el-option>
-      <el-option
-        style="align-self: center; text-align-last: left;"
-        value="3"
-        label="Organization 3"
-      >
-        <el-button
-          style="float: left; 
-            margin: 3px; 
-            background: transparent;"
-          class="show-icon"
-          @click="fn_delete"
-        >
-          <i class="el-icon-close" /> </el-button
-        >Organization 3
-      </el-option> -->
       <el-option
         style="align-self: center; text-align-last: left;"
         value="CreateDB"
@@ -106,7 +78,10 @@
           manual
         >
         </el-tooltip> -->
-        <el-button type="primary" style="width:100%;margin-bottom:10px;" @click="createOrganization"
+        <el-button
+          type="primary"
+          style="width:100%;margin-bottom:10px;"
+          @click="createOrganization"
           >Create Organization</el-button
         >
       </el-form>
@@ -134,8 +109,7 @@
 </style>
 
 <script>
-
-import { getOrgs,createOrg,deleteOrg } from '@/api/org'
+import { getOrgs, createOrg, deleteOrg } from '@/api/org';
 export default {
   data() {
     return {
@@ -148,9 +122,9 @@ export default {
       },
     };
   },
-  
+
   created() {
-    this.getOrgList()
+    this.getOrgList();
   },
   computed: {
     language() {
@@ -164,36 +138,49 @@ export default {
     fn_delete(id) {
       // alert('Delete'+ tmp)
       // return;
-      
+
       deleteOrg(id).then(response => {
         this.organizationCode = '';
+        this.$store.dispatch('user/updateOrgID', this.organizationCode);
         this.getOrgList();
-      })
+      });
     },
     getOrgList() {
       getOrgs().then(response => {
         this.orgList = response;
-        if(this.orgList && this.orgList.length > 0 && this.organizationCode.length == 0){
+        if (
+          this.orgList &&
+          this.orgList.length > 0 &&
+          this.organizationCode.length == 0
+        ) {
           this.organizationCode = this.orgList[0].id;
+          this.$store.dispatch('user/updateOrgID', this.organizationCode);
         }
-      })
+      });
+    },
+    updateOrgID(id) {
+      this.$store.dispatch('user/updateOrgID', id);
     },
     createOrganization() {
-      if(!this.organizationForm.name
-      || this.organizationForm.name.length < 1){
-          alert('Please input name');
-          return;
+      if (
+        !this.organizationForm.name ||
+        this.organizationForm.name.length < 1
+      ) {
+        alert('Please input name');
+        return;
       }
-      if(!this.organizationForm.description
-      || this.organizationForm.description.length < 1){
-          alert('Please input description');
-          return;
+      if (
+        !this.organizationForm.description ||
+        this.organizationForm.description.length < 1
+      ) {
+        alert('Please input description');
+        return;
       }
       createOrg(this.organizationForm).then(response => {
         this.getOrgList();
         this.showDialog = false;
-      })
-    }
+      });
+    },
   },
 };
 </script>

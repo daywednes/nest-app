@@ -1,13 +1,26 @@
 <template>
   <el-form class="login-form-log" autocomplete="on" label-position="left">
-    <el-form-item prop="DeviceName">
+    <el-form-item prop="ZoneId">
+      <span style="margin-left:10px;font-size: large;"> ID</span>
+      <el-input
+        ref="ZoneId"
+        v-model="item.id"
+        style="color: black;"
+        placeholder="Zone Id"
+        name="ZoneId"
+        type="text"
+        tabindex="1"
+        autocomplete="on"
+        :readonly='true'
+      /> </el-form-item
+    ><el-form-item prop="ZoneName">
       <span style="margin-left:10px;font-size: large;"> Name</span>
       <el-input
-        ref="DeviceName"
-        v-model="DeviceForm.DeviceName"
+        ref="ZoneName"
+        v-model="item.name"
         style="color: black;"
-        placeholder="Device Name"
-        name="DeviceName"
+        placeholder="Zone Name"
+        name="ZoneName"
         type="text"
         tabindex="1"
         autocomplete="on"
@@ -16,21 +29,21 @@
     <el-form-item prop="description">
       <span style="margin-left:10px;font-size: large;"> Description</span>
       <el-input
-        ref="DeviceType"
-        v-model="DeviceForm.DeviceType"
+        ref="ZoneType"
+        v-model="item.description"
         style="color: black;"
-        placeholder="Device Description"
-        name="DeviceType"
+        placeholder="Zone Description"
+        name="ZoneType"
         type="text"
         tabindex="2"
         autocomplete="on"
       />
     </el-form-item>
-    <el-form-item prop="label">
+    <!-- <el-form-item prop="label">
       <span style="margin-left:10px;font-size: large;"> Label</span>
       <el-input
-        ref="DeviceType"
-        v-model="DeviceForm.DeviceLabel"
+        ref="ZoneType"
+        v-model="ZoneForm.ZoneLabel"
         style="color: black;"
         placeholder="Label"
         name="Label"
@@ -40,23 +53,23 @@
       />
     </el-form-item>
     <el-form-item prop="label">
-      <el-checkbox label="Test Device" style="display:block; font-size: large;">
+      <el-checkbox label="Test Zone" style="display:block; font-size: large;">
       </el-checkbox>
     </el-form-item>
     <el-form-item prop="description">
       <span style="margin-left:10px;font-size: large;"> Description</span>
       <el-input
-        ref="DeviceForm"
-        v-model="DeviceForm.DeviceDescription"
+        ref="ZoneForm"
+        v-model="ZoneForm.ZoneDescription"
         style="color: black;"
         placeholder="Description"
-        name="DeviceDescription"
+        name="ZoneDescription"
         type="textarea"
         tabindex="2"
         :rows="3"
         autocomplete="on"
       />
-    </el-form-item>
+    </el-form-item> -->
 
     <!-- <el-tooltip
           v-model="capsTooltip"
@@ -65,31 +78,61 @@
           manual
         >
         </el-tooltip> -->
-    <el-button type="primary" style="width:100%;margin-bottom:10px;"
-      >Create Device</el-button
+    <el-button
+      type="primary"
+      style="width:48%;margin-bottom:10px;"
+      @click="updateZoneEntity"
+      >Update Zone</el-button
+    >
+    <el-button
+      style="width:48%;margin-bottom:10px; background:red; color:white;"
+      @click="deleteZoneEntity"
+      >Delete Zone</el-button
     >
   </el-form>
 </template>
 
 <script>
-
+import { updateZone, deleteZone } from '@/api/zone';
 
 export default {
-  name: 'DeviceDetails',
+  name: 'ZoneDetails',
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
-      DeviceForm: {
-        DeviceName: '',
-        DeviceType: '',
-        DeviceLabel: '',
-        DeviceDescription: '',
-      }
+      ZoneForm: {
+        ZoneName: '',
+        ZoneType: '',
+        ZoneLabel: '',
+        ZoneDescription: '',
+      },
     };
   },
   mounted: function() {},
   methods: {
-    
+    updateZoneEntity() {
+      if (!this.item.name || this.item.name.length < 1) {
+        alert('Please input name');
+        return;
+      }
+      if (!this.item.description || this.item.description.length < 1) {
+        alert('Please input description');
+        return;
+      }
+      updateZone(this.item).then(response => {
+        this.$emit('refreshUI');
+      });
+    },
+    deleteZoneEntity() {
+      deleteZone(this.item.id).then(response => {
+        this.$emit('refreshUI');
+      });
+    },
   },
 };
-
 </script>
