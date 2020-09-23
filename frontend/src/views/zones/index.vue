@@ -309,6 +309,8 @@ export default {
       });
     },
     refreshUI() {
+      this.ZoneForm.name = '';
+      this.ZoneForm.description = '';
       this.getZonesList(this.orgId);
       this.isShowLeft = false;
       this.showDialogZones = false;
