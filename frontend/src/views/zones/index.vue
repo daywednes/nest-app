@@ -118,7 +118,7 @@
           </el-tab-pane>
           <el-tab-pane name="2" label="List Devices">
             <keep-alive>
-              <DevicesOfZone ref="devicesOfZone" />
+              <DevicesOfZone ref="devicesOfZone" :zone="selectedZone" />
             </keep-alive>
           </el-tab-pane>
         </el-tabs>

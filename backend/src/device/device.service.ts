@@ -7,6 +7,8 @@ import { GetDeviceFilterDto } from './dto/get-device.dto';
 import { DeviceEntity } from './device.entity';
 import { DeviceRepository } from './device.repository';
 import { OrgRepository } from '../org/org.repository';
+import { ZoneRepository } from '../zone/zone.repository';
+import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 
 @Injectable()
 export class DeviceService {
@@ -15,10 +17,19 @@ export class DeviceService {
     private deviceRepository: DeviceRepository,
     @InjectRepository(OrgRepository)
     private orgRepository: OrgRepository,
+    @InjectRepository(ZoneRepository)
+    private zoneRepository: ZoneRepository,
   ) { }
 
   getdevices(orgId: number): Promise<DeviceEntity[]> {
     return this.deviceRepository.getDevices(orgId);
+  }
+  getDevicesAvail(orgId: number): Promise<DeviceEntity[]> {
+    return this.deviceRepository.getDevicesAvail(orgId);
+  }
+
+  getdevicesbyzone(zoneId: number): Promise<DeviceEntity[]> {
+    return this.deviceRepository.getdevicesbyzone(zoneId);
   }
 
   async getdeviceById(id: number): Promise<DeviceEntity> {
@@ -42,7 +53,17 @@ export class DeviceService {
     const org = await this.orgRepository.findOne({
       where: { id: createdeviceDto.orgId, userId: user.id },
     });
-    return await this.deviceRepository.createDevice(createdeviceDto, org);
+    return await this.deviceRepository.createDevice(createdeviceDto, org, user);
+  }
+
+  async addToZone(dto: AddDeviceZoneDto): Promise<DeviceEntity> {
+    const device = await this.getdeviceById(dto.deviceId);
+    const zone = await this.zoneRepository.findOne({
+      where: { id: dto.zoneId },
+    });
+    device.zone = zone;
+    await device.save();
+    return device;
   }
 
   async updatedevice(id: number, createdeviceDto: CreateDeviceDto): Promise<DeviceEntity> {

@@ -6,6 +6,18 @@ export function getDevices(orgId) {
         method: 'get'
     })
 }
+export function getDevicesAvail(orgId) {
+    return request({
+        url: '/device/getDevicesAvail/' + orgId,
+        method: 'get'
+    })
+}
+export function getDevicesByZone(zoneId) {
+    return request({
+        url: '/device/zone/' + zoneId,
+        method: 'get'
+    })
+}
 export function getDeviceDetails(orgId) {
     return request({
         url: '/device/details/' + orgId,
@@ -16,6 +28,13 @@ export function getDeviceDetails(orgId) {
 export function createDevice(data) {
     return request({
         url: '/device',
+        method: 'post',
+        data
+    })
+}
+export function addToZone(data) {
+    return request({
+        url: '/device/addToZone/',
         method: 'post',
         data
     })

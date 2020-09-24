@@ -73,12 +73,17 @@ service.interceptors.response.use(
     },
     error => {
         console.log('err' + error.response.data.error) // for debug
-        let showError = error.response.data.error + ':  ' + error.response.data.message
+            // let showError = error.response.data.error + ':  ' + error.response.data.message
             // Message({
             //     message: showError,
             //     type: 'error',
             //     duration: 5 * 1000
             // })
+
+        if (error.response.data && error.response.data.statusCode == 401) {
+            store.dispatch('user/logout')
+        }
+
         return Promise.reject(error)
     }
 )

@@ -11,7 +11,7 @@
         type="text"
         tabindex="1"
         autocomplete="on"
-        :readonly='true'
+        :readonly="true"
       /> </el-form-item
     ><el-form-item prop="DeviceName">
       <span style="margin-left:10px;font-size: large;"> Name</span>
@@ -26,41 +26,57 @@
         autocomplete="on"
       />
     </el-form-item>
-    <el-form-item prop="description">
-      <span style="margin-left:10px;font-size: large;"> Description</span>
+    <el-form-item prop="description"   v-if="item.user">
+      <span style="margin-left:10px;font-size: large;"> Create By</span>
       <el-input
-        ref="DeviceType"
-        v-model="item.description"
+        ref="DeviceUser"
+        v-model="item.user.username"
         style="color: black;"
-        placeholder="Device Description"
-        name="DeviceType"
+        placeholder="User name"
+        name="DeviceUser"
         type="text"
         tabindex="2"
         autocomplete="on"
+        :readonly="true"
+      />
+    </el-form-item>
+    <el-form-item prop="label"  v-if="item.org">
+      <span style="margin-left:10px;font-size: large;">Manage by</span>
+      <el-input
+        ref="DeviceOrg"
+        v-model="item.org.name"
+        style="color: black;"
+        placeholder="Organization Name"
+        name="DeviceOrg"
+        type="text"
+        tabindex="2"
+        autocomplete="on"
+        :readonly="true"
+      />
+    </el-form-item>
+    <el-form-item prop="label" v-if="item.zone">
+      <span style="margin-left:10px;font-size: large;"> Assign to Zone</span>
+      <el-input
+        ref="DeviceOrg"
+        v-model="item.zone.name"
+        style="color: black;"
+        placeholder="Zone Name"
+        name="DeviceOrg"
+        type="text"
+        tabindex="2"
+        autocomplete="on"
+        :readonly="true"
       />
     </el-form-item>
     <!-- <el-form-item prop="label">
-      <span style="margin-left:10px;font-size: large;"> Label</span>
-      <el-input
-        ref="DeviceType"
-        v-model="DeviceForm.DeviceLabel"
-        style="color: black;"
-        placeholder="Label"
-        name="Label"
-        type="text"
-        tabindex="2"
-        autocomplete="on"
-      />
-    </el-form-item>
-    <el-form-item prop="label">
       <el-checkbox label="Test Device" style="display:block; font-size: large;">
       </el-checkbox>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item prop="description">
       <span style="margin-left:10px;font-size: large;"> Description</span>
       <el-input
         ref="DeviceForm"
-        v-model="DeviceForm.DeviceDescription"
+        v-model="item.description"
         style="color: black;"
         placeholder="Description"
         name="DeviceDescription"
@@ -69,7 +85,7 @@
         :rows="3"
         autocomplete="on"
       />
-    </el-form-item> -->
+    </el-form-item>
 
     <!-- <el-tooltip
           v-model="capsTooltip"
