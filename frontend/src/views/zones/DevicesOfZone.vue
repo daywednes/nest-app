@@ -162,13 +162,13 @@ export default {
       if (this.$store.getters.orgId == null) {
         alert('empty');
       }
-
       return this.$store.getters.orgId;
     },
   },
   watch: {
     orgId(val, old) {
       this.getDevicesList(val);
+      this.$emit('refreshUI');
     },
     zone(val, old) {
       this.getDevicesByZoneList();
@@ -177,9 +177,14 @@ export default {
   methods: {
     getDevicesList(val) {
       getDevices(val).then(response => {
-        this.list = response.filter(x=> x.zone == null).map(item => {
-          return { value: item.id, label: item.name };
-        });
+        this.list = response
+          .filter(x => x.zone == null)
+          .map(item => {
+            return { value: item.id, label: item.name };
+          });
+
+        this.ds_master = [];
+        this.showDialogDeviceList = false;
       });
     },
     getDevicesByZoneList() {
