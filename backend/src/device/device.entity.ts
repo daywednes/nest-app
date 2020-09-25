@@ -2,6 +2,7 @@ import { User } from 'src/auth/user.entity';
 import {
   BaseEntity,
   BeforeUpdate,
+  BeforeInsert,
   Column,
   Entity,
   ManyToOne,
@@ -30,6 +31,10 @@ export class DeviceEntity  extends BaseEntity {
   @BeforeUpdate()
   updateTimestamp() {
     this.updated = new Date();
+  }
+  @BeforeInsert()
+  insertTimestamp() {
+    this.created = new Date();
   }
 
   @ManyToOne(
