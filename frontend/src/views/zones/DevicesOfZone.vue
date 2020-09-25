@@ -4,8 +4,8 @@
       :isShowINIT="false"
       :isShowADD="true"
       :isShowDELETE="true"
-      :isShowEdit="true"
-      @functionAddPage="tableConfig[0].adding = true"
+      :isShowEdit="false"
+      @functionAddPage="showDialogDeviceList = true"
       @functionEditPage="tableConfig[0].updating = true"
       @functionImportPage="tableConfig[0].uploading = true"
       @functionInitPage="fn_init"
@@ -53,12 +53,51 @@
       </div>
       <!-- end grid table -->
     </div>
+    <el-dialog
+      :title="'Add device to zone' + this.zone.name"
+      :visible.sync="showDialogDeviceList"
+    >
+      <el-form class="login-form-log" autocomplete="on" label-position="left">
+        <el-select
+          v-model="value"
+          multiple
+          filterable
+          remote
+          reserve-keyword
+          style="width:300px;margin:10px;"
+          placeholder="Please enter a keyword"
+          :remote-method="remoteMethod"
+          :loading="loading"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-button
+          type="primary"
+          style="width:30%;margin:10px;"
+          @click="addDeviceToZone"
+          >Add Device</el-button
+        >
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
 import CommonFunction from '@/components/CommonFunction';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
+import {
+  addToZone,
+  getDevicesByZone,
+  getDevices,
+  createDevice,
+  deleteDevice,
+} from '@/api/device';
 
 export default {
   name: 'DevicesOfZone',
@@ -67,15 +106,19 @@ export default {
     CommonFunction,
     UltimateTable,
   },
+  props: {
+    zone: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
-      ZoneForm: {
-        ZoneName: '',
-        ZoneType: '',
-        ZoneLabel: '',
-        ZoneDescription: '',
-      },
-      showDialogDeices: false,
+      options: [],
+      value: [],
+      list: [],
+      loading: false,
+      showDialogDeviceList: false,
       isShowLeft: false,
       tableConfig: [
         {
@@ -90,17 +133,15 @@ export default {
         },
       ],
       tableData: [
+        { attr: 'name', label: 'Name', width: 250 },
+        { attr: 'description', label: 'Description', width: 250 },
         {
-          attr: 'Created',
+          attr: 'created',
           label: 'Created time',
           permission: 'READ',
           width: 250,
         },
-        { attr: 'Name', label: 'Name', width: 250 },
-        { attr: 'Asset', label: 'Asset type', width: 250 },
-        { attr: 'Label', label: 'Label', width: 250 },
-        { attr: 'Customer', label: 'Customer', width: 250 },
-        { attr: 'Public', label: 'Public', width: 250 },
+        { attr: 'favoriteCount', label: 'Favorite Count', width: 250 },
         { attr: 'addrId', permission: 'N' },
         { attr: '_index', permission: 'N' },
         { attr: '_checked', permission: 'N' },
@@ -110,12 +151,60 @@ export default {
       selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      selectedZoneCd: null,
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getDevicesList(this.orgId);
+  },
+  computed: {
+    orgId() {
+      if (this.$store.getters.orgId == null) {
+        alert('empty');
+      }
+      return this.$store.getters.orgId;
+    },
+  },
+  watch: {
+    orgId(val, old) {
+      this.getDevicesList(val);
+      this.$emit('refreshUI');
+    },
+    zone(val, old) {
+      this.getDevicesByZoneList();
+    },
+  },
   methods: {
+    getDevicesList(val) {
+      getDevices(val).then(response => {
+        this.list = response
+          .filter(x => x.zone == null)
+          .map(item => {
+            return { value: item.id, label: item.name };
+          });
+
+        this.ds_master = [];
+        this.showDialogDeviceList = false;
+      });
+    },
+    getDevicesByZoneList() {
+      getDevicesByZone(this.zone.id).then(response => {
+        this.ds_master = response;
+      });
+    },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        setTimeout(() => {
+          this.loading = false;
+          this.options = this.list.filter(item => {
+            return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
+          });
+        }, 200);
+      } else {
+        this.options = [];
+      }
+    },
     leftPanelIsShow: function() {
       this.isShowLeft = true;
     },
@@ -140,7 +229,6 @@ export default {
       this.selectedZone = { ...DEFAULT_ITEM };
       this.ds_master = [];
       this.ds_master2 = [];
-      this.selectedZoneCd = null;
       this.tableConfig = [
         {
           adding: false,
@@ -180,9 +268,15 @@ export default {
       this.selectedZone = currentRow;
     },
     fn_compoClick: function(currentRow) {
-      this.isShowLeft = true
+      this.isShowLeft = true;
     },
-    fn_findRoute: function(command) {},
+    addDeviceToZone() {
+      this.value.forEach(element => {
+        addToZone({ zoneId: this.zone.id, deviceId: element });
+      });
+      this.showDialogDeviceList = false;
+      this.getDevicesByZoneList();
+    },
   },
 };
 const DEFAULT_SEARCH_QUERY = {
@@ -211,4 +305,3 @@ const DEFAULT_PROGRESS = {
   message: '',
 };
 </script>
-

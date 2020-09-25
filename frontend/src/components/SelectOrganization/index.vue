@@ -138,7 +138,10 @@ export default {
     fn_delete(id) {
       // alert('Delete'+ tmp)
       // return;
-
+    if(this.orgList.length < 2){
+      alert('This is the last organization.');
+      return;
+    }
       deleteOrg(id).then(response => {
         this.organizationCode = '';
         this.$store.dispatch('user/updateOrgID', this.organizationCode);
