@@ -5,11 +5,11 @@
       :isShowADD="true"
       :isShowDELETE="true"
       :isShowEdit="false"
-      @functionAddPage="showDialogDeviceList = true"
+      @functionAddPage="fn_add"
       @functionEditPage="tableConfig[0].updating = true"
       @functionImportPage="tableConfig[0].uploading = true"
       @functionInitPage="fn_init"
-      @functionDeletePage="fn_delete"
+      @functionDeletePage="removeFromZone"
       @functionExportPage="fn_export"
     />
 
@@ -47,8 +47,8 @@
           @stop-insert="tableConfig[0].adding = false"
           @stop-update="tableConfig[0].updating = false"
           @stop-upload="tableConfig[0].uploading = false"
-          @on-insert="fn_add"
           @on-paging="fn_select"
+          @selection-change="handleSelectionChange"
         />
       </div>
       <!-- end grid table -->
@@ -93,6 +93,7 @@ import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
 import {
   addToZone,
+  removeFromZone,
   getDevicesByZone,
   getDevices,
   createDevice,
@@ -154,9 +155,7 @@ export default {
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {
-    this.getDevicesList(this.orgId);
-  },
+  mounted: function() {},
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
@@ -167,7 +166,7 @@ export default {
   },
   watch: {
     orgId(val, old) {
-      this.getDevicesList(val);
+      this.getDevicesAvailList(val);
       this.$emit('refreshUI');
     },
     zone(val, old) {
@@ -175,16 +174,15 @@ export default {
     },
   },
   methods: {
-    getDevicesList(val) {
+    getDevicesAvailList(val) {
+      this.options = [];
+      this.value = [];
       getDevices(val).then(response => {
         this.list = response
           .filter(x => x.zone == null)
           .map(item => {
             return { value: item.id, label: item.name };
           });
-
-        this.ds_master = [];
-        this.showDialogDeviceList = false;
       });
     },
     getDevicesByZoneList() {
@@ -242,19 +240,13 @@ export default {
         { adding: false, updating: false, loading: false },
       ];
     },
-    fn_add: function(item) {
-      // item.isCreate = true;
-      // this.tableConfig[0].lockingPopup = true;
-      // NetworkService.NETWORK.createShippingLocation(item).then(res => {
-      //   this.tableConfig[0].lockingPopup = false;
-      //   if (!isGtoResponseSuccess(res)) {
-      //     return;
-      //   }
-      //   this.fn_select();
-      //   this.tableConfig[0].adding = false;
-      // });
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
-    fn_delete: function() {},
+    fn_add: function() {
+      this.getDevicesAvailList(this.orgId);
+      this.showDialogDeviceList = true;
+    },
     fn_export: function() {
       let date = new Date();
       exportByDataModel(
@@ -271,11 +263,47 @@ export default {
       this.isShowLeft = true;
     },
     addDeviceToZone() {
-      this.value.forEach(element => {
-        addToZone({ zoneId: this.zone.id, deviceId: element });
+      if (!this.value || this.value.length < 1) {
+        alert('Please select device');
+        return;
+      }
+      this.value.forEach(async element => {
+        addToZone({ zoneId: this.zone.id, deviceId: element }).then(res => {
+          this.getDevicesByZoneList();
+        });
+      });
+
+      this.showDialogDeviceList = false;
+
+      // addToZone({
+      //   zoneId: this.zone.id,
+      //   deviceIds: this.multipleSelection.map(a => a.foo),
+      // }).then(() => {
+      //   this.showDialogDeviceList = false;
+      //   this.getDevicesByZoneList();
+      // });
+    },
+    removeFromZone() {
+      if (!this.multipleSelection || this.multipleSelection.length < 1) {
+        alert('Please select device');
+        return;
+      }
+      this.multipleSelection.forEach(async element => {
+        removeFromZone({ zoneId: this.zone.id, deviceId: element.id }).then(
+          res => {
+            this.getDevicesByZoneList();
+          },
+        );
       });
       this.showDialogDeviceList = false;
-      this.getDevicesByZoneList();
+
+      // removeFromZone({
+      //   zoneId: this.zone.id,
+      //   deviceIds: this.multipleSelection.map(a => a.foo),
+      // }).then(() => {
+      //   this.showDialogDeviceList = false;
+      //   this.getDevicesByZoneList();
+      // });
     },
   },
 };

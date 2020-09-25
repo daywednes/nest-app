@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrgEntity } from 'src/org/org.entity';
 import { User } from 'src/auth/user.entity';
 import { CreateDeviceDto } from './dto/create-device.dto';
+import { UpdateDeviceDto } from './dto/update-device.dto';
 import { GetDeviceFilterDto } from './dto/get-device.dto';
 import { DeviceEntity } from './device.entity';
 import { DeviceRepository } from './device.repository';
@@ -66,10 +67,27 @@ export class DeviceService {
     return device;
   }
 
-  async updatedevice(id: number, createdeviceDto: CreateDeviceDto): Promise<DeviceEntity> {
+  async removeFromZone(dto: AddDeviceZoneDto): Promise<DeviceEntity> {
+    const device = await this.getdeviceById(dto.deviceId);
+    device.zone = null;
+    await device.save();
+    return device;
+  }
+
+  async updatedevice(id: number, dto: UpdateDeviceDto): Promise<DeviceEntity> {
+    console.log(dto.orgId)
+    console.log(dto.zoneId)
     const device = await this.getdeviceById(id);
-    device.description = createdeviceDto.description;
-    device.name = createdeviceDto.name;
+    const zone = await this.zoneRepository.findOne({
+      where: { id: dto.zoneId },
+    });
+    const org = await this.orgRepository.findOne({
+      where: { id: dto.orgId },
+    });
+    device.description = dto.description ? dto.description : device.description;
+    device.name = dto.name ? dto.name : device.name;
+    device.zone = zone;
+    device.org = org ? org : device.org;
     await device.save();
     return device;
   }

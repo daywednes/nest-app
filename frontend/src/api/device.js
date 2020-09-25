@@ -39,6 +39,13 @@ export function addToZone(data) {
         data
     })
 }
+export function removeFromZone(data) {
+    return request({
+        url: '/device/removeFromZone/',
+        method: 'post',
+        data
+    })
+}
 
 export function deleteDevice(id) {
     return request({
