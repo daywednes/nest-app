@@ -183,7 +183,6 @@ export default {
       multipleSelection: [],
       devicesList: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
-      selectedDevice: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
       selectedDevice: {
@@ -192,6 +191,7 @@ export default {
         DeviceLabel: '',
         description: '',
         orgId: '',
+        zoneId: '',
       },
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
@@ -301,6 +301,11 @@ export default {
     },
     getDevicesList(val) {
       getDevices(val).then(response => {
+        response.forEach(row => {
+          row.zoneId = row.zone ? row.zone.id : null;
+          row.orgId = row.org ? row.org.id : null;
+        });
+
         this.devicesList = response;
       });
     },
@@ -330,6 +335,8 @@ const DEFAULT_SEARCH_QUERY = {
   },
 };
 const DEFAULT_ITEM = {
+  orgId: -1,
+  zoneId: -1,
   _index: -1,
   _checked: false,
 };

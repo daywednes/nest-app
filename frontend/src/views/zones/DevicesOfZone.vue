@@ -9,7 +9,7 @@
       @functionEditPage="tableConfig[0].updating = true"
       @functionImportPage="tableConfig[0].uploading = true"
       @functionInitPage="fn_init"
-      @functionDeletePage="fn_delete"
+      @functionDeletePage="removeFromZone"
       @functionExportPage="fn_export"
     />
 
@@ -47,8 +47,8 @@
           @stop-insert="tableConfig[0].adding = false"
           @stop-update="tableConfig[0].updating = false"
           @stop-upload="tableConfig[0].uploading = false"
-          @on-insert="fn_add"
           @on-paging="fn_select"
+          @selection-change="handleSelectionChange"
         />
       </div>
       <!-- end grid table -->
@@ -242,19 +242,13 @@ export default {
         { adding: false, updating: false, loading: false },
       ];
     },
-    fn_add: function(item) {
-      // item.isCreate = true;
-      // this.tableConfig[0].lockingPopup = true;
-      // NetworkService.NETWORK.createShippingLocation(item).then(res => {
-      //   this.tableConfig[0].lockingPopup = false;
-      //   if (!isGtoResponseSuccess(res)) {
-      //     return;
-      //   }
-      //   this.fn_select();
-      //   this.tableConfig[0].adding = false;
-      // });
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     },
-    fn_delete: function() {},
+    fn_add: function() {
+      this.getDevicesAvailList(this.orgId);
+      this.showDialogDeviceList = true;
+    },
     fn_export: function() {
       let date = new Date();
       exportByDataModel(
