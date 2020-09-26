@@ -83,6 +83,16 @@ export class DeviceController {
     return this.devicesService.addToZone(dto);
   }
 
+  @Post('/removeFromZone/')
+  @UsePipes(ValidationPipe)
+  removeFromZone(
+    @Body() dto: AddDeviceZoneDto,
+    @GetUser() user: User,
+  ): Promise<DeviceEntity> {
+    //Get Org from here
+    return this.devicesService.removeFromZone(dto);
+  }
+
   @Delete('/:id')
   deletedevice(
     @Param('id', ParseIntPipe) id: number,

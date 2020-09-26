@@ -43,7 +43,7 @@
     <el-form-item prop="label">
       <span style="margin:0 10px;font-size: large;">Manage by</span>
 
-      <el-select v-model="item.orgId" placeholder="Select">
+      <el-select v-model="item.orgId"  placeholder="Select">
         <el-option
           v-for="item in orgList"
           :key="item.id"
@@ -132,7 +132,7 @@ export default {
   },
   watch: {
     orgId(val, old) {
-      this.isShowLeft = false;
+      this.isShowLeft = false
       this.getZonesList(val);
       this.getOrgList();
     },
