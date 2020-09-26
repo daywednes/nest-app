@@ -8,20 +8,16 @@
             "inputs": {},
             "outputs": {
                 "act": {
-                    "connections": [
-                        {
-                            "node": 3,
-                            "input": "act"
-                        }
-                    ]
-                }, 
+                    "connections": [{
+                        "node": 3,
+                        "input": "act"
+                    }]
+                },
                 "key": {
-                    "connections": [
-                        {
-                            "node": 3,
-                            "input": "key"
-                        }
-                    ]
+                    "connections": [{
+                        "node": 3,
+                        "input": "key"
+                    }]
                 }
             },
             "position": [
@@ -35,38 +31,30 @@
             "group": null,
             "inputs": {
                 "act": {
-                    "connections": [
-                        {
-                            "node": 2,
-                            "output": "act"
-                        }
-                    ]
-                }, 
+                    "connections": [{
+                        "node": 2,
+                        "output": "act"
+                    }]
+                },
                 "key": {
-                    "connections": [
-                        {
-                            "node": 2,
-                            "output": "data"
-                        }
-                    ]
+                    "connections": [{
+                        "node": 2,
+                        "output": "data"
+                    }]
                 }
             },
             "outputs": {
                 "then": {
-                    "connections": [
-                        {
-                            "node": 10,
-                            "input": "act"
-                        }
-                    ]
-                }, 
+                    "connections": [{
+                        "node": 10,
+                        "input": "act"
+                    }]
+                },
                 "else": {
-                    "connections": [
-                        {
-                            "node": 11,
-                            "input": "act"
-                        }
-                    ]
+                    "connections": [{
+                        "node": 11,
+                        "input": "act"
+                    }]
                 }
             },
             "position": [
@@ -82,12 +70,10 @@
             "group": null,
             "inputs": {
                 "act": {
-                    "connections": [
-                        {
-                            "node": 3,
-                            "output": "act"
-                        }
-                    ]
+                    "connections": [{
+                        "node": 3,
+                        "output": "act"
+                    }]
                 }
             },
             "outputs": {},
@@ -104,12 +90,10 @@
             "group": null,
             "inputs": {
                 "act": {
-                    "connections": [
-                        {
-                            "node": 3,
-                            "output": 1
-                        }
-                    ]
+                    "connections": [{
+                        "node": 3,
+                        "output": 1
+                    }]
                 }
             },
             "outputs": {},

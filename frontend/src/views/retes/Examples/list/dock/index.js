@@ -8,28 +8,28 @@ import data from '@/views/retes/rete/data/simple.json'
 import './styles.sass'
 
 export default async function(container, extra) {
-  const { editor, engine, resize, process } = await init(container)
+    const { editor, engine, resize, process } = await init(container)
 
-  extra.classList.add('dock-menu')
+    extra.classList.add('dock-menu')
 
-  editor.use(ContextMenuPlugin)
-  editor.use(DockPlugin, {
-    container: extra,
-    plugins: [VueRenderPlugin]
-  });
+    editor.use(ContextMenuPlugin)
+    editor.use(DockPlugin, {
+        container: extra,
+        plugins: [VueRenderPlugin]
+    });
 
-  [
-    new NumComponent(),
-    new AddComponent()
-  ].map(c => {
-    editor.register(c)
-    engine.register(c)
-  })
+    [
+        new NumComponent(),
+        new AddComponent()
+    ].map(c => {
+        editor.register(c)
+        engine.register(c)
+    })
 
-  await editor.fromJSON(data)
+    await editor.fromJSON(data)
 
-  resize()
-  process()
+    resize()
+    process()
 
-  return { editor, engine }
+    return { editor, engine }
 }
