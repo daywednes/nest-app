@@ -27,10 +27,10 @@ const retesRouter = {
             meta: { title: 'View', noCache: true },
             children: examplesRoute
         }, {
-            path: 'View/Zone1%20Name1',
+            path: 'View/Demo%20Automation',
             component: () =>
                 import ('@/views/retes/Examples/'),
-            name: 'Zone1%20Name1',
+            name: 'Demo%20Automation',
             meta: { title: 'Automation', noCache: true },
         },
 

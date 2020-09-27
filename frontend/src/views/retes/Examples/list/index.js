@@ -10,7 +10,7 @@ import minimap from './minimap'
 import customdock from './customdock'
 
 export default [{
-        key: 'Zone1 Name1',
+        key: 'Demo Automation',
         init: customdock,
         packages: [
             'rete',
@@ -20,6 +20,7 @@ export default [{
             'rete-dock-plugin'
         ]
     },
+
     // {
     //     key: 'Zone2 Name2',
     //     init: readonly,
@@ -99,15 +100,15 @@ export default [{
     //         'rete-minimap-plugin'
     //     ]
     // },
-    {
-        key: 'Zone2 Name2',
-        init: customdock,
-        packages: [
-            'rete',
-            'rete-connection-plugin',
-            'rete-vue-render-plugin',
-            'rete-minimap-plugin',
-            'rete-dock-plugin'
-        ]
-    }
+    // {
+    //     key: 'Zone2 Name2',
+    //     init: customization,
+    //     packages: [
+    //         'rete',
+    //         'rete-connection-plugin',
+    //         'rete-vue-render-plugin',
+    //         'rete-minimap-plugin',
+    //         'rete-dock-plugin'
+    //     ]
+    // }
 ]
