@@ -7,9 +7,11 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { ZoneEntity } from '../zone/zone.entity';
 import { OrgEntity } from 'src/org/org.entity';
+import { TagsDevicesEntity } from 'src/tags/tags_divice.entity';
 
 @Entity('device')
 export class DeviceEntity  extends BaseEntity {
@@ -54,6 +56,14 @@ export class DeviceEntity  extends BaseEntity {
     org => org.devices,
   )
   org: OrgEntity;
+
+  @OneToMany(
+    type => TagsDevicesEntity,
+    tagsdevice => tagsdevice.device,
+    { eager: true },
+  )
+  tagsdevice: TagsDevicesEntity[];
+
 
   @Column({ default: 0 })
   favoriteCount: number;

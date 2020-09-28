@@ -1,7 +1,7 @@
 <template>
   <div
     ref="leftPanel"
-      v-if="showLeft"
+    v-if="showLeft"
     :class="{ showLeft: showLeft }"
     class="leftPanel-container"
 
