@@ -1,8 +1,10 @@
 <template>
   <div
     ref="leftPanel"
+      v-if="showLeft"
     :class="{ showLeft: showLeft }"
     class="leftPanel-container"
+
   >
     <div class="leftPanel-background" />
     <FontResizableContainer increment="2px" class="leftPanel">
@@ -83,11 +85,11 @@ export default {
   margin-right: -710px;
   position: relative;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: all 2.25s cubic-bezier(0.7, 0.3, 0.1, 1);
 }
 
 .showLeft {
-  transition: all 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: all 2.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 
   .leftPanel-background {
     z-index: 20000;

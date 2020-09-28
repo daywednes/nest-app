@@ -4,9 +4,10 @@
       style="postion: relative; margin-left: 5px; float:left;"
       :style="{
         width: this.isShowLeft ? 'calc(100% - 700px)' : '100%',
-        transition: this.isShowLeft ? '0.2s ease' : '0.6s ease',
       }"
     >
+    
+        <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
       <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
