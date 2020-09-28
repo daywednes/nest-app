@@ -6,6 +6,7 @@ import { OrgModule } from './org/org.module';
 import { ZoneModule } from './zone/zone.module';
 import { AuthModule } from './auth/auth.module';
 import { DeviceModule } from './device/device.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DeviceModule } from './device/device.module';
     ZoneModule,
     OrgModule,
     AuthModule,
+    TagsModule,
     DeviceModule
   ],
 })

@@ -16,7 +16,9 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     const query = this.createQueryBuilder('device')
     .leftJoinAndSelect('device.org', 'org')
     .leftJoinAndSelect('device.user', 'user')
-    .leftJoinAndSelect('device.zone', 'zone');
+    .leftJoinAndSelect('device.zone', 'zone')
+    .leftJoinAndSelect('device.tagsdevice', 'tagsdevice')
+    // .leftJoinAndSelect('device.tagsdevice.tag', 'tags');
      query.where('device.org.id = :orgId', { orgId: id });
     try {
       const devices = await query.getMany();
@@ -60,12 +62,13 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity, user: User): Promise<DeviceEntity> {
-    const { name, description } = createDeviceDto;
+    const { name, description, tags } = createDeviceDto;
     const device = new DeviceEntity();
     device.description = description;
     device.name = name;
     device.org = org;
     device.user = user ;
+    //Add to tags and 
 
     await device.save();
     delete device.org;

@@ -6,13 +6,17 @@
         width: this.isShowLeft ? 'calc(100% - 700px)' : '100%',
       }"
     >
-    
-        <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
+      <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
       <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
         :isShowDELETE="false"
-        @functionAddPage="showDialogDevices = true"
+        @functionAddPage="
+          () => {
+            showDialogDevices = true;
+            getTagsList();
+          }
+        "
         @functionDeletePage="fn_delete"
       />
       <SingleDevice
@@ -50,48 +54,26 @@
               autocomplete="on"
             />
           </el-form-item>
-          <!-- <el-form-item prop="label">
-            <span style="margin-left:10px;font-size: large;"> Label</span>
-            <el-input
-              ref="DeviceType"
-              v-model="DeviceForm.DeviceLabel"
-              style="color: black;"
-              placeholder="Label"
-              name="Label"
-              type="text"
-              tabindex="2"
-              autocomplete="on"
-            />
-          </el-form-item>
-          <el-form-item prop="label">
-            <el-checkbox
-              label="Test Device"
-              style="display:block; font-size: large;"
+          <el-form-item prop="tagsName">
+            <span style="margin-left:10px;font-size: large;">
+              Tags Of Device
+            </span>
+            <el-select
+              v-model="DeviceForm.tagsName"
+              multiple
+              filterable
+              allow-create
+              default-first-option
             >
-            </el-checkbox>
+              <el-option
+                v-for="item in optionsTag"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item prop="description">
-            <span style="margin-left:10px;font-size: large;"> Description</span>
-            <el-input
-              ref="DeviceForm"
-              v-model="DeviceForm.DeviceDescription"
-              style="color: black;"
-              placeholder="Description"
-              name="DeviceDescription"
-              type="textarea"
-              tabindex="2"
-              :rows="3"
-              autocomplete="on"
-            />
-          </el-form-item> -->
-
-          <!-- <el-tooltip
-          v-model="capsTooltip"
-          content="Caps lock is On"
-          placement="right"
-          manual
-        >
-        </el-tooltip> -->
           <el-button
             type="primary"
             style="width:100%;margin-bottom:10px;"
@@ -131,6 +113,7 @@ import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
 import { mapGetters } from 'vuex';
 import { getDevices, createDevice, deleteDevice } from '@/api/device';
+import { getTags } from '@/api/tags';
 
 export default {
   name: 'Devices',
@@ -148,6 +131,7 @@ export default {
         DeviceType: '',
         DeviceLabel: '',
         description: '',
+        tags: '',
         orgId: '',
       },
       showDialogDevices: false,
@@ -182,6 +166,7 @@ export default {
         { attr: '_checked', permission: 'N' },
       ],
       multipleSelection: [],
+      optionsTag: [],
       devicesList: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       ds_master: [],
@@ -191,6 +176,7 @@ export default {
         DeviceType: '',
         DeviceLabel: '',
         description: '',
+        tags: '',
         orgId: '',
         zoneId: '',
       },
@@ -217,6 +203,11 @@ export default {
     },
   },
   methods: {
+    getTagsList() {
+      getTags().then(response => {
+        this.optionsTag = response;
+      });
+    },
     leftPanelIsShow: function() {
       this.isShowLeft = true;
     },

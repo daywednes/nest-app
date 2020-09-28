@@ -43,7 +43,7 @@
     <el-form-item prop="label">
       <span style="margin:0 10px;font-size: large;">Manage by</span>
 
-      <el-select v-model="item.orgId"  placeholder="Select">
+      <el-select v-model="item.orgId" placeholder="Select">
         <el-option
           v-for="item in orgList"
           :key="item.id"
@@ -58,6 +58,24 @@
       <el-select v-model="item.zoneId" clearable placeholder="Select">
         <el-option
           v-for="item in optionsZone"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item prop="label">
+      <span style="margin:0 10px;font-size: large;"> Tags Of Device </span>
+      <el-select
+        v-model="item.tags"
+        multiple
+        filterable
+        allow-create
+        default-first-option
+      >
+        <el-option
+          v-for="item in optionsTag"
           :key="item.id"
           :label="item.name"
           :value="item.id"
@@ -107,6 +125,7 @@
 
 <script>
 import { updateDevice, deleteDevice } from '@/api/device';
+import { getTags } from '@/api/tags';
 import { getZones } from '@/api/zone';
 import { getOrgs } from '@/api/org';
 
@@ -121,6 +140,7 @@ export default {
   data() {
     return {
       optionsZone: [],
+      optionsTag: [],
       orgList: [],
       DeviceForm: {
         DeviceName: '',
@@ -132,7 +152,7 @@ export default {
   },
   watch: {
     orgId(val, old) {
-      this.isShowLeft = false
+      this.isShowLeft = false;
       this.getZonesList(val);
       this.getOrgList();
     },
@@ -158,6 +178,11 @@ export default {
     getZonesList(val) {
       getZones(val).then(response => {
         this.optionsZone = response;
+      });
+    },
+    getTagsList() {
+      getTags().then(response => {
+        this.optionsTag = response;
       });
     },
     updateDeviceEntity() {

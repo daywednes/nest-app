@@ -1,4 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { TagsEntity } from 'src/tags/tags.entity';
 export class CreateDeviceDto {
   @IsNotEmpty()
   name: string;
@@ -6,4 +7,8 @@ export class CreateDeviceDto {
   description: string;
   @IsNotEmpty()
   orgId: number;
+  @IsOptional()
+  tagsName: [string];
+  @IsOptional()
+  tags: [TagsEntity];
 }

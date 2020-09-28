@@ -9,7 +9,11 @@ import { DeviceEntity } from './device.entity';
 import { DeviceRepository } from './device.repository';
 import { OrgRepository } from '../org/org.repository';
 import { ZoneRepository } from '../zone/zone.repository';
+import { TagsRepository } from '../tags/tags.repository';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
+import { async } from 'rxjs';
+import { CreatTagsDto } from 'src/tags/dto/create-tags.dto';
+import { CreateTaskDto } from 'src/tasks/dto/create-task.dto';
 
 @Injectable()
 export class DeviceService {
@@ -20,9 +24,12 @@ export class DeviceService {
     private orgRepository: OrgRepository,
     @InjectRepository(ZoneRepository)
     private zoneRepository: ZoneRepository,
+    @InjectRepository(TagsRepository)
+    private tagsRepository: TagsRepository,
   ) { }
 
   getdevices(orgId: number): Promise<DeviceEntity[]> {
+    var devices = this.deviceRepository.getDevices(orgId);
     return this.deviceRepository.getDevices(orgId);
   }
   getDevicesAvail(orgId: number): Promise<DeviceEntity[]> {
@@ -54,7 +61,35 @@ export class DeviceService {
     const org = await this.orgRepository.findOne({
       where: { id: createdeviceDto.orgId, userId: user.id },
     });
-    return await this.deviceRepository.createDevice(createdeviceDto, org, user);
+    const tags = await this.tagsRepository.find({
+      where: { userId: user.id },
+    });
+
+    if (createdeviceDto.tagsName != null) {
+      createdeviceDto.tagsName.forEach(async tagName => {
+        if (tags.map(x => x.name).includes(tagName)) {
+          createdeviceDto.tags.push(tags.find(x => x.name = tagName))
+        }
+        else {
+          let newTag = new CreatTagsDto();
+          newTag.name = tagName;
+          let tmpTag = await this.tagsRepository.createTags(newTag, user);
+          createdeviceDto.tags.push(tmpTag);
+        }
+      })
+    }
+
+    var device = await this.deviceRepository.createDevice(createdeviceDto, org, user);
+
+
+    if (createdeviceDto.tags != null) {
+      createdeviceDto.tags.forEach(async tag => {
+        var tagsDevice = await this.tagsRepository.createDeviceTags(tag, device);
+        device.tagsdevice.push(tagsDevice);
+      })
+    }
+
+    return device;
   }
 
   async addToZone(dto: AddDeviceZoneDto): Promise<DeviceEntity> {
