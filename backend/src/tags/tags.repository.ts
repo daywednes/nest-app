@@ -10,6 +10,7 @@ import { DeviceEntity } from 'src/device/device.entity';
 @EntityRepository(TagsEntity)
 export class TagsRepository extends Repository<TagsEntity> {
   private logger = new Logger('TagsRepository');
+
   async getTags(
     tagsFilterDto: GetTagsFilterDto,
     user: User,
@@ -20,15 +21,37 @@ export class TagsRepository extends Repository<TagsEntity> {
     if (name) {
       query.andWhere(`tags_entity.name = :name`, { name });
     }
-    
+
     try {
       const tags = await query.getMany();
       return tags;
     } catch (err) {
       this.logger.error(
         `Failed to get Tags for user ${
-          user.username
+        user.username
         } with dto ${JSON.stringify(tagsFilterDto)}`,
+        err.stack,
+      );
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getTagsByDeviceId(
+    deviceId: number,
+    user: User
+  ): Promise<TagsEntity[]> {
+    const query = this.createQueryBuilder('tags_entity')
+      .leftJoinAndSelect('tags_entity.tagsdevice', 'tagsdevice')
+    query.where('tagsdevice.device.id = :deviceId', { deviceId: deviceId });
+
+    try {
+      const tags = await query.getMany();
+      return tags;
+    } catch (err) {
+      this.logger.error(
+        `Failed to get Tags for device ${
+        deviceId
+        }`,
         err.stack,
       );
       throw new InternalServerErrorException();
@@ -44,11 +67,4 @@ export class TagsRepository extends Repository<TagsEntity> {
     return tags;
   }
 
-  async createDeviceTags(tag: TagsEntity,  device: DeviceEntity): Promise<TagsDevicesEntity> {
-    const tagsDevice = new TagsDevicesEntity();
-    tagsDevice.tag = tag;
-    tagsDevice.device = device;
-    await tagsDevice.save();
-    return tagsDevice;
-  }
 }

@@ -30,6 +30,11 @@ export class TagsService {
     return found;
   }
 
+  async getTagsByDeviceId(deviceId: number, user: User): Promise<TagsEntity[]> {
+    return this.tagsRepository.getTagsByDeviceId(deviceId, user);
+    
+  }
+
   async deleteTags(id: number, user: User) {
     const result = await this.tagsRepository.delete({ id, userId: user.id });
     if (result.affected === 0) {

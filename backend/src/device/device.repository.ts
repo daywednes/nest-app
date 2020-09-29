@@ -62,13 +62,12 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity, user: User): Promise<DeviceEntity> {
-    const { name, description, tags } = createDeviceDto;
+    const { name, description } = createDeviceDto;
     const device = new DeviceEntity();
     device.description = description;
     device.name = name;
     device.org = org;
     device.user = user ;
-    //Add to tags and 
 
     await device.save();
     delete device.org;

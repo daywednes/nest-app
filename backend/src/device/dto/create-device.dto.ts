@@ -9,6 +9,4 @@ export class CreateDeviceDto {
   orgId: number;
   @IsOptional()
   tagsName: [string];
-  @IsOptional()
-  tags: [TagsEntity];
 }

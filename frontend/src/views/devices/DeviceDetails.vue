@@ -53,7 +53,7 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="label">
+    <el-form-item prop="zoneId">
       <span style="margin:0 10px;font-size: large;"> Assign to Zone</span>
       <el-select v-model="item.zoneId" clearable placeholder="Select">
         <el-option
@@ -65,10 +65,10 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item prop="label">
+    <el-form-item v-if="loadTagDone">
       <span style="margin:0 10px;font-size: large;"> Tags Of Device </span>
       <el-select
-        v-model="item.tags"
+        v-model="itemTags"
         multiple
         filterable
         allow-create
@@ -76,9 +76,9 @@
       >
         <el-option
           v-for="item in optionsTag"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
+          :key="item"
+          :label="item"
+          :value="item"
         >
         </el-option>
       </el-select>
@@ -125,7 +125,7 @@
 
 <script>
 import { updateDevice, deleteDevice } from '@/api/device';
-import { getTags } from '@/api/tags';
+import { getTags, getTagsById } from '@/api/tags';
 import { getZones } from '@/api/zone';
 import { getOrgs } from '@/api/org';
 
@@ -141,7 +141,9 @@ export default {
     return {
       optionsZone: [],
       optionsTag: [],
+      itemTags: [],
       orgList: [],
+      loadTagDone: false,
       DeviceForm: {
         DeviceName: '',
         DeviceType: '',
@@ -156,6 +158,11 @@ export default {
       this.getZonesList(val);
       this.getOrgList();
     },
+    item(val, old) {
+      this.loadTagDone = false;
+      // this.getTagsList();
+      this.getTagsDeviceList(val.id);
+    },
   },
   computed: {
     orgId() {
@@ -168,6 +175,8 @@ export default {
   mounted: function() {
     this.getZonesList(this.orgId);
     this.getOrgList();
+    this.getTagsList();
+    this.getTagsDeviceList(this.item.id);
   },
   methods: {
     getOrgList() {
@@ -182,7 +191,17 @@ export default {
     },
     getTagsList() {
       getTags().then(response => {
-        this.optionsTag = response;
+        this.optionsTag = response.map(x => x.name)
+          ? response.map(x => x.name)
+          : [];
+      });
+    },
+    async getTagsDeviceList(deivceId) {
+      await getTagsById(deivceId).then(response => {
+        this.itemTags = response.map(x => x.name)
+          ? response.map(x => x.name)
+          : [];
+        this.loadTagDone = true;
       });
     },
     updateDeviceEntity() {
@@ -194,7 +213,9 @@ export default {
         alert('Please input description');
         return;
       }
+      this.item.tags = this.itemTags;
       updateDevice(this.item).then(response => {
+        this.getTagsList();
         this.$emit('refreshUI');
       });
     },

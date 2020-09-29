@@ -7,6 +7,13 @@ export function getTags(data) {
     })
 }
 
+export function getTagsById(deviceId) {
+    return request({
+        url: '/tags/' + deviceId,
+        method: 'get'
+    })
+}
+
 export function createTags(data) {
     return request({
         url: '/tags',
