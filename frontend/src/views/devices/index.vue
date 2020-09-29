@@ -304,6 +304,7 @@ export default {
     refreshUI() {
       this.DeviceForm.name = '';
       this.DeviceForm.description = '';
+      this.DeviceForm.tags = '';
       this.getDevicesList(this.orgId);
       this.isShowLeft = false;
       this.showDialogDevices = false;

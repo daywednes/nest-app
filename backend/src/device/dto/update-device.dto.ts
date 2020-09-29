@@ -10,4 +10,6 @@ export class UpdateDeviceDto {
   orgId: number;
   @IsOptional()
   zoneId: number;
+  @IsOptional()
+  tags: [string];
 }

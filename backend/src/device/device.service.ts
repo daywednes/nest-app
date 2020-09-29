@@ -10,10 +10,12 @@ import { DeviceRepository } from './device.repository';
 import { OrgRepository } from '../org/org.repository';
 import { ZoneRepository } from '../zone/zone.repository';
 import { TagsRepository } from '../tags/tags.repository';
+import { TagsDeivceRepository } from '../tags/tagsdeivces.repository';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { async } from 'rxjs';
 import { CreatTagsDto } from 'src/tags/dto/create-tags.dto';
 import { CreateTaskDto } from 'src/tasks/dto/create-task.dto';
+import { TagsEntity } from 'src/tags/tags.entity';
 
 @Injectable()
 export class DeviceService {
@@ -26,6 +28,8 @@ export class DeviceService {
     private zoneRepository: ZoneRepository,
     @InjectRepository(TagsRepository)
     private tagsRepository: TagsRepository,
+    @InjectRepository(TagsDeivceRepository)
+    private tagsDeivceRepository: TagsDeivceRepository,
   ) { }
 
   getdevices(orgId: number): Promise<DeviceEntity[]> {
@@ -51,6 +55,10 @@ export class DeviceService {
   }
 
   async deletedevice(id: number) {
+    const device = await this.deviceRepository.findOne(id);
+    this.tagsDeivceRepository.delete({
+      device
+    })
     const result = await this.deviceRepository.delete({ id });
     if (result.affected === 0) {
       throw new NotFoundException(`Device with id: ${id} not found`);
@@ -61,32 +69,34 @@ export class DeviceService {
     const org = await this.orgRepository.findOne({
       where: { id: createdeviceDto.orgId, userId: user.id },
     });
-    const tags = await this.tagsRepository.find({
-      where: { userId: user.id },
-    });
 
-    if (createdeviceDto.tagsName != null) {
-      createdeviceDto.tagsName.forEach(async tagName => {
-        if (tags.map(x => x.name).includes(tagName)) {
-          createdeviceDto.tags.push(tags.find(x => x.name = tagName))
-        }
-        else {
-          let newTag = new CreatTagsDto();
-          newTag.name = tagName;
-          let tmpTag = await this.tagsRepository.createTags(newTag, user);
-          createdeviceDto.tags.push(tmpTag);
-        }
-      })
+    var newTagsList = []
+    if (createdeviceDto.tagsName != null && createdeviceDto.tagsName.length > 0) {
+      const tags = await this.tagsRepository.find({
+        where: { userId: user.id },
+      });
+
+      if (createdeviceDto.tagsName != null) {
+        createdeviceDto.tagsName.forEach(async tagName => {
+          if (tags.map(x => x.name).includes(tagName)) {
+            let tmpTag = tags.find(x => x.name == tagName)
+            newTagsList.push(tags.find(x => x.name == tagName))
+          }
+          else {
+            let newTag = new CreatTagsDto();
+            newTag.name = tagName;
+            let tmpTag = await this.tagsRepository.createTags(newTag, user);
+            console.log('tmpTagId ' + tmpTag.id)
+            newTagsList.push(tmpTag);
+          }
+        })
+      }
     }
-
     var device = await this.deviceRepository.createDevice(createdeviceDto, org, user);
 
 
-    if (createdeviceDto.tags != null) {
-      createdeviceDto.tags.forEach(async tag => {
-        var tagsDevice = await this.tagsRepository.createDeviceTags(tag, device);
-        device.tagsdevice.push(tagsDevice);
-      })
+    if (newTagsList != null && newTagsList.length > 0) {
+      this.createDeviceTags(newTagsList, device)
     }
 
     return device;
@@ -109,21 +119,86 @@ export class DeviceService {
     return device;
   }
 
-  async updatedevice(id: number, dto: UpdateDeviceDto): Promise<DeviceEntity> {
-    console.log(dto.orgId)
-    console.log(dto.zoneId)
-    const device = await this.getdeviceById(id);
+  // async updateTagsList(tagsName: [string], user: User): Promise<TagsEntity[]> {
+  //   const tags = await this.tagsRepository.find({
+  //     where: { userId: user.id },
+  //   });
+
+  //   var newTagsList = []
+
+  //   if (tagsName != null && tagsName.length > 0) {
+  //     tagsName.forEach(async tagName => {
+  //       if (tags.map(x => x.name).includes(tagName)) {
+  //         let tmpTag = tags.find(x => x.name == tagName)
+  //         await newTagsList.push(tags.find(x => x.name == tagName))
+  //       }
+  //       else {
+  //         let newTag = new CreatTagsDto();
+  //         newTag.name = tagName;
+  //         let tmpTag = await this.tagsRepository.createTags(newTag, user);
+  //         console.log('tmpTagId ' + tmpTag.id)
+  //         await newTagsList.push(tmpTag);
+  //       }
+  //     })
+  //   }
+  //   return await newTagsList;
+  // }
+
+  async createDeviceTags(newTagsList: TagsEntity[], device: DeviceEntity) {
+    console.log('createDeviceTags')
+    newTagsList.forEach(async tag => {
+      console.log('tag', tag.id);
+      await this.tagsDeivceRepository.createDeviceTags(tag, device);
+    })
+  }
+
+  async updatedevice(id: number, dto: UpdateDeviceDto, user: User): Promise<DeviceEntity> {
     const zone = await this.zoneRepository.findOne({
       where: { id: dto.zoneId },
     });
     const org = await this.orgRepository.findOne({
       where: { id: dto.orgId },
     });
+    //Update Tags
+    var newTagsList = []
+
+    if (dto.tags != null && dto.tags.length > 0) {
+
+      const tags = await this.tagsRepository.find({
+        where: { userId: user.id },
+      });
+      dto.tags.forEach(async tagName => {
+        if (tags.map(x => x.name).includes(tagName)) {
+          let tmpTag = tags.find(x => x.name == tagName)
+          newTagsList.push(tags.find(x => x.name == tagName))
+        }
+        else {
+          let newTag = new CreatTagsDto();
+          newTag.name = tagName;
+          let tmpTag = await this.tagsRepository.createTags(newTag, user);
+          console.log('tmpTagId ' + tmpTag.id)
+          newTagsList.push(tmpTag);
+        }
+      })
+    }
+
+    const device = await this.getdeviceById(id);
+    var result = await this.tagsDeivceRepository.delete({
+      device
+    })
+
+    if (newTagsList != null && newTagsList.length > 0) {
+      await this.createDeviceTags(newTagsList, device)
+    }
+
+
+    //Update orther prop
     device.description = dto.description ? dto.description : device.description;
     device.name = dto.name ? dto.name : device.name;
     device.zone = zone;
     device.org = org ? org : device.org;
     await device.save();
+
     return device;
   }
 }

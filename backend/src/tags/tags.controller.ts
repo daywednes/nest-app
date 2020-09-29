@@ -44,8 +44,8 @@ export class TagsController {
   getTagsById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
-  ): Promise<TagsEntity> {
-    return this.TagsService.getTagsById(id, user);
+  ): Promise<TagsEntity[]> {
+    return this.TagsService.getTagsByDeviceId(id, user);
   }
 
   @Post()

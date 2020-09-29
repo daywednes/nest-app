@@ -57,7 +57,7 @@ export function deleteDevice(id) {
 export function updateDevice(data) {
     return request({
         url: '/device/' + data.id,
-        method: 'patch',
+        method: 'post',
         data
     })
 }

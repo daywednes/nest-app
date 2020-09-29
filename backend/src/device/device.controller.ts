@@ -102,13 +102,13 @@ export class DeviceController {
     return this.devicesService.deletedevice(id);
   }
 
-  @Patch('/:id')
+  @Post('/:id')
   updatedevice(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDeviceDto: UpdateDeviceDto,
     @GetUser() user: User,
   ): Promise<DeviceEntity> {
     //Get Org from here
-    return this.devicesService.updatedevice(id, updateDeviceDto);
+    return this.devicesService.updatedevice(id, updateDeviceDto,user);
   }
 }
