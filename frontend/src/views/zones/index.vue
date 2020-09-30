@@ -128,6 +128,12 @@
     </RightPanelExtra>
   </div>
 </template>
+
+<style scoped>
+.el-select {
+  width: 300px ;
+}
+</style>
 <script>
 import RightPanelExtra from '@/components/RightPanelExtra';
 import DevicesOfZone from '@/views/zones/DevicesOfZone';
@@ -217,7 +223,7 @@ export default {
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
-        alert('empty');
+        this.$alert('empty');
       }
 
       this.ZoneForm.orgId = this.$store.getters.orgId;
@@ -293,12 +299,15 @@ export default {
     },
     fn_findRoute: function(command) {},
     createZoneEntity() {
+      if(!this.ZoneForm.orgId && this.ZoneForm.orgId.length <1){
+          this.$alert('Please create Organization first')
+      }
       if (!this.ZoneForm.name || this.ZoneForm.name.length < 1) {
-        alert('Please input name');
+        this.$alert('Please input name');
         return;
       }
       if (!this.ZoneForm.description || this.ZoneForm.description.length < 1) {
-        alert('Please input description');
+        this.$alert('Please input description');
         return;
       }
       createZone(this.ZoneForm).then(response => {

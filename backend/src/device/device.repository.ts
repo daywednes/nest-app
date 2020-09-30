@@ -16,8 +16,8 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     const query = this.createQueryBuilder('device')
     .leftJoinAndSelect('device.org', 'org')
     .leftJoinAndSelect('device.user', 'user')
-    .leftJoinAndSelect('device.zone', 'zone')
-    .leftJoinAndSelect('device.tagsdevice', 'tagsdevice')
+    .leftJoinAndSelect('device.zone', 'zone');
+    // .leftJoinAndSelect('device.tagsdevice', 'tagsdevice')
     // .leftJoinAndSelect('device.tagsdevice.tag', 'tags');
      query.where('device.org.id = :orgId', { orgId: id });
     try {

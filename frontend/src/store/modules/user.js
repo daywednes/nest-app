@@ -64,7 +64,7 @@ const actions = {
                 const data = response
                     // commit('SET_TOKEN', data.accessToken)
                     // setToken(data.accessToken)
-                    // alert('SUCCESS')
+                    // this.$alert('SUCCESS')
                 resolve()
             }).catch(error => {
                 reject(error)

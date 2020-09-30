@@ -6,7 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <select-Organization id="select-search" class="right-menu-item"/>
+        <select-Organization id="select-search" class="right-menu-item" style="margin-left:5px;"/>
         <search id="header-search" class="right-menu-item" />
 
         <error-log class="errLog-container right-menu-item hover-effect" />
