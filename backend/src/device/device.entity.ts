@@ -12,6 +12,7 @@ import {
 import { ZoneEntity } from '../zone/zone.entity';
 import { OrgEntity } from 'src/org/org.entity';
 import { TagsDevicesEntity } from 'src/tags/tags_divice.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity('device')
 export class DeviceEntity  extends BaseEntity {
@@ -67,4 +68,8 @@ export class DeviceEntity  extends BaseEntity {
 
   @Column({ default: 0 })
   favoriteCount: number;
+
+  @IsOptional()
+  tags:string[]
+  
 }

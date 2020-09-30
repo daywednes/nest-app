@@ -15,6 +15,12 @@
         @functionAddPage="showDialogZones = true"
         @functionDeletePage="fn_delete"
       />
+      <el-input
+        placeholder="Type something"
+        prefix-icon="el-icon-search"
+        v-model="textSearch"
+      >
+      </el-input>
       <SingleZone
         @click.native="fn_compoClick(zone)"
         style="margin: 15px;"
@@ -50,48 +56,6 @@
               autocomplete="on"
             />
           </el-form-item>
-          <!-- <el-form-item prop="label">
-            <span style="margin-left:10px;font-size: large;"> Label</span>
-            <el-input
-              ref="ZoneType"
-              v-model="ZoneForm.ZoneLabel"
-              style="color: black;"
-              placeholder="Label"
-              name="Label"
-              type="text"
-              tabindex="2"
-              autocomplete="on"
-            />
-          </el-form-item>
-          <el-form-item prop="label">
-            <el-checkbox
-              label="Test Zone"
-              style="display:block; font-size: large;"
-            >
-            </el-checkbox>
-          </el-form-item>
-          <el-form-item prop="description">
-            <span style="margin-left:10px;font-size: large;"> Description</span>
-            <el-input
-              ref="ZoneForm"
-              v-model="ZoneForm.ZoneDescription"
-              style="color: black;"
-              placeholder="Description"
-              name="ZoneDescription"
-              type="textarea"
-              tabindex="2"
-              :rows="3"
-              autocomplete="on"
-            />
-          </el-form-item> -->
-
-          <!-- <el-tooltip
-          v-model="capsTooltip"
-          content="Caps lock is On"
-          placement="right"
-          manual
-        >
-        </el-tooltip> -->
           <el-button
             type="primary"
             style="width:100%;margin-bottom:10px;"
@@ -157,6 +121,7 @@ export default {
   },
   data() {
     return {
+      textSearch: '',
       ZoneForm: {
         name: '',
         ZoneType: '',
@@ -197,6 +162,7 @@ export default {
       ],
       multipleSelection: [],
       zonesList: [],
+      zonesListTmp: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
@@ -219,6 +185,9 @@ export default {
       this.ZoneForm.orgId = val;
       this.getZonesList(val);
     },
+    textSearch(val, old) {
+      this.searchZone(val);
+    },
   },
   computed: {
     orgId() {
@@ -231,6 +200,17 @@ export default {
     },
   },
   methods: {
+    searchZone(txt) {
+      if (txt && txt.length > 0) {
+        this.zonesList = this.zonesListTmp.filter(
+          zone =>
+            zone.name.toUpperCase().includes(txt.toUpperCase()) ||
+            zone.description.toUpperCase().includes(txt.toUpperCase())
+        );
+      } else {
+        this.zonesList = this.zonesListTmp;
+      }
+    },
     leftPanelIsShow: function() {
       this.isShowLeft = true;
     },
@@ -316,12 +296,14 @@ export default {
     },
     getZonesList(val) {
       getZones(val).then(response => {
-        this.zonesList = response;
+        this.zonesListTmp = response;
+        this.zonesList = this.zonesListTmp ;
       });
     },
     refreshUI() {
       this.ZoneForm.name = '';
       this.ZoneForm.description = '';
+      this.textSearch = '';
       this.getZonesList(this.orgId);
       this.isShowLeft = false;
       this.showDialogZones = false;

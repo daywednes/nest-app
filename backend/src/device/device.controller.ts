@@ -35,7 +35,7 @@ export class DeviceController {
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
   ): Promise<DeviceEntity[]> {
-    return this.devicesService.getdevices(orgId);
+    return this.devicesService.getdevices(orgId, user);
   }
 
   @Get('/getDevicesAvail/:orgId')
