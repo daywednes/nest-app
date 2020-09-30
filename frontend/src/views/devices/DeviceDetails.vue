@@ -65,7 +65,7 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item v-if="loadTagDone">
+    <el-form-item>
       <span style="margin:0 10px;font-size: large;"> Tags Of Device </span>
       <el-select
         v-model="itemTags"
@@ -83,10 +83,6 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <!-- <el-form-item prop="label">
-      <el-checkbox label="Test Device" style="display:block; font-size: large;">
-      </el-checkbox>
-    </el-form-item> -->
     <el-form-item prop="description">
       <span style="margin-left:10px;font-size: large;"> Description</span>
       <el-input
@@ -101,14 +97,6 @@
         autocomplete="on"
       />
     </el-form-item>
-
-    <!-- <el-tooltip
-          v-model="capsTooltip"
-          content="Caps lock is On"
-          placement="right"
-          manual
-        >
-        </el-tooltip> -->
     <el-button
       type="primary"
       style="width:48%;margin-bottom:10px;"
@@ -165,8 +153,7 @@ export default {
     },
     item(val, old) {
       this.loadTagDone = false;
-      // this.getTagsList();
-      this.getTagsDeviceList(val.id);
+      this.itemTags = val.tags
     },
   },
   computed: {
@@ -181,7 +168,7 @@ export default {
     this.getZonesList(this.orgId);
     this.getOrgList();
     this.getTagsList();
-    this.getTagsDeviceList(this.item.id);
+    this.itemTags = this.item.tags;
   },
   methods: {
     getOrgList() {
@@ -201,14 +188,14 @@ export default {
           : [];
       });
     },
-    async getTagsDeviceList(deivceId) {
-      await getTagsById(deivceId).then(response => {
-        this.itemTags = response.map(x => x.name)
-          ? response.map(x => x.name)
-          : [];
-        this.loadTagDone = true;
-      });
-    },
+    // async getTagsDeviceList(deivceId) {
+    //   await getTagsById(deivceId).then(response => {
+    //     this.itemTags = response.map(x => x.name)
+    //       ? response.map(x => x.name)
+    //       : [];
+    //     this.loadTagDone = true;
+    //   });
+    // },
     updateDeviceEntity() {
       if (!this.item.name || this.item.name.length < 1) {
         this.$alert('Please input name');

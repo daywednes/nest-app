@@ -3,8 +3,8 @@ import { FieldControl } from '../controls/field/index'
 import Socket from '../sockets'
 
 export class DockComponent extends Component {
-    constructor(CustomFieldControl, name) {
-        name = name ? name : 'Default Device'
+    constructor(CustomFieldControl, item) {
+        name = item.name ? item.name + " \n " +item.description : 'Default Device'
         super(name)
         this.CustomFieldControl = CustomFieldControl
     }

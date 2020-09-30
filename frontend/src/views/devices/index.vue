@@ -18,7 +18,12 @@
           }
         "
         @functionDeletePage="fn_delete"
-      />
+      /><el-input
+        placeholder="Type something"
+        prefix-icon="el-icon-search"
+        v-model="textSearch"
+      >
+      </el-input>
       <SingleDevice
         @click.native="fn_compoClick(device)"
         style="margin: 15px;"
@@ -106,7 +111,7 @@
 </template>
 <style scoped>
 .el-select {
-  width: 300px ;
+  width: 300px;
 }
 </style>
 <script>
@@ -131,12 +136,14 @@ export default {
   },
   data() {
     return {
+      textSearch: '',
       DeviceForm: {
         name: '',
         DeviceType: '',
         DeviceLabel: '',
         description: '',
         tags: '',
+        tagsName: '',
         orgId: '',
       },
       showDialogDevices: false,
@@ -173,6 +180,7 @@ export default {
       multipleSelection: [],
       optionsTag: [],
       devicesList: [],
+      devicesListTmp: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       ds_master: [],
       ds_commonCode: {},
@@ -196,6 +204,9 @@ export default {
       this.DeviceForm.orgId = val;
       this.getDevicesList(val);
     },
+    textSearch(val, old) {
+      this.searchDevice(val);
+    },
   },
   computed: {
     orgId() {
@@ -212,6 +223,20 @@ export default {
       getTags().then(response => {
         this.optionsTag = response;
       });
+    },
+    searchDevice(txt) {
+      if (txt && txt.length > 0) {
+        this.devicesList = this.devicesListTmp.filter(
+          device =>
+            device.name.toUpperCase().includes(txt.toUpperCase()) ||
+            device.description.toUpperCase().includes(txt.toUpperCase()) ||
+            device.tags
+              .map(tag => tag.toUpperCase())
+              .includes(txt.toUpperCase()),
+        );
+      } else {
+        this.devicesList = this.devicesListTmp;
+      }
     },
     leftPanelIsShow: function() {
       this.isShowLeft = true;
@@ -281,8 +306,8 @@ export default {
     },
     fn_findRoute: function(command) {},
     createDeviceEntity() {
-      if(!this.DeviceForm.orgId && this.DeviceForm.orgId.length <1){
-          this.$alert('Please create Organization first')
+      if (!this.DeviceForm.orgId && this.DeviceForm.orgId.length < 1) {
+        this.$alert('Please create Organization first');
       }
 
       if (!this.DeviceForm.name || this.DeviceForm.name.length < 1) {
@@ -307,13 +332,15 @@ export default {
           row.orgId = row.org ? row.org.id : null;
         });
 
-        this.devicesList = response;
+        this.devicesListTmp = response;
+        this.devicesList = this.devicesListTmp;
       });
     },
     refreshUI() {
       this.DeviceForm.name = '';
+      this.textSearch = '';
       this.DeviceForm.description = '';
-      this.DeviceForm.tags = '';
+      this.DeviceForm.tagsName = '';
       this.getDevicesList(this.orgId);
       this.isShowLeft = false;
       this.showDialogDevices = false;

@@ -1,7 +1,13 @@
 <template>
-  <el-card class="box-card" style=" width: 300px; float:left;">
+  <el-card
+    class="box-card"
+    style=" width: 300px; float:left; min-height: 350px;"
+  >
     <div slot="header" class="clearfix">
-      <svg-icon style="margin-left:10px;font-size: x-large;" icon-class="example" />
+      <svg-icon
+        style="margin-left:10px;font-size: x-large;"
+        icon-class="example"
+      />
       <span style="margin-left:10px;font-size: x-large;">{{ item.name }}</span>
 
       <!-- <el-checkbox  :label="item.name" style="font-size: xx-large;">
@@ -19,8 +25,18 @@
       <el-button type="primary" icon="el-icon-s-custom"> </el-button>
       <el-button type="primary" icon="el-icon-s-data"> </el-button>
       <el-button type="primary" icon="el-icon-delete-solid"> </el-button>
-      <el-tag style="margin-top:15px;display:block;" type="info">
-        note
+      <span
+        style="margin:10px 0px 5px 0px;display:block; font-size: medium;
+    font-weight: bold;"
+        >TAGS :
+      </span>
+      <el-tag
+        v-for="tag in item.tags"
+        :key="tag"
+        style="margin:10px 10px 5px 0px;"
+        type="info"
+      >
+        {{ tag }}
       </el-tag>
     </div>
   </el-card>

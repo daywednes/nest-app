@@ -4,7 +4,7 @@
     // Inputs
     .input(v-for='input in inputs()')
       Socket(v-socket:input="input", type="input", :socket="input.socket")
-      .input-title(v-show='!input.showControl()')
+      .input-title(v-show='!input.showControl()') 
       .input-control(
         v-show='input.showControl()'
         v-control="input.control"
@@ -15,25 +15,27 @@
       .output-title
       Socket(v-socket:output="output", type="output", :socket="output.socket")
   .row(vertical)
-    a.shield-container(:href="'https://www.npmjs.com/package/'+node.data.name" target="_blank")
-      img.shield(:src="'https://img.shields.io/npm/v/'+node.data.name+'.svg'")
-    .name {{node.data.name}}
+    //- a.shield-container(:href="'https://www.npmjs.com/package/'+node.data.name" target="_blank")
+    //-   img.shield(:src="'https://img.shields.io/npm/v/'+node.data.name+'.svg'")
+    .name  {{'Name: ' +node.data.name}}
+    .name  {{'Device: ' +node.data.name}}
+    .name  {{'Lable: ' +node.data.name}}
 </template>
 
 <script>
-import VueRender from 'rete-vue-render-plugin'
+import VueRender from 'rete-vue-render-plugin';
 
 export default {
+  mixins: [VueRender.mixin],
   components: {
     Socket: VueRender.Socket
-  },
-  mixins: [VueRender.mixin]
+  }
 }
 </script>
 
 <style lang="sass" scoped>
-$color: #cb3837
-
+$color: #003837
+  
 .node
   background: $color
   border-radius: 0
@@ -45,15 +47,15 @@ $color: #cb3837
   &:hover
     background: $color
   .image
-    height: 50px
-    width: 130px
+    height: 100px
+    width: 230px
     flex: 1
   .inputs, .outputs
     margin-top: 1em
   .name
     text-align: center
     color: white
-    font-size: 42px
+    font-size: 24px
     margin: 0.2em 0.7em
   .shield-container
     padding: 0 1em
