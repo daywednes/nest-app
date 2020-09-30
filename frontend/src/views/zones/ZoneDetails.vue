@@ -117,11 +117,11 @@ export default {
   methods: {
     updateZoneEntity() {
       if (!this.item.name || this.item.name.length < 1) {
-        alert('Please input name');
+        this.$alert('Please input name');
         return;
       }
       if (!this.item.description || this.item.description.length < 1) {
-        alert('Please input description');
+        this.$alert('Please input description');
         return;
       }
       updateZone(this.item).then(response => {

@@ -123,6 +123,11 @@
   </el-form>
 </template>
 
+<style scoped>
+.el-select {
+  width: 300px ;
+}
+</style>
 <script>
 import { updateDevice, deleteDevice } from '@/api/device';
 import { getTags, getTagsById } from '@/api/tags';
@@ -167,7 +172,7 @@ export default {
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
-        alert('empty');
+        this.$alert('empty');
       }
       return this.$store.getters.orgId;
     },
@@ -206,11 +211,11 @@ export default {
     },
     updateDeviceEntity() {
       if (!this.item.name || this.item.name.length < 1) {
-        alert('Please input name');
+        this.$alert('Please input name');
         return;
       }
       if (!this.item.description || this.item.description.length < 1) {
-        alert('Please input description');
+        this.$alert('Please input description');
         return;
       }
       this.item.tags = this.itemTags;

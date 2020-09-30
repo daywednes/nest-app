@@ -159,7 +159,7 @@ export default {
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
-        alert('empty');
+        this.$alert('empty');
       }
       return this.$store.getters.orgId;
     },
@@ -264,7 +264,7 @@ export default {
     },
     addDeviceToZone() {
       if (!this.value || this.value.length < 1) {
-        alert('Please select device');
+        this.$alert('Please select device');
         return;
       }
       this.value.forEach(async element => {
@@ -285,7 +285,7 @@ export default {
     },
     removeFromZone() {
       if (!this.multipleSelection || this.multipleSelection.length < 1) {
-        alert('Please select device');
+        this.$alert('Please select device');
         return;
       }
       this.multipleSelection.forEach(async element => {

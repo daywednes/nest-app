@@ -136,10 +136,10 @@ export default {
   },
   methods: {
     fn_delete(id) {
-      // alert('Delete'+ tmp)
+      // this.$alert('Delete'+ tmp)
       // return;
     if(this.orgList.length < 2){
-      alert('This is the last organization.');
+      this.$alert('This is the last organization.');
       return;
     }
       deleteOrg(id).then(response => {
@@ -169,14 +169,14 @@ export default {
         !this.organizationForm.name ||
         this.organizationForm.name.length < 1
       ) {
-        alert('Please input name');
+        this.$alert('Please input name');
         return;
       }
       if (
         !this.organizationForm.description ||
         this.organizationForm.description.length < 1
       ) {
-        alert('Please input description');
+        this.$alert('Please input description');
         return;
       }
       createOrg(this.organizationForm).then(response => {

@@ -323,7 +323,7 @@ export default {
     //         this.$router.push({ path: this.redirect || '/' })
     //       })
     //     } else {
-    //       alert('第三方登录失败')
+    //       this.$alert('第三方登录失败')
     //     }
     //   }
     // }

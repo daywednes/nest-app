@@ -578,7 +578,7 @@ const DEFAULT_ITEM = {
   width: 200px !important;
 }
 .el-select {
-  width: 300px !important;
+  width: 250px ;
 }
 .el-table {
   min-height: 100px;

@@ -104,6 +104,11 @@
     </RightPanelExtra>
   </div>
 </template>
+<style scoped>
+.el-select {
+  width: 300px ;
+}
+</style>
 <script>
 import RightPanelExtra from '@/components/RightPanelExtra';
 import DeviceDetails from '@/views/devices/DeviceDetails';
@@ -195,7 +200,7 @@ export default {
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
-        alert('empty');
+        this.$alert('empty');
       }
 
       this.DeviceForm.orgId = this.$store.getters.orgId;
@@ -276,15 +281,19 @@ export default {
     },
     fn_findRoute: function(command) {},
     createDeviceEntity() {
+      if(!this.DeviceForm.orgId && this.DeviceForm.orgId.length <1){
+          this.$alert('Please create Organization first')
+      }
+
       if (!this.DeviceForm.name || this.DeviceForm.name.length < 1) {
-        alert('Please input name');
+        this.$alert('Please input name');
         return;
       }
       if (
         !this.DeviceForm.description ||
         this.DeviceForm.description.length < 1
       ) {
-        alert('Please input description');
+        this.$alert('Please input description');
         return;
       }
       createDevice(this.DeviceForm).then(response => {
