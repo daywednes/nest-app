@@ -41,16 +41,16 @@ export default [{
     //         'rete-area-plugin'
     //     ]
     // },
-    // {
-    //     key: 'Zone4',
-    //     init: module,
-    //     packages: [
-    //         'rete',
-    //         'rete-connection-plugin',
-    //         'rete-vue-render-plugin',
-    //         'rete-module-plugin'
-    //     ]
-    // },
+    {
+        key: 'module',
+        init: module,
+        packages: [
+            'rete',
+            'rete-connection-plugin',
+            'rete-vue-render-plugin',
+            'rete-module-plugin'
+        ]
+    },
     // {
     //     key: 'Zone5',
     //     init: task,
@@ -91,7 +91,7 @@ export default [{
     //     ]
     // },
     // {
-    //     key: 'Zone9',
+    //     key: 'minimap',
     //     init: minimap,
     //     packages: [
     //         'rete',
@@ -100,15 +100,15 @@ export default [{
     //         'rete-minimap-plugin'
     //     ]
     // },
-    // {
-    //     key: 'Zone2 Name2',
-    //     init: customization,
-    //     packages: [
-    //         'rete',
-    //         'rete-connection-plugin',
-    //         'rete-vue-render-plugin',
-    //         'rete-minimap-plugin',
-    //         'rete-dock-plugin'
-    //     ]
-    // }
+    {
+        key: 'customization',
+        init: customization,
+        packages: [
+            'rete',
+            'rete-connection-plugin',
+            'rete-vue-render-plugin',
+            'rete-minimap-plugin',
+            'rete-dock-plugin'
+        ]
+    }
 ]
