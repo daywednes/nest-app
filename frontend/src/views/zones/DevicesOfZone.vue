@@ -155,7 +155,10 @@ export default {
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getDevicesByZoneList();
+    this.getDevicesAvailList(this.orgId);
+  },
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
