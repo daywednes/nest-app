@@ -17,7 +17,16 @@ export default async function(container, extra) {
 
     extra.classList.add('dock-menu')
 
-    editor.use(ContextMenuPlugin);
+    editor.use(ContextMenuPlugin, {
+        searchBar: true,
+        delay: 100,
+        allocate(component) {
+            return ['Device'];
+        },
+        rename(component) {
+            return component.name;
+        }
+    });
     editor.use(MinimapPlugin);
     editor.use(DockPlugin, {
         container: extra,

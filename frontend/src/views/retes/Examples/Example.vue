@@ -1,18 +1,26 @@
 <template lang="pug">
 .example
+  el-input(
+    placeholder="search..."
+    class="inline-input"
+    autofocus
+    style="position: absolute; width: 200px; left: 2%"
+    prefix-icon="el-icon-search"
+    v-model="searchText"
+  )
   //- Info(:item="example")
   CommonFunction(
-        style="float: right; margin-right: 10px; text-align: left; width:15%; height: 50px;"
+        style="position: absolute;"
         :isShowDeploy="true"
         @functionDeploy="fn_deploy")
         
   .view
-    div(ref="view")
+    div(style="margin-top: 20px;" ref="view")
     div(ref="extra")
 </template>
 
 <script>
-import Vue from "vue"
+import Vue from 'vue';
 import Info from './Info';
 import CommonFunction from '@/components/CommonFunction';
 
@@ -36,16 +44,17 @@ export default {
       this.engine = engine;
     },
     fn_deploy() {
-      let msg = 'Hello World from Nest App ' + this.counter
-      Vue.$wamp.publish("com.myapp.hello", [msg])
-      this.counter = this.counter + 1
+      let msg = 'Hello World from Nest App ' + this.counter;
+      Vue.$wamp.publish('com.myapp.hello', [msg]);
+      this.counter = this.counter + 1;
     },
   },
   data() {
     return {
       editor: null,
       engine: null,
-      counter: 1
+      counter: 1,
+      searchText: '',
     };
   },
   mounted() {
@@ -80,7 +89,7 @@ export default {
     position: relative
     overflow: hidden
     float: left
-    max-height: 100vh
+    max-height: 140vh
     min-height: 80vh
     margin: 20px
     +phone

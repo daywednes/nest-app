@@ -30,12 +30,12 @@ export default {
     height: 100vh;
 }
 
-.dock {
+/* .dock {
     height: 100px;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-}
+} */
 
 .dock-item {
     display: inline-block;

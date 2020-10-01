@@ -9,7 +9,8 @@
         v-show='input.showControl()'
         v-control="input.control"
       )
-    img.image(:src="require('../../../../assets/images/npm.svg')")
+    //- img.image(:src="require('../../../../assets/images/npm.svg')")
+    .title  {{node.name}}
     // Outputs
     .output(v-for='output in outputs()')
       .output-title
@@ -17,9 +18,10 @@
   .row(vertical)
     //- a.shield-container(:href="'https://www.npmjs.com/package/'+node.data.name" target="_blank")
     //-   img.shield(:src="'https://img.shields.io/npm/v/'+node.data.name+'.svg'")
-    .name  {{'Name: ' +node.data.name}}
-    .name  {{'Device: ' +node.data.name}}
-    .name  {{'Lable: ' +node.data.name}}
+    
+    .name  {{'Organization: ' +node.data.org.name}}
+    .name  {{'Zone: ' +node.data.zone.name}}
+    .name  {{'Lable: ' +node.data.tags}}
 </template>
 
 <script>
@@ -34,13 +36,14 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-$color: #003837
+$color: #008837
   
 .node
   background: $color
   border-radius: 0
   border: none
   .row
+    min-width: 350px
     display: flex
     &[vertical]
       flex-direction: column
@@ -53,9 +56,15 @@ $color: #003837
   .inputs, .outputs
     margin-top: 1em
   .name
-    text-align: center
+    text-align: left
     color: white
     font-size: 24px
+    margin: 0.2em 0.7em
+  .title
+    text-align: center
+    color: white
+    font-size: 36px
+    width: 100%
     margin: 0.2em 0.7em
   .shield-container
     padding: 0 1em
