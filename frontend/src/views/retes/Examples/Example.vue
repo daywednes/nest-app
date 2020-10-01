@@ -1,22 +1,22 @@
 <template lang="pug">
 .example
-  el-input(
-    placeholder="search..."
-    class="inline-input"
-    autofocus
-    style="position: absolute; width: 200px; left: 2%"
-    prefix-icon="el-icon-search"
-    v-model="searchText"
+  el-input.inline-input(
+    placeholder='search...',
+    autofocus,
+    style='position: absolute; width: 200px; left: 2%',
+    prefix-icon='el-icon-search',
+    v-model='searchText'
   )
   //- Info(:item="example")
   CommonFunction(
-        style="position: absolute;"
-        :isShowDeploy="true"
-        @functionDeploy="fn_deploy")
-        
+    style='position: absolute;',
+    :isShowDeploy='true',
+    @functionDeploy='fn_deploy'
+  )
+
   .view
-    div(style="margin-top: 20px;" ref="view")
-    div(ref="extra")
+    div(style='margin-top: 20px;', ref='view')
+    div(ref='extra')
 </template>
 
 <script>
@@ -44,9 +44,50 @@ export default {
       this.engine = engine;
     },
     fn_deploy() {
-      let msg = 'Hello World from Nest App ' + this.counter;
-      Vue.$wamp.publish('com.myapp.hello', [msg]);
+      const modes = [
+        [
+          {
+            from_device_id: '1',
+            to_device_id: '2',
+            interval: 1,
+            rpc: {
+              name: 'procedure1',
+              parameters: ['faster'],
+            },
+          },
+        ],
+        [
+          {
+            from_device_id: '1',
+            to_device_id: '2',
+            interval: 2,
+            rpc: {
+              name: 'procedure1',
+              parameters: ['normal'],
+            },
+          },
+        ],
+        [
+          {
+            from_device_id: '1',
+            to_device_id: '2',
+            interval: 3,
+            rpc: {
+              name: 'procedure1',
+              parameters: ['slower'],
+            },
+          },
+        ],
+      ];
+
+      Vue.$wamp.publish('com.myapp.hello', [
+        JSON.stringify(modes[this.counter % 3]),
+      ]);
       this.counter = this.counter + 1;
+
+      //let msg = 'Hello World from Nest App ' + this.counter;
+      //Vue.$wamp.publish('com.myapp.hello', [msg]);
+      //this.counter = this.counter + 1;
     },
   },
   data() {
