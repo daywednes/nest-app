@@ -106,6 +106,17 @@ export const constantRoutes = [{
             name: 'Zones',
             meta: { title: 'Zones', icon: 'icon', affix: true }
         }]
+    },{
+        path: '/automations',
+        component: Layout,
+        redirect: '/automations',
+        children: [{
+            path: '/automations',
+            component: () =>
+                import ('@/views/retes/index'),
+            name: 'Automations',
+            meta: { title: 'Automations', icon: 'chart', affix: true }
+        }]
     },
 
     // {
@@ -146,7 +157,7 @@ export const asyncRoutes = [
     /** when your routing map is too long, you can split it into small modules **/
     // componentsRouter,
     // chartsRouter,
-    retesRouter,
+    // retesRouter,
     // deviceRouter,
     // holdcomponentRouter,
     // nestedRouter,

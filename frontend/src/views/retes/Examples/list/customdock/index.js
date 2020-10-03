@@ -9,12 +9,13 @@ import MinimapPlugin from 'rete-minimap-plugin'
 import './styles.sass'
 
 
-import { getDevices, createDevice, deleteDevice } from '@/api/device';
+import { getDevices} from '@/api/device';
 import store from '@/store'
 
 export default async function(container, extra) {
     const { editor, engine, resize, process } = await init(container)
 
+    editor.clear();
     extra.classList.add('dock-menu')
 
     editor.use(ContextMenuPlugin, {
@@ -32,26 +33,6 @@ export default async function(container, extra) {
         container: extra,
         plugins: [VueRenderPlugin]
     });
-
-    // [
-    //     new Components.DeviceComponent()
-    // ].map(c => {
-    //     editor.register(c);
-    //     engine.register(c);
-    // });
-    
-    await getDevices(store.getters.orgId).then(response => {
-        response
-        // .filter(x => x.zone == null)
-            .map(item => {
-            let tmpCom = new Components.DeviceComponent(item);
-
-            editor.register(tmpCom)
-            engine.register(tmpCom)
-        });
-    });
-
-
     resize()
     process()
 

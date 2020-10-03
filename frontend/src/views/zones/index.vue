@@ -204,8 +204,8 @@ export default {
       if (txt && txt.length > 0) {
         this.zonesList = this.zonesListTmp.filter(
           zone =>
-            zone.name.toUpperCase().includes(txt.toUpperCase()) ||
-            zone.description.toUpperCase().includes(txt.toUpperCase())
+            zone.name.trim().toUpperCase().includes(txt.toUpperCase()) ||
+            zone.description.trim().toUpperCase().includes(txt.toUpperCase())
         );
       } else {
         this.zonesList = this.zonesListTmp;

@@ -228,10 +228,10 @@ export default {
       if (txt && txt.length > 0) {
         this.devicesList = this.devicesListTmp.filter(
           device =>
-            device.name.toUpperCase().includes(txt.toUpperCase()) ||
-            device.description.toUpperCase().includes(txt.toUpperCase()) ||
+            device.name.trim().toUpperCase().includes(txt.toUpperCase()) ||
+            device.description.trim().toUpperCase().includes(txt.toUpperCase()) ||
             device.tags
-              .map(tag => tag.toUpperCase())
+              .map(tag => tag.trim().toUpperCase())
               .includes(txt.toUpperCase()),
         );
       } else {

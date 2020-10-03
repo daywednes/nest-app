@@ -2,11 +2,11 @@
 
 import Layout from '@/layout'
 
-const tableRouter = {
+const devicesRouter = {
     path: '/devices',
     component: Layout,
     redirect: '/devices',
-    name: 'Table',
+    name: 'Devices',
     meta: {
         title: 'Devices',
         icon: 'guide'
@@ -19,4 +19,4 @@ const tableRouter = {
         meta: { title: 'Devices' }
     }]
 }
-export default tableRouter
+export default devicesRouter
