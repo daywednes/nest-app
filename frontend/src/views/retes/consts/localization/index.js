@@ -168,7 +168,7 @@ export default () => [
   }],
   ['Модули', {
     en: 'Modules',
-    ua: 'Модулі'
+    ua: 'Modules'
   }],
   ['Также представлен отдельный плагин для тех, кому необходимо строить схемы с разбиением логики на подмодули', {
     en: 'There is also a separate plugin for those who need to build schemes with a splitting of logic into submodules',
