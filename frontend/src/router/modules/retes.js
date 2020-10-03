@@ -32,7 +32,7 @@ const retesRouter = {
                 import ('@/views/retes/Examples/'),
             name: 'Demo%20Automation',
             meta: { title: 'Automation', noCache: true },
-        },
+        }
 
     ]
 }

@@ -23,8 +23,45 @@
 import Vue from 'vue';
 import Info from './Info';
 import CommonFunction from '@/components/CommonFunction';
+import { getDevices } from '@/api/device';
+import store from '@/store';
+import Components from '@/views/retes/rete/components/customdevice';
 
 export default {
+  watch: {
+    searchText(val) {
+      this.searchDevice(val);
+    },
+    async devicesList(vals) {
+      this.$refs.view.innerHTML = '';
+      this.$refs.extra.innerHTML = '';
+      this.$refs.extra.className = '';
+      // if (this.editor) {
+      //   await this.editor.destroy();
+      //   await this.editor.clear();
+      // }
+      // if (this.engine) {
+      //   await this.engine.destroy();
+      //   await this.engine.abort();
+      // }
+
+      this.editor = null;
+      this.engine = null;
+      const { editor, engine } = await this.example.init(
+        this.$refs.view,
+        this.$refs.extra,
+      );
+
+      this.editor = editor;
+      this.engine = engine;
+      console.log(vals);
+      vals.map(item => {
+        let tmpCom = new Components.DeviceComponent(item);
+        this.editor.register(tmpCom);
+        // this.engine.register(tmpCom);
+      });
+    },
+  },
   props: ['example'],
   methods: {
     async init() {
@@ -32,8 +69,13 @@ export default {
       this.$refs.extra.innerHTML = '';
       this.$refs.extra.className = '';
 
-      if (this.editor) this.editor.destroy();
-      if (this.engine) this.engine.destroy();
+      if (this.editor) {
+        await this.editor.destroy();
+      }
+      if (this.engine) {
+        await this.engine.destroy();
+        await this.engine.abort();
+      }
 
       const { editor, engine } = await this.example.init(
         this.$refs.view,
@@ -42,6 +84,19 @@ export default {
 
       this.editor = editor;
       this.engine = engine;
+      if (this.devicesListTmp.length < 1) {
+        await getDevices(store.getters.orgId).then(response => {
+          this.devicesListTmp = response;
+          response
+            // .filter(x => x.zone == null)
+            .map(item => {
+              let tmpCom = new Components.DeviceComponent(item);
+
+              editor.register(tmpCom);
+              engine.register(tmpCom);
+            });
+        });
+      }
     },
     fn_deploy() {
       const modes = [
@@ -89,6 +144,27 @@ export default {
       //Vue.$wamp.publish('com.myapp.hello', [msg]);
       //this.counter = this.counter + 1;
     },
+    searchDevice(txt) {
+      if (txt && txt.length > 0) {
+        this.devicesList = this.devicesListTmp.filter(
+          device =>
+            device.name
+              .trim()
+              .toUpperCase()
+              .includes(txt.toUpperCase()) ||
+            device.zone.name
+              .trim()
+              .toUpperCase()
+              .includes(txt.toUpperCase()) ||
+            // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+            device.tags
+              .map(tag => tag.trim().toUpperCase())
+              .includes(txt.toUpperCase()),
+        );
+      } else {
+        this.devicesList = this.devicesListTmp;
+      }
+    },
   },
   data() {
     return {
@@ -96,13 +172,15 @@ export default {
       engine: null,
       counter: 1,
       searchText: '',
+      devicesListTmp: [],
+      devicesList: [],
     };
   },
   mounted() {
     this.init();
   },
   updated() {
-    this.init();
+    // this.init();
   },
   components: {
     Info,
