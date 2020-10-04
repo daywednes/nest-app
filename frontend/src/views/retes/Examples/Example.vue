@@ -88,7 +88,7 @@ export default {
         await getDevices(store.getters.orgId).then(response => {
           this.devicesListTmp = response;
           this.$store.dispatch('user/updateDevices', response);
-          
+
           response
             // .filter(x => x.zone == null)
             .map(item => {
@@ -154,10 +154,12 @@ export default {
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-            device.zone.name
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()) ||
+            (device.zone
+              ? device.zone.name
+                  .trim()
+                  .toUpperCase()
+                  .includes(txt.toUpperCase())
+              : false) ||
             // device.description.toUpperCase().includes(txt.toUpperCase()) ||
             device.tags
               .map(tag => tag.trim().toUpperCase())
