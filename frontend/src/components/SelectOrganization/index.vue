@@ -159,6 +159,7 @@ export default {
           this.organizationCode = this.orgList[0].id;
           this.$store.dispatch('user/updateOrgID', this.organizationCode);
         }
+        this.$store.dispatch('user/updateOrgs', response);
       });
     },
     updateOrgID(id) {

@@ -9,7 +9,10 @@ const state = {
     avatar: '',
     introduction: '',
     orgId: '',
-    roles: []
+    roles: [],
+    orgs: [],
+    devices: [],
+    zones: []
 }
 
 const mutations = {
@@ -30,6 +33,15 @@ const mutations = {
     },
     SET_ORGID: (state, orgId) => {
         state.orgId = orgId
+    },
+    SET_ORGS: (state, orgs) => {
+        state.orgs = orgs
+    },
+    SET_ZONES: (state, zones) => {
+        state.zones = zones
+    },
+    SET_DEVICES: (state, devices) => {
+        state.devices = devices
     }
 }
 
@@ -55,6 +67,15 @@ const actions = {
     },
     updateOrgID({ commit }, id) {
         commit('SET_ORGID', id)
+    },
+    updateOrgs({ commit }, data) {
+        commit('SET_ORGS', data)
+    },
+    updateDevices({ commit }, data) {
+        commit('SET_DEVICES', data)
+    },
+    updateZones({ commit }, data) {
+        commit('SET_ZONES', data)
     },
 
     signup({ commit }, userInfo) {

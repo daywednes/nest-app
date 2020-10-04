@@ -174,11 +174,14 @@ export default {
     getOrgList() {
       getOrgs().then(response => {
         this.orgList = response;
+        this.$store.dispatch('user/updateOrgs', response);
       });
     },
     getZonesList(val) {
       getZones(val).then(response => {
         this.optionsZone = response;
+        
+        this.$store.dispatch('user/updateZones', response);
       });
     },
     getTagsList() {

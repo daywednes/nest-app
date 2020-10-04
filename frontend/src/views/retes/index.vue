@@ -37,15 +37,15 @@ export default {
     },
     async devicesList(vals) {
       this.devicesListTmp.map(item => {
-        let itemName =  item.name.toLowerCase().replace(' ', '-');
+        let itemName = item.name.toLowerCase().replace(' ', '-');
         let className = 'node ' + itemName.replace(' ', '-');
-        
+
         if (vals.includes(item)) {
           var x = document.getElementsByClassName(className);
-          x[x.length -1].style.contentVisibility  = 'visible';
-        }else{
+          x[x.length - 1].style.contentVisibility = 'visible';
+        } else {
           var x = document.getElementsByClassName(className);
-          x[x.length -1].style.contentVisibility  = 'hidden';
+          x[x.length - 1].style.contentVisibility = 'hidden';
         }
       });
     },
@@ -74,6 +74,8 @@ export default {
       if (this.devicesListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
           this.devicesListTmp = response;
+
+          this.$store.dispatch('user/updateDevices', response);
           response
             // .filter(x => x.zone == null)
             .map(item => {
@@ -176,7 +178,7 @@ export default {
 </script>
 <style>
 .ivu-card-bordered {
-    margin: 30px 0px;
+  margin: 30px 0px;
 }
 </style>
 

@@ -6,8 +6,7 @@
         width: this.isShowLeft ? 'calc(100% - 700px)' : '100%',
       }"
     >
-    
-        <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
+      <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
       <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
@@ -83,8 +82,11 @@
           </el-tab-pane>
           <el-tab-pane name="2" label="List Devices">
             <keep-alive>
-              <DevicesOfZone ref="devicesOfZone" :zone="selectedZone" 
-                @refreshUI="refreshUI"/>
+              <DevicesOfZone
+                ref="devicesOfZone"
+                :zone="selectedZone"
+                @refreshUI="refreshUI"
+              />
             </keep-alive>
           </el-tab-pane>
         </el-tabs>
@@ -95,7 +97,7 @@
 
 <style scoped>
 .el-select {
-  width: 300px ;
+  width: 300px;
 }
 </style>
 <script>
@@ -204,8 +206,14 @@ export default {
       if (txt && txt.length > 0) {
         this.zonesList = this.zonesListTmp.filter(
           zone =>
-            zone.name.trim().toUpperCase().includes(txt.toUpperCase()) ||
-            zone.description.trim().toUpperCase().includes(txt.toUpperCase())
+            zone.name
+              .trim()
+              .toUpperCase()
+              .includes(txt.toUpperCase()) ||
+            zone.description
+              .trim()
+              .toUpperCase()
+              .includes(txt.toUpperCase()),
         );
       } else {
         this.zonesList = this.zonesListTmp;
@@ -279,8 +287,8 @@ export default {
     },
     fn_findRoute: function(command) {},
     createZoneEntity() {
-      if(!this.ZoneForm.orgId && this.ZoneForm.orgId.length <1){
-          this.$alert('Please create Organization first')
+      if (!this.ZoneForm.orgId && this.ZoneForm.orgId.length < 1) {
+        this.$alert('Please create Organization first');
       }
       if (!this.ZoneForm.name || this.ZoneForm.name.length < 1) {
         this.$alert('Please input name');
@@ -297,7 +305,9 @@ export default {
     getZonesList(val) {
       getZones(val).then(response => {
         this.zonesListTmp = response;
-        this.zonesList = this.zonesListTmp ;
+        this.zonesList = this.zonesListTmp;
+
+        this.$store.dispatch('user/updateZones', response);
       });
     },
     refreshUI() {
