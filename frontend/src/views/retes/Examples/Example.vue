@@ -87,6 +87,8 @@ export default {
       if (this.devicesListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
           this.devicesListTmp = response;
+          this.$store.dispatch('user/updateDevices', response);
+          
           response
             // .filter(x => x.zone == null)
             .map(item => {

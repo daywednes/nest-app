@@ -20,7 +20,7 @@
     //-   img.shield(:src="'https://img.shields.io/npm/v/'+node.data.name+'.svg'")
     
     .name  {{'Organization: ' +node.data.org.name}}
-    .name  {{'Zone: ' +node.data.zone.name}}
+    .name  {{'Zone: ' +(node.data.zone ? node.data.zone.name : "")}}
     .name  {{'Lable: ' +node.data.tags}}
 </template>
 

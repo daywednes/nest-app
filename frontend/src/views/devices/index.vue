@@ -334,6 +334,8 @@ export default {
 
         this.devicesListTmp = response;
         this.devicesList = this.devicesListTmp;
+        
+        this.$store.dispatch('user/updateDevices', response);
       });
     },
     refreshUI() {
