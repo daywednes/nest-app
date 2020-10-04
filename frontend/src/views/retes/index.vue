@@ -42,10 +42,10 @@ export default {
         
         if (vals.includes(item)) {
           var x = document.getElementsByClassName(className);
-          x[0].style.contentVisibility  = 'visible';
+          x[x.length -1].style.contentVisibility  = 'visible';
         }else{
           var x = document.getElementsByClassName(className);
-          x[0].style.contentVisibility  = 'hidden';
+          x[x.length -1].style.contentVisibility  = 'hidden';
         }
       });
     },
