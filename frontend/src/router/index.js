@@ -93,7 +93,7 @@ export const constantRoutes = [{
             component: () =>
                 import ('@/views/devices/index'),
             name: 'Devices',
-            meta: { title: 'Devices', icon: 'guide', affix: true }
+            meta: { title: 'Devices', icon: 'guide'}
         }]
     }, {
         path: '/zones',
@@ -104,7 +104,7 @@ export const constantRoutes = [{
             component: () =>
                 import ('@/views/zones/index'),
             name: 'Zones',
-            meta: { title: 'Zones', icon: 'icon', affix: true }
+            meta: { title: 'Zones', icon: 'icon'}
         }]
     },{
         path: '/automations',
@@ -115,7 +115,7 @@ export const constantRoutes = [{
             component: () =>
                 import ('@/views/retes/index'),
             name: 'Automations',
-            meta: { title: 'Automations', icon: 'chart', affix: true }
+            meta: { title: 'Automations', icon: 'chart'}
         }]
     },
 
