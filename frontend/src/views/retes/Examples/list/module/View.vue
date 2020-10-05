@@ -2,7 +2,7 @@
 Card.view()
   p(slot="title")
     Icon(type="md-list")
-    |  Modules
+    |  Automations
   Button(slot="extra" shape="circle" size="small" icon="md-add" @click="addModule()")
 
   RadioGroup(v-model="module" vertical)
@@ -31,14 +31,14 @@ export default {
     }
   },
   mounted() {
-    this.module = 'index.rete'
+    this.module = 'Automation'
   },
   methods: {
     initialData() {
       return { id: 'retejs@0.1.0', nodes: {}}
     },
     addModule() {
-      Vue.set(this.modules, 'module' + Object.keys(this.modules).length + '.rete', { data: this.initialData() })
+      Vue.set(this.modules, 'Automation ' + Object.keys(this.modules).length + ' ', { data: this.initialData() })
       this.$forceUpdate()
     },
     openModule(name) {

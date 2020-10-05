@@ -180,7 +180,6 @@ export default {
     getZonesList(val) {
       getZones(val).then(response => {
         this.optionsZone = response;
-        
         this.$store.dispatch('user/updateZones', response);
       });
     },
