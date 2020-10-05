@@ -141,10 +141,12 @@ export default {
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-            (device.zone? device.zone.name
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()) : false) ||
+            (device.zone
+              ? device.zone.name
+                  .trim()
+                  .toUpperCase()
+                  .includes(txt.toUpperCase())
+              : false) ||
             // device.description.toUpperCase().includes(txt.toUpperCase()) ||
             device.tags
               .map(tag => tag.trim().toUpperCase())
@@ -188,7 +190,7 @@ export default {
 .example
   display: flex
   max-width: 100%
-  margin: 2vh 0
+  padding: 2vh 0
   flex-direction: row-reverse
   +phone
     flex-direction: column !important

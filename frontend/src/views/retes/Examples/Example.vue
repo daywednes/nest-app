@@ -199,7 +199,7 @@ export default {
 .example
   display: flex
   max-width: 100%
-  margin: 2vh 0
+  padding: 2vh 0
   flex-direction: row-reverse
   +phone
     flex-direction: column !important
