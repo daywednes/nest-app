@@ -6,9 +6,7 @@ import {
   Logger,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
-  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -16,19 +14,17 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
-import { CreateDeviceDto } from './dto/create-device.dto';
-import { UpdateDeviceDto } from './dto/update-device.dto';
-import { GetDeviceFilterDto } from './dto/get-device.dto';
-import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { DeviceEntity } from './device.entity';
 import { DeviceService } from './device.service';
-import { OrgService } from '../org/Org.service';
+import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
+import { CreateDeviceDto } from './dto/create-device.dto';
+import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @Controller('device')
 @UseGuards(AuthGuard())
 export class DeviceController {
   private logger = new Logger('DeviceController');
-  constructor(private devicesService: DeviceService) { }
+  constructor(private devicesService: DeviceService) {}
 
   @Get('/:orgId')
   getAlldevices(
@@ -109,6 +105,6 @@ export class DeviceController {
     @GetUser() user: User,
   ): Promise<DeviceEntity> {
     //Get Org from here
-    return this.devicesService.updatedevice(id, updateDeviceDto,user);
+    return this.devicesService.updatedevice(id, updateDeviceDto, user);
   }
 }

@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
-import { CreateOrganizationDto } from './dto/create-Org.dto';
-import { GetOrgFilterDto } from './dto/get-Org.dto';
-import { OrgEntity } from './Org.entity';
-import { OrgRepository } from './Org.repository';
 import { ZoneRepository } from '../zone/zone.repository';
+import { CreateOrganizationDto } from './dto/create-org.dto';
+import { GetOrgFilterDto } from './dto/get-org.dto';
+import { OrgEntity } from './org.entity';
+import { OrgRepository } from './org.repository';
 
 @Injectable()
 export class OrgService {
@@ -35,14 +35,21 @@ export class OrgService {
     if (result.affected === 0) {
       throw new NotFoundException(`Oranization with id: ${id} not found`);
     }
-    await this.zoneRepository.delete({orgId: id })
+    await this.zoneRepository.delete({ orgId: id });
   }
 
-  async createOrg(createOrgDto: CreateOrganizationDto, user: User): Promise<OrgEntity> {
+  async createOrg(
+    createOrgDto: CreateOrganizationDto,
+    user: User,
+  ): Promise<OrgEntity> {
     return await this.orgRepository.createOrg(createOrgDto, user);
   }
 
-  async updateOrg(id: number,  user: User,  description: string): Promise<OrgEntity> {
+  async updateOrg(
+    id: number,
+    user: User,
+    description: string,
+  ): Promise<OrgEntity> {
     const org = await this.getOrgById(id, user);
     org.description = description;
     await org.save();
