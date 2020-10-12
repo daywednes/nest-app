@@ -8,7 +8,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -17,10 +16,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
-import { GetZoneFilterDto } from './dto/get-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneService } from './zone.service';
-import { OrgService } from '../org/Org.service';
 
 @Controller('zone')
 @UseGuards(AuthGuard())
