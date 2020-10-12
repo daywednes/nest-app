@@ -1,7 +1,7 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateOrganizationDto } from './dto/create-Org.dto';
+import { CreateOrganizationDto } from './dto/create-org.dto';
 import { GetOrgFilterDto } from './dto/get-org.dto';
 import { OrgEntity } from './org.entity';
 

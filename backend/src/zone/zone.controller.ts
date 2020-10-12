@@ -20,7 +20,7 @@ import { CreateZoneDto } from './dto/create-zone.dto';
 import { GetZoneFilterDto } from './dto/get-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneService } from './zone.service';
-import { OrgService } from '../org/Org.service';
+import { OrgService } from '../org/org.service';
 
 @Controller('zone')
 @UseGuards(AuthGuard())

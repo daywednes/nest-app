@@ -22,7 +22,7 @@ import { GetDeviceFilterDto } from './dto/get-device.dto';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { DeviceEntity } from './device.entity';
 import { DeviceService } from './device.service';
-import { OrgService } from '../org/Org.service';
+import { OrgService } from '../org/org.service';
 
 @Controller('device')
 @UseGuards(AuthGuard())
