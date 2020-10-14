@@ -11,8 +11,6 @@
 </template>
 
 <script>
-// - :label="$t(getText(item.key).title)"
-import getText from './text'
 import list from './list'
 import { getDevices} from '@/api/device'
 
@@ -29,7 +27,6 @@ export default {
     }
   },
   methods: {
-    getText,
     open(key) {
       this.$router.push(key)
     }
