@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreatTagsDto } from './dto/create-tags.dto';
 import { GetTagsFilterDto } from './dto/get-tags.dto';
 import { TagsEntity } from './tags.entity';

@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreateOrganizationDto } from './dto/create-org.dto';
 import { GetOrgFilterDto } from './dto/get-org.dto';
 import { OrgEntity } from './org.entity';

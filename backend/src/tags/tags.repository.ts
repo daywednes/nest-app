@@ -1,5 +1,5 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreatTagsDto } from './dto/create-tags.dto';
 import { GetTagsFilterDto } from './dto/get-tags.dto';

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrgEntity } from 'src/org/org.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { GetDeviceFilterDto } from './dto/get-device.dto';

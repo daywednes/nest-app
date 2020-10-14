@@ -1,6 +1,6 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { OrgEntity } from 'src/org/org.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { GetZoneFilterDto } from './dto/get-zone.dto';

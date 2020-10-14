@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrgEntity } from 'src/org/org.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { GetZoneFilterDto } from './dto/get-zone.dto';
 import { ZoneEntity } from './zone.entity';

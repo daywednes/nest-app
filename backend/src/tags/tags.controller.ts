@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { CreatTagsDto } from './dto/create-tags.dto';
 import { GetTagsFilterDto } from './dto/get-tags.dto';
 import { TagsEntity } from './tags.entity';
