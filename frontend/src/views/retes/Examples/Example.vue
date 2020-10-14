@@ -7,7 +7,6 @@
     prefix-icon='el-icon-search',
     v-model='searchText'
   )
-  //- Info(:item="example")
   CommonFunction(
     style='position: absolute;',
     :isShowDeploy='true',
@@ -21,7 +20,6 @@
 
 <script>
 import Vue from 'vue';
-import Info from './Info';
 import CommonFunction from '@/components/CommonFunction';
 import { getDevices } from '@/api/device';
 import store from '@/store';

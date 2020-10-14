@@ -1,7 +1,6 @@
 import { login, logout, getInfo, signup } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import { SUCCESS } from 'dropzone'
 
 const state = {
     token: getToken(),

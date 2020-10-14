@@ -160,7 +160,7 @@
 <script>
 import EllipsisText from "@/components/EllipsisText";
 import Pagination from "@/components/Pagination";
-import GmsUtils from '../../utils/gms-utils';
+import nestutils from '../../utils/nest-utils';
 import { hasPermission, val, sval, flattenObject, revertObject } from "@/utils/data-model-utils"
 import { isNullOrEmpty } from '../../utils/validate';
 
@@ -373,19 +373,19 @@ export default {
       this.$emit(ON_PAGING_EVENT);
     },
     stopInsert: function(confirm = false) {
-      if (confirm && !GmsUtils.confirmOnDiscardChanges()) {
+      if (confirm && !nestutils.confirmOnDiscardChanges()) {
         return
       }
       this.$emit(STOP_INSERT_EVENT);
     },
     stopUpdate: function(confirm = false) {
-      if (confirm && !GmsUtils.confirmOnDiscardChanges()) {
+      if (confirm && !nestutils.confirmOnDiscardChanges()) {
         return
       }
       this.$emit(STOP_UPDATE_EVENT);
     },
     stopUpload: function(confirm = false) {
-      if (confirm && !GmsUtils.confirmOnDiscardChanges()) {
+      if (confirm && !nestutils.confirmOnDiscardChanges()) {
         return
       }
       this.$emit(STOP_UPLOAD_EVENT);
