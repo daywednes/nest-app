@@ -25,6 +25,7 @@
 import Vue from 'vue';
 import CommonFunction from '@/components/CommonFunction';
 import { getDevices } from '@/api/device';
+import { getZones} from '@/api/zone'
 import store from '@/store';
 import Components from '@/views/retes/rete/components/customdevice';
 
@@ -74,11 +75,28 @@ export default {
       if (this.devicesListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
           this.devicesListTmp = response;
-
+          
           this.$store.dispatch('user/updateDevices', response);
           response
             // .filter(x => x.zone == null)
             .map(item => {
+              item.type='Devices'
+              let tmpCom = new Components.DeviceComponent(item);
+
+              editor.register(tmpCom);
+              engine.register(tmpCom);
+            });
+        });
+        
+        await getDevices(store.getters.orgId).then(response => {
+          this.devicesListTmp = response;
+          
+          this.$store.dispatch('user/updateDevices', response);
+          response
+            // .filter(x => x.zone == null)
+            .map(item => {
+              item.name=item.name+ ' Zones'
+              item.type='Zones'
               let tmpCom = new Components.DeviceComponent(item);
 
               editor.register(tmpCom);

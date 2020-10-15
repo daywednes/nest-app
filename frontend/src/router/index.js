@@ -117,6 +117,17 @@ export const constantRoutes = [{
             name: 'Automations',
             meta: { title: 'Automations', icon: 'chart'}
         }]
+    },{
+        path: '/mainAutomations',
+        component: Layout,
+        redirect: '/mainAutomations',
+        children: [{
+            path: '/mainAutomations',
+            component: () =>
+                import ('@/views/Automation/index'),
+            name: 'Main Automations',
+            meta: { title: 'Main Automations', icon: 'dashboard'}
+        }]
     },
 
     // {
