@@ -1,5 +1,5 @@
 <template lang="pug">
-.node(:class="[selected(), node.name] | kebab", :style="{opacity: node.data.importance}")
+.node(:class="[selected(), node.name] | kebab", :style="{opacity: node.data.importance, background : node.data.color ?'#008837' : '#FF8837'}")
   .row
     // Inputs
     .input(v-for='input in inputs()')
@@ -37,9 +37,9 @@ export default {
 
 <style lang="sass" scoped>
 $color: #008837
+$color2: #FF8837
   
 .node
-  background: $color
   border-radius: 0
   border: none
   .row

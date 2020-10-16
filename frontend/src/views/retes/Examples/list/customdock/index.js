@@ -1,11 +1,12 @@
 import ContextMenuPlugin from 'rete-context-menu-plugin'
 import DockPlugin from 'rete-dock-plugin'
-import ModulePlugin from 'rete-module-plugin'
+// import DockPlugin2 from './src/index'
+// import ModulePlugin from 'rete-module-plugin'
 import VueRenderPlugin from 'rete-vue-render-plugin'
 import { initialize as init } from '@/views/retes/rete'
-import createController from './controller'
+// import createController from './controller'
 import MinimapPlugin from 'rete-minimap-plugin'
-import modules from '@/views/retes/rete/data/moduledefault.json'
+// import modules from '@/views/retes/rete/data/moduledefault.json'
 
 import './styles.sass'
 
@@ -26,16 +27,17 @@ export default async function (container, extra) {
             return component.name;
         }
     });
+    
     editor.use(MinimapPlugin);
     editor.use(DockPlugin, {
         container: extra,
         plugins: [VueRenderPlugin]
     });
 
-    editor.use(ModulePlugin, { engine, modules });
+    // editor.use(ModulePlugin, { engine, modules });
 
 
-    createController(container, { editor, modules, resize })
+    // createController(container, { editor, modules, resize })
     resize()
     process()
 

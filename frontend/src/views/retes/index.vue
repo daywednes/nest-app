@@ -1,12 +1,5 @@
 <template lang="pug">
 .example
-  el-input.inline-input(
-    placeholder='search...',
-    autofocus,
-    style='position: absolute; width: 200px; left: 2%',
-    prefix-icon='el-icon-search',
-    v-model='searchText'
-  )
   //- Info(:item="example")
   CommonFunction(
     style='position: absolute;',
@@ -19,13 +12,27 @@
   .view(ref="viewer")
     div(style='margin-top: 20px;', ref='view')
     div(ref='extra')
+    
+  el-input.inline-input(
+    placeholder='search...',
+    autofocus,
+    style='position: absolute; width: 200px; left: 2%',
+    prefix-icon='el-icon-search',
+    v-model='searchText'
+  )
+  el-select( slot="prepend",
+    style='position: absolute; width: 200px; left: 2%; top:7%',
+    v-model='filterText')
+    el-option(value='ALL') ALL
+    el-option(value='Devices') Devices
+    el-option(value='Zones') Zones
 </template>
 
 <script>
 import Vue from 'vue';
 import CommonFunction from '@/components/CommonFunction';
 import { getDevices } from '@/api/device';
-import { getZones} from '@/api/zone'
+import { getZones } from '@/api/zone';
 import store from '@/store';
 import Components from '@/views/retes/rete/components/customdevice';
 
@@ -36,16 +43,18 @@ export default {
     searchText(val) {
       this.searchDevice(val);
     },
+    filterText(val) {
+      this.searchDevice(this.searchText);
+    },
     async devicesList(vals) {
       this.devicesListTmp.map(item => {
-        let itemName = item.name.toLowerCase().replace(' ', '-');
-        let className = 'node ' + itemName.replace(' ', '-');
+        let itemName = item.name.toLowerCase().replace(/\s/g, '-');
+        let className = 'node ' + itemName.replace(/\s/g, '-');
 
+        var x = document.getElementsByClassName(className);
         if (vals.includes(item)) {
-          var x = document.getElementsByClassName(className);
           x[x.length - 1].style.contentVisibility = 'visible';
         } else {
-          var x = document.getElementsByClassName(className);
           x[x.length - 1].style.contentVisibility = 'hidden';
         }
       });
@@ -55,7 +64,6 @@ export default {
     async init() {
       this.$refs.view.innerHTML = '';
       this.$refs.extra.innerHTML = '';
-      this.$refs.extra.className = '';
 
       if (this.editor) {
         await this.editor.destroy();
@@ -74,34 +82,36 @@ export default {
       this.engine = engine;
       if (this.devicesListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
-          this.devicesListTmp = response;
-          
           this.$store.dispatch('user/updateDevices', response);
           response
             // .filter(x => x.zone == null)
             .map(item => {
-              item.type='Devices'
+              item.type = 'Devices';
+              item.color = null;
               let tmpCom = new Components.DeviceComponent(item);
 
               editor.register(tmpCom);
               engine.register(tmpCom);
             });
+
+          this.devicesListTmp = response;
         });
-        
+
         await getDevices(store.getters.orgId).then(response => {
-          this.devicesListTmp = response;
-          
           this.$store.dispatch('user/updateDevices', response);
           response
             // .filter(x => x.zone == null)
             .map(item => {
-              item.name=item.name+ ' Zones'
-              item.type='Zones'
+              item.name = item.name + ' Zones';
+              item.type = 'Zones';
+              item.color = '1';
               let tmpCom = new Components.DeviceComponent(item);
 
               editor.register(tmpCom);
               engine.register(tmpCom);
             });
+
+          this.devicesListTmp = [...this.devicesListTmp, ...response];
         });
       }
     },
@@ -152,23 +162,42 @@ export default {
       //this.counter = this.counter + 1;
     },
     searchDevice(txt) {
-      if (txt && txt.length > 0) {
+      if (this.filterText != 'ALL') {
         this.devicesList = this.devicesListTmp.filter(
           device =>
-            device.name
+            (this.filterText == 'ALL' || device.type == this.filterText) &&
+            (device.name
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-            (device.zone
-              ? device.zone.name
-                  .trim()
-                  .toUpperCase()
-                  .includes(txt.toUpperCase())
-              : false) ||
-            // device.description.toUpperCase().includes(txt.toUpperCase()) ||
-            device.tags
-              .map(tag => tag.trim().toUpperCase())
-              .includes(txt.toUpperCase()),
+              (device.zone
+                ? device.zone.name
+                    .trim()
+                    .toUpperCase()
+                    .includes(txt.toUpperCase())
+                : false) ||
+              // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+              device.tags
+                .map(tag => tag.trim().toUpperCase())
+                .includes(txt.toUpperCase())),
+        );
+      } else if (txt && txt.length > 0) {
+        this.devicesList = this.devicesListTmp.filter(
+          device =>
+            (device.name
+              .trim()
+              .toUpperCase()
+              .includes(txt.toUpperCase()) ||
+              (device.zone
+                ? device.zone.name
+                    .trim()
+                    .toUpperCase()
+                    .includes(txt.toUpperCase())
+                : false) ||
+              // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+              device.tags
+                .map(tag => tag.trim().toUpperCase())
+                .includes(txt.toUpperCase())),
         );
       } else {
         this.devicesList = this.devicesListTmp;
@@ -181,6 +210,7 @@ export default {
       engine: null,
       counter: 1,
       searchText: '',
+      filterText: 'ALL',
       devicesListTmp: [],
       devicesList: [],
     };
