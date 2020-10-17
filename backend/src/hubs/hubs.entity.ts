@@ -6,12 +6,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DeviceEntity } from '../device/device.entity';
 import { OrgEntity } from '../org/org.entity';
-import { HubsEntity } from '../hubs/hubs.entity';
+import { ZoneEntity } from '../zone/zone.entity';
 
 @Entity()
-export class ZoneEntity extends BaseEntity {
+export class HubsEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,20 +27,13 @@ export class ZoneEntity extends BaseEntity {
   )
   org: OrgEntity;
 
-  @ManyToOne(
-    type => HubsEntity,
-    hub => hub.zones,
-    { eager: false },
-  )
-  hub: HubsEntity;
-
   @Column()
   orgId: number;
 
   @OneToMany(
-    type => DeviceEntity,
-    device => device.zone,
+    type => ZoneEntity,
+    zone => zone.hub,
     { eager: true },
   )
-  devices: DeviceEntity[];
+  zones: ZoneEntity[];
 }

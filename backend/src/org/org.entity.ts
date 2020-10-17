@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { ZoneEntity } from '../zone/zone.entity';
 import { DeviceEntity } from 'src/device/device.entity';
+import { HubsEntity } from 'src/hubs/hubs.entity';
+import { AutomationsEntity } from 'src/automations/automations.entity';
 
 @Entity()
 export class OrgEntity extends BaseEntity {
@@ -44,4 +46,18 @@ export class OrgEntity extends BaseEntity {
     { eager: true },
   )
   devices: DeviceEntity[];
+
+  @OneToMany(
+    type => HubsEntity,
+    hubs => hubs.org,
+    { eager: true },
+  )
+  hubs: HubsEntity[];
+
+  @OneToMany(
+    type => AutomationsEntity,
+    automations => automations.org,
+    { eager: true },
+  )
+  automations: AutomationsEntity[];
 }

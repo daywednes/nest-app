@@ -11,15 +11,19 @@ import { OrgEntity } from '../org/org.entity';
 import { HubsEntity } from '../hubs/hubs.entity';
 
 @Entity()
-export class ZoneEntity extends BaseEntity {
+export class AutomationsEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  status: string;
 
   @Column()
-  description: string;
+  data: string;
+  @Column()
+  LastTimeUpdate: Date;
+  @Column()
+  LastTimeStartAutomation: Date;
 
   @ManyToOne(
     type => OrgEntity,
@@ -28,20 +32,6 @@ export class ZoneEntity extends BaseEntity {
   )
   org: OrgEntity;
 
-  @ManyToOne(
-    type => HubsEntity,
-    hub => hub.zones,
-    { eager: false },
-  )
-  hub: HubsEntity;
-
   @Column()
   orgId: number;
-
-  @OneToMany(
-    type => DeviceEntity,
-    device => device.zone,
-    { eager: true },
-  )
-  devices: DeviceEntity[];
 }
