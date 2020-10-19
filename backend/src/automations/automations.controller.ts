@@ -18,7 +18,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateAutomationsDto } from './dto/create-automations.dto';
 import { AutomationsEntity } from './automations.entity';
 import { AutomationsService } from './automations.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('automations')
 @Controller('automations')
@@ -29,6 +29,7 @@ export class AutomationsController {
   constructor(private automationssService: AutomationsService) {}
 
   @Get('/:orgId')
+  @ApiOperation({ summary: 'Get Automations by Organization Id' })
   getAllautomationss(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
@@ -37,6 +38,7 @@ export class AutomationsController {
   }
 
   @Get('/details/:id')
+  @ApiOperation({ summary: 'Get Automation details by Automation Id' })
   getautomationsById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -47,6 +49,7 @@ export class AutomationsController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Create Automation' })
   createautomations(
     @Body() createautomationsDto: CreateAutomationsDto,
     @GetUser() user: User,
@@ -56,6 +59,7 @@ export class AutomationsController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Automation' })
   deleteautomations(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -65,6 +69,7 @@ export class AutomationsController {
   }
 
   @Patch('/:id')
+  @ApiOperation({ summary: 'Update Automation' })
   updateautomations(
     @Param('id', ParseIntPipe) id: number,
     @Body() createautomationsDto: CreateAutomationsDto,

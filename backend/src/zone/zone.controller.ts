@@ -18,7 +18,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneService } from './zone.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('zone')
 @Controller('zone')
@@ -29,6 +29,7 @@ export class ZoneController {
   constructor(private zonesService: ZoneService) {}
 
   @Get('/:orgId')
+  @ApiOperation({ summary: 'Get All Zones by Organization Id' })
   getAllzones(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
@@ -37,6 +38,7 @@ export class ZoneController {
   }
 
   @Get('/details/:id')
+  @ApiOperation({ summary: 'Get Zone by Id' })
   getzoneById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -47,6 +49,7 @@ export class ZoneController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Create Zone' })
   createzone(
     @Body() createzoneDto: CreateZoneDto,
     @GetUser() user: User,
@@ -56,6 +59,7 @@ export class ZoneController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Zone' })
   deletezone(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -65,6 +69,7 @@ export class ZoneController {
   }
 
   @Patch('/:id')
+  @ApiOperation({ summary: 'Update Zone' })
   updatezone(
     @Param('id', ParseIntPipe) id: number,
     @Body() createzoneDto: CreateZoneDto,

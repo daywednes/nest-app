@@ -18,7 +18,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateHubsDto } from './dto/create-hubs.dto';
 import { HubsEntity } from './hubs.entity';
 import { HubsService } from './hubs.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('hubs')
 @Controller('hubs')
@@ -29,6 +29,7 @@ export class HubsController {
   constructor(private hubssService: HubsService) {}
 
   @Get('/:orgId')
+  @ApiOperation({ summary: 'Get Hubs by Organization Id' })
   getAllhubss(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
@@ -37,6 +38,7 @@ export class HubsController {
   }
 
   @Get('/details/:id')
+  @ApiOperation({ summary: 'Get Hub Detail by Hub Id' })
   gethubsById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -46,6 +48,7 @@ export class HubsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create Hub' })
   @UsePipes(ValidationPipe)
   createhubs(
     @Body() createhubsDto: CreateHubsDto,
@@ -56,6 +59,7 @@ export class HubsController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Hub by Hub Id' })
   deletehubs(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -65,6 +69,7 @@ export class HubsController {
   }
 
   @Patch('/:id')
+  @ApiOperation({ summary: 'Update Hub by Hub Id' })
   updatehubs(
     @Param('id', ParseIntPipe) id: number,
     @Body() createhubsDto: CreateHubsDto,

@@ -20,7 +20,7 @@ import { CreateOrganizationDto } from './dto/create-org.dto';
 import { GetOrgFilterDto } from './dto/get-org.dto';
 import { OrgEntity } from './org.entity';
 import { OrgService } from './org.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('org')
 @Controller('org')
@@ -31,6 +31,7 @@ export class OrgController {
   constructor(private OrgService: OrgService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get All Organization' })
   getAllOrg(
     @Query(ValidationPipe) getOrgFilterDto: GetOrgFilterDto,
     @GetUser() user: User,
@@ -44,6 +45,7 @@ export class OrgController {
   }
 
   @Get('/:id')
+  @ApiOperation({ summary: 'Get Organizations by Id' })
   getOrgById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -52,6 +54,7 @@ export class OrgController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create Organizations' })
   @UsePipes(ValidationPipe)
   createOrg(
     @Body() createOrgDto: CreateOrganizationDto,
@@ -61,6 +64,7 @@ export class OrgController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Organization by Id' })
   deleteOrg(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -69,6 +73,7 @@ export class OrgController {
   }
 
   @Patch('/:id')
+  @ApiOperation({ summary: 'Update Organization by Organization Id' })
   updateOrg(
     @Param('id', ParseIntPipe) id: number,
     @Body() description: string,
