@@ -19,7 +19,7 @@ import { DeviceService } from './device.service';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 
 @ApiTags('device')
@@ -31,6 +31,7 @@ export class DeviceController {
   constructor(private devicesService: DeviceService) {}
 
   @Get('/:orgId')
+  @ApiOperation({ summary: 'Get Devices by Organization Id' })
   getAlldevices(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
@@ -39,6 +40,7 @@ export class DeviceController {
   }
 
   @Get('/getDevicesAvail/:orgId')
+  @ApiOperation({ summary: 'Get Devices Available by Organization Id' })
   getDevicesAvail(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
@@ -47,6 +49,7 @@ export class DeviceController {
   }
 
   @Get('/zone/:zoneId')
+  @ApiOperation({ summary: 'Get Devices by Zone Id' })
   getByZone(
     @Param('zoneId', ParseIntPipe) zoneId: number,
     @GetUser() user: User,
@@ -55,6 +58,7 @@ export class DeviceController {
   }
 
   @Get('/details/:id')
+  @ApiOperation({ summary: 'Get Device detail by Device Id' })
   getdeviceById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -65,6 +69,7 @@ export class DeviceController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Create New Device' })
   createdevice(
     @Body() createdeviceDto: CreateDeviceDto,
     @GetUser() user: User,
@@ -75,6 +80,7 @@ export class DeviceController {
 
   @Post('/addToZone/')
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Add Device to Zone' })
   addToZone(
     @Body() dto: AddDeviceZoneDto,
     @GetUser() user: User,
@@ -85,6 +91,7 @@ export class DeviceController {
 
   @Post('/removeFromZone/')
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: 'Reomve Device from Zone' })
   removeFromZone(
     @Body() dto: AddDeviceZoneDto,
     @GetUser() user: User,
@@ -94,6 +101,7 @@ export class DeviceController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Reomve Device by Id' })
   deletedevice(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -103,6 +111,7 @@ export class DeviceController {
   }
 
   @Post('/:id')
+  @ApiOperation({ summary: 'Update Device by Device Id' })
   updatedevice(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDeviceDto: UpdateDeviceDto,

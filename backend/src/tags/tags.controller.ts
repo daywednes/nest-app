@@ -20,7 +20,7 @@ import { CreatTagsDto } from './dto/create-tags.dto';
 import { GetTagsFilterDto } from './dto/get-tags.dto';
 import { TagsEntity } from './tags.entity';
 import { TagsService } from './tags.service';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('tags')
 @Controller('tags')
@@ -31,6 +31,8 @@ export class TagsController {
   constructor(private TagsService: TagsService) {}
 
   @Get()
+  
+  @ApiOperation({ summary: 'Get All Tags' })
   getAllTags(
     @Query(ValidationPipe) getTagsFilterDto: GetTagsFilterDto,
     @GetUser() user: User,
@@ -44,6 +46,7 @@ export class TagsController {
   }
 
   @Get('/:id')
+  @ApiOperation({ summary: 'Get Tags by Device Id' })
   getTagsById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -52,6 +55,7 @@ export class TagsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create Tag' })
   @UsePipes(ValidationPipe)
   createTags(
     @Body() createTagsDto: CreatTagsDto,
@@ -61,6 +65,7 @@ export class TagsController {
   }
 
   @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Tag' })
   deleteTags(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -69,6 +74,7 @@ export class TagsController {
   }
 
   @Patch('/:id')
+  @ApiOperation({ summary: 'Update Tag' })
   updateTags(
     @Param('id', ParseIntPipe) id: number,
     @Body() description: string,
