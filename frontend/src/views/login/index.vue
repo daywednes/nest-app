@@ -189,8 +189,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'minh343',
-        password: 'r07latoi4A%c'
+        username: '',
+        password: ''
       },
       signupForm: {
         username: '',

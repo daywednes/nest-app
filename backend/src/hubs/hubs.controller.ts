@@ -18,8 +18,11 @@ import { User } from 'src/auth/user.entity';
 import { CreateHubsDto } from './dto/create-hubs.dto';
 import { HubsEntity } from './hubs.entity';
 import { HubsService } from './hubs.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('hubs')
 @Controller('hubs')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class HubsController {
   private logger = new Logger('HubsController');

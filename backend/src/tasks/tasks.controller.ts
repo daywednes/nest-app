@@ -22,8 +22,11 @@ import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('tasks')
 @Controller('tasks')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class TasksController {
   private logger = new Logger('TasksController');
