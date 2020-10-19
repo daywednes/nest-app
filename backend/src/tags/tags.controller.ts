@@ -20,8 +20,11 @@ import { CreatTagsDto } from './dto/create-tags.dto';
 import { GetTagsFilterDto } from './dto/get-tags.dto';
 import { TagsEntity } from './tags.entity';
 import { TagsService } from './tags.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('tags')
 @Controller('tags')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class TagsController {
   private logger = new Logger('TagsController');

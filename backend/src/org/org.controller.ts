@@ -20,8 +20,11 @@ import { CreateOrganizationDto } from './dto/create-org.dto';
 import { GetOrgFilterDto } from './dto/get-org.dto';
 import { OrgEntity } from './org.entity';
 import { OrgService } from './org.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('org')
 @Controller('org')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class OrgController {
   private logger = new Logger('OrgController');

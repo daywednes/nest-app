@@ -19,7 +19,11 @@ import { DeviceService } from './device.service';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+
+@ApiTags('device')
+@ApiBearerAuth()
 @Controller('device')
 @UseGuards(AuthGuard())
 export class DeviceController {

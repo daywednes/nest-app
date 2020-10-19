@@ -18,8 +18,11 @@ import { User } from 'src/auth/user.entity';
 import { CreateAutomationsDto } from './dto/create-automations.dto';
 import { AutomationsEntity } from './automations.entity';
 import { AutomationsService } from './automations.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('automations')
 @Controller('automations')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class AutomationsController {
   private logger = new Logger('AutomationsController');

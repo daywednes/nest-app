@@ -18,8 +18,11 @@ import { User } from 'src/auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneService } from './zone.service';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('zone')
 @Controller('zone')
+@ApiBearerAuth()
 @UseGuards(AuthGuard())
 export class ZoneController {
   private logger = new Logger('ZoneController');
