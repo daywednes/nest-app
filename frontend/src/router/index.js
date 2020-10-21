@@ -107,6 +107,17 @@ export const constantRoutes = [{
             meta: { title: 'Zones', icon: 'icon'}
         }]
     },{
+        path: '/hubs',
+        component: Layout,
+        redirect: '/hubs',
+        children: [{
+            path: '/hubs',
+            component: () =>
+                import ('@/views/hubs/index'),
+            name: 'Zones',
+            meta: { title: 'Hubs', icon: 'guide'}
+        }]
+    },{
         path: '/automations',
         component: Layout,
         redirect: '/automations',
