@@ -1,6 +1,7 @@
 <template>
   <div class="board-column">
     <div class="board-column-header">
+      <i class="el-icon-edit" />
       {{ headerText }}
     </div>
     <draggable
@@ -53,6 +54,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .board-column {
+  margin: 10px 0px;
   min-width: 300px;
   min-height: 100px;
   height: auto;
@@ -61,14 +63,16 @@ export default {
   border-radius: 3px;
 
   .board-column-header {
-    height: 50px;
-    line-height: 50px;
+    height: 75px;
+    line-height: 75px;
     overflow: hidden;
     padding: 0 20px;
     text-align: center;
     background: #333;
     color: #fff;
     border-radius: 3px 3px 0 0;
+    font-size: 24px;
+    text-align: start;
   }
 
   .board-column-content {
