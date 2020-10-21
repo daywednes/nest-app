@@ -1,107 +1,45 @@
 <template>
-  <div class="components-container">
-    <div
-      style="postion: relative; margin-left: 5px; float:left;"
-      :style="{
-        width: this.isShowLeft ? 'calc(100% - 700px)' : '100%',
-      }"
-    >
-      <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
-      <div
-        style="display: inline-flex; float: left; width: 100%;line-height: 36px;"
+  <div class="app-container">
+    <el-tabs v-model="editableTabsValue" style="width:95%; position: absolute;">
+      <el-tab-pane
+        v-for="(item, index) in zonesList"
+        :key="index"
+        :label="item.name"
+        :name="item.name"
       >
-        <el-input
-          placeholder="Type something"
-          prefix-icon="el-icon-search"
-          style="width: 30%;"
-          v-model="textSearch"
-        >
-        </el-input>
-        <CommonFunction
-          style="float: right; margin-left: 10px; text-align: left; width:100%;"
-          :isShowADD="true"
-          :isShowDELETE="false"
-          @functionAddPage="showDialogZones = true"
-          @functionDeletePage="fn_delete"
-        />
-      </div>
-      <SingleZone
-        @click.native="fn_compoClick(zone)"
-        style="margin: 15px;"
-        v-for="zone in zonesList"
-        :key="zone.id"
-        :item="zone"
-      />
+        <keep-alive>
+          <Zones />
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
 
-      <el-dialog title="New Zone" :visible.sync="showDialogZones">
-        <el-form class="login-form-log" autocomplete="on" label-position="left">
-          <el-form-item prop="ZoneName">
-            <span style="margin-left:10px;font-size: large;"> Name</span>
-            <el-input
-              ref="ZoneName"
-              v-model="ZoneForm.name"
-              style="color: black;"
-              placeholder="Zone Name"
-              name="ZoneName"
-              type="text"
-              tabindex="1"
-              autocomplete="on"
-            />
-          </el-form-item>
-          <el-form-item prop="description">
-            <span style="margin-left:10px;font-size: large;"> Description</span>
-            <el-input
-              ref="ZoneType"
-              v-model="ZoneForm.description"
-              style="color: black;"
-              placeholder="Zone Description"
-              name="ZoneType"
-              type="text"
-              tabindex="2"
-              autocomplete="on"
-            />
-          </el-form-item>
-          <el-button
-            type="primary"
-            style="width:100%;margin-bottom:10px;"
-            @click="createZoneEntity"
-            >Create Zone</el-button
-          >
-        </el-form>
-      </el-dialog>
+    <div style=" position: absolute;">
+      <el-input
+        placeholder="Type something"
+        prefix-icon="el-icon-search"
+        style="width: 60%; margin-right: 10px;"
+        v-model="textSearch"
+      >
+      </el-input>
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-plus"
+        @click="addTab(editableTabsValue)"
+      >
+        Add Hub
+      </el-button>
     </div>
-    <RightPanelExtra
-      :showLeft="isShowLeft"
-      @leftPanelIsShow="leftPanelIsShow"
-      @leftPanelIsHide="leftPanelIsHide"
-    >
-      <div class="tab-container">
-        <el-tabs v-model="editableTabsValue" type="border-card">
-          <el-tab-pane name="1" label="Details">
-            <keep-alive>
-              <ZoneHubDetails
-                ref="zoneHubDetails"
-                :item="selectedZone"
-                @refreshUI="refreshUI"
-              />
-            </keep-alive>
-          </el-tab-pane>
-          <el-tab-pane name="2" label="List Devices">
-            <keep-alive>
-              <DevicesOfZoneHub
-                ref="devicesOfZoneHub"
-                :zone="selectedZone"
-                @refreshUI="refreshUI"
-              />
-            </keep-alive>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </RightPanelExtra>
   </div>
 </template>
 
+<style>
+.el-tabs__nav-scroll {
+  float: right;
+}
+</style>
 <style scoped>
+
 .el-select {
   width: 300px;
 }
@@ -114,11 +52,12 @@ import SingleZone from '@/components/SingleZone';
 import CommonFunction from '@/components/CommonFunction';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import UltimateTable from '@/components/UltimateTable';
+import Zones from '@/views/zones/index';
 import { mapGetters } from 'vuex';
 import { getZones, createZone, deleteZone } from '@/api/zone';
 
 export default {
-  name: 'Zones',
+  name: 'Hubs',
   components: {
     CommonFunction,
     UltimateTable,
@@ -126,10 +65,11 @@ export default {
     RightPanelExtra,
     ZoneHubDetails,
     DevicesOfZoneHub,
+    Zones,
   },
   data() {
     return {
-      activeName: 'directly',
+      editableTabsValue: '',
       textSearch: '',
       ZoneForm: {
         name: '',
@@ -209,6 +149,16 @@ export default {
     },
   },
   methods: {
+    addTab(targetName) {
+      console.log(targetName);
+      let newTabName = targetName + '1';
+      this.zonesList.push({
+        title: 'New Tab',
+        name: newTabName,
+        content: 'New Tab content',
+      });
+      this.editableTabsValue = newTabName;
+    },
     searchZone(txt) {
       if (txt && txt.length > 0) {
         this.zonesList = this.zonesListTmp.filter(
@@ -313,7 +263,7 @@ export default {
       getZones(val).then(response => {
         this.zonesListTmp = response;
         this.zonesList = this.zonesListTmp;
-
+        this.editableTabsValue = this.zonesList[0].name;
         this.$store.dispatch('user/updateZones', response);
       });
     },

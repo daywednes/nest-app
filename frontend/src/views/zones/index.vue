@@ -7,7 +7,7 @@
       }"
     >
       <!-- transition: this.isShowLeft ? '0.2s ease' : '0.6s ease', -->
-      <CommonFunction
+      <!-- <CommonFunction
         style="float: left; margin-left: 10px; text-align: left; width:100%;"
         :isShowADD="true"
         :isShowDELETE="false"
@@ -19,7 +19,25 @@
         prefix-icon="el-icon-search"
         v-model="textSearch"
       >
-      </el-input>
+      </el-input> -->
+      <!-- <div
+        style="display: inline-flex; float: left; width: 100%;line-height: 36px;"
+      >
+        <el-input
+          placeholder="Type something"
+          prefix-icon="el-icon-search"
+          style="width: 30%;"
+          v-model="textSearch"
+        >
+        </el-input>
+        <el-button
+          class="filter-item"
+          type="primary"
+          icon="el-icon-plus"
+          @click="fn_add()"
+          >ADD</el-button
+        >
+      </div> -->
       <SingleZone
         @click.native="fn_compoClick(zone)"
         style="margin: 15px;"
