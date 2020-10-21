@@ -8,7 +8,23 @@
         :name="item.name"
       >
         <keep-alive>
-          <Zones />
+          <!-- <Zones /> -->
+
+          <draggable
+            :list="listDrag"
+            v-bind="$attrs"
+            class="board-column-content"
+            :set-data="setData"
+          >
+            <Kanban
+              v-for="(item, index) in listDrag"
+              :key="index"
+              :list="item.list"
+              :group="group"
+              :class="item.listClass"
+              :header-text="item.header"
+            />
+          </draggable>
         </keep-alive>
       </el-tab-pane>
     </el-tabs>
@@ -30,85 +46,71 @@
         Add Hub
       </el-button>
     </div>
+    
+  <el-button  style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 51px;" type="primary" icon="el-icon-circle-plus" circle></el-button>
   </div>
 </template>
-
+<style lang="scss">
+.board {
+  width: 1000px;
+  margin-left: 20px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.kanban {
+  &.todo {
+    .board-column-header {
+      background: #4a9ff9;
+    }
+  }
+  &.working {
+    .board-column-header {
+      background: #f9944a;
+    }
+  }
+  &.done {
+    .board-column-header {
+      background: #2ac06d;
+    }
+  }
+}
+</style>
 <style>
 .el-tabs__nav-scroll {
   float: right;
 }
 </style>
 <style scoped>
-
 .el-select {
   width: 300px;
 }
+.el-button--medium.is-circle {
+    padding: 0px;
+}
 </style>
 <script>
-import RightPanelExtra from '@/components/RightPanelExtra';
-import DevicesOfZoneHub from '@/views/hubs/DevicesOfZoneHub';
-import ZoneHubDetails from '@/views/hubs/ZoneHubDetails';
-import SingleZone from '@/components/SingleZone';
-import CommonFunction from '@/components/CommonFunction';
+import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
-import UltimateTable from '@/components/UltimateTable';
 import Zones from '@/views/zones/index';
-import { mapGetters } from 'vuex';
+import Kanban from '@/components/Kanban';
 import { getZones, createZone, deleteZone } from '@/api/zone';
 
 export default {
   name: 'Hubs',
   components: {
-    CommonFunction,
-    UltimateTable,
-    SingleZone,
-    RightPanelExtra,
-    ZoneHubDetails,
-    DevicesOfZoneHub,
     Zones,
+    Kanban,
+    draggable,
   },
   data() {
     return {
       editableTabsValue: '',
       textSearch: '',
-      ZoneForm: {
-        name: '',
-        ZoneType: '',
-        ZoneLabel: '',
-        description: '',
-        orgId: '',
-      },
       showDialogZones: false,
       editableTabsValue: '1',
       isShowLeft: false,
-      tableConfig: [
-        {
-          adding: false,
-          updating: false,
-          uploading: false,
-          loading: false,
-          lockingPopup: false,
-          total: 0,
-          page: 1,
-          limit: 20,
-        },
-      ],
-      tableData: [
-        {
-          attr: 'Created',
-          label: 'Created time',
-          permission: 'READ',
-          width: 250,
-        },
-        { attr: 'Name', label: 'Name', width: 250 },
-        { attr: 'Asset', label: 'Asset type', width: 250 },
-        { attr: 'Label', label: 'Label', width: 250 },
-        { attr: 'Customer', label: 'Customer', width: 250 },
-        { attr: 'Public', label: 'Public', width: 250 },
-        { attr: 'addrId', permission: 'N' },
-        { attr: '_index', permission: 'N' },
-        { attr: '_checked', permission: 'N' },
-      ],
       multipleSelection: [],
       zonesList: [],
       zonesListTmp: [],
@@ -116,13 +118,37 @@ export default {
       selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      selectedZone: {
-        name: '',
-        ZoneType: '',
-        ZoneLabel: '',
-        description: '',
-        orgId: '',
-      },
+      group: 'mission',
+      listDrag: [
+        {
+          header:'Zone 1',
+          listClass:'kanban todo',
+          list: [
+            { name: 'Mission', id: 1 },
+            { name: 'Mission', id: 2 },
+            { name: 'Mission', id: 3 },
+            { name: 'Mission', id: 4 },
+          ],
+        },
+        {
+          header:'Zone 2',
+          listClass:'kanban working',
+          list: [
+            { name: 'Mission', id: 5 },
+            { name: 'Mission', id: 6 },
+            { name: 'Mission', id: 7 },
+          ],
+        },
+        {
+          header:'Zone 3',
+          listClass:'kanban done',
+          list: [
+            { name: 'Mission', id: 8 },
+            { name: 'Mission', id: 9 },
+            { name: 'Mission', id: 10 },
+          ],
+        },
+      ],
       uploadProgress: { ...DEFAULT_PROGRESS },
     };
   },
@@ -131,7 +157,6 @@ export default {
   },
   watch: {
     orgId(val, old) {
-      this.ZoneForm.orgId = val;
       this.getZonesList(val);
     },
     textSearch(val, old) {
@@ -144,11 +169,15 @@ export default {
         this.$alert('empty');
       }
 
-      this.ZoneForm.orgId = this.$store.getters.orgId;
       return this.$store.getters.orgId;
     },
   },
   methods: {
+    setData(dataTransfer) {
+      // to avoid Firefox bug
+      // Detail see : https://github.com/RubaXa/Sortable/issues/1012
+      dataTransfer.setData('Text', '');
+    },
     addTab(targetName) {
       console.log(targetName);
       let newTabName = targetName + '1';
@@ -158,106 +187,6 @@ export default {
         content: 'New Tab content',
       });
       this.editableTabsValue = newTabName;
-    },
-    searchZone(txt) {
-      if (txt && txt.length > 0) {
-        this.zonesList = this.zonesListTmp.filter(
-          zone =>
-            zone.name
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()) ||
-            zone.description
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()),
-        );
-      } else {
-        this.zonesList = this.zonesListTmp;
-      }
-    },
-    leftPanelIsShow: function() {
-      this.isShowLeft = true;
-    },
-    leftPanelIsHide: function() {
-      this.isShowLeft = false;
-    },
-    checkDuplicate: function(row) {
-      // NetworkService.NETWORK.validateZoneCode(row.zoneCd).then(res => {
-      //   if (!isGtoResponseSuccess(res)) {
-      //     return false;
-      //   }
-      //   row._checked = true;
-      //   return true;
-      // });
-      return true;
-    },
-    fn_select: function() {},
-    fn_init: function() {
-      this.uploadProgress = { ...DEFAULT_PROGRESS };
-      this.multipleSelection = [];
-      this.queryCondition = { ...DEFAULT_SEARCH_QUERY };
-      this.ds_master = [];
-      this.ds_master2 = [];
-      this.selectedZone = null;
-      this.tableConfig = [
-        {
-          adding: false,
-          updating: false,
-          uploading: false,
-          loading: false,
-          total: 0,
-          page: 1,
-          limit: 20,
-        },
-        { adding: false, updating: false, loading: false },
-      ];
-    },
-    fn_add: function(item) {
-      // item.isCreate = true;
-      // this.tableConfig[0].lockingPopup = true;
-      // NetworkService.NETWORK.createShippingLocation(item).then(res => {
-      //   this.tableConfig[0].lockingPopup = false;
-      //   if (!isGtoResponseSuccess(res)) {
-      //     return;
-      //   }
-      //   this.fn_select();
-      //   this.tableConfig[0].adding = false;
-      // });
-    },
-    fn_delete: function() {},
-    fn_export: function() {
-      let date = new Date();
-      exportByDataModel(
-        this.ds_master,
-        this.tableData,
-        `[ZoneS]_[${date.getFullYear()}${date.getMonth() +
-          1}${date.getDate()}]`,
-      );
-    },
-    fn_rowClick: function(currentRow) {
-      this.selectedZone = currentRow;
-    },
-    fn_compoClick: function(item) {
-      this.selectedZone = item;
-      this.isShowLeft = true;
-    },
-    fn_findRoute: function(command) {},
-    createZoneEntity() {
-      if (!this.ZoneForm.orgId && this.ZoneForm.orgId.length < 1) {
-        this.$alert('Please create Organization first');
-      }
-      if (!this.ZoneForm.name || this.ZoneForm.name.length < 1) {
-        this.$alert('Please input name');
-        return;
-      }
-      if (!this.ZoneForm.description || this.ZoneForm.description.length < 1) {
-        this.$alert('Please input description');
-        return;
-      }
-      createZone(this.ZoneForm).then(response => {
-        this.refreshUI();
-      });
     },
     getZonesList(val) {
       getZones(val).then(response => {
