@@ -24,7 +24,7 @@ export function deleteOrg(id) {
 
 export function updateOrg(data) {
     return request({
-        url: '/org',
+        url: '/org/' + this.data.id,
         method: 'patch',
         data
     })
