@@ -80,16 +80,17 @@ export default {
     overflow: hidden;
     border: 10px solid transparent;
     min-height: 60px;
-    display: flex;
+    display: block;
     justify-content: flex-start;
     flex-direction: column;
     align-items: center;
 
     .board-item {
       cursor: pointer;
-      width: 100%;
+      width: 260px;
       height: 64px;
-      margin: 5px 0;
+      margin: 5px;
+      float: left;
       background-color: #fff;
       text-align: left;
       line-height: 54px;
