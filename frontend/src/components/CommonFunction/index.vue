@@ -1,10 +1,10 @@
 <template>
   <div
-    class="filter-container common-function"
+    class=" common-function"
     style="text-align:right;
     display: inline-block;
-    margin-left: 10px;`
-    height: 100%;"
+    margin-left: 10px;
+    float:right;"
   >
     <slot></slot>
     <!-- <el-button

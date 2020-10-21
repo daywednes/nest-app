@@ -28,7 +28,7 @@
       </el-dropdown-menu>
     </el-dropdown>
 
-  <!-- Edit Organization -->
+    <!-- Edit Organization -->
     <el-dialog title="Edit Organization" :visible.sync="showEditDialog">
       <el-form class="login-form-log" autocomplete="on" label-position="left">
         <el-form-item prop="orgName">
@@ -156,9 +156,9 @@
     <!-- Switch Organization -->
     <el-dialog title="Switch Organization" :visible.sync="showSwitchDialog">
       <el-select
-        v-model="organization.code"
+        v-model="organization.id"
         style="align-self: center; text-align-last: left;inline-size: fit-content;margin: 0 30px 0 10px;"
-        @change="updateOrgID(organization.code)"
+        @change="updateOrgID(organization.id)"
       >
         <el-option
           style="align-self: center; text-align-last: left;"
@@ -231,8 +231,7 @@ import { getHubs, createHub, deleteHub } from '@/api/hubs';
 export default {
   data() {
     return {
-      organization:{},
-      organization:{},
+      organization: {},
       orgList: [],
       showAddDialog: false,
       showAddHUBDialog: false,
@@ -289,9 +288,8 @@ export default {
         return;
       }
       deleteOrg(id).then(response => {
-
-        this.organization={};
-        // this.organization.code = '';
+        this.organization = {};
+        // this.organization.id = '';
         // this.organization.name = '';
         this.$store.dispatch('user/updateOrgID', '');
         this.getOrgList();
@@ -303,13 +301,11 @@ export default {
         if (
           this.orgList &&
           this.orgList.length > 0 &&
-          (! this.organization || this.organization)
+          (!this.organization || this.organization)
         ) {
-          this.organization =  this.orgList[0];
-          // this.organization.code = this.orgList[0].id;
-          // this.organization.name = this.orgList[0].name;
-          this.$store.dispatch('user/updateOrgID', this.organization.code);
+          this.organization = this.orgList[0];
         }
+        this.$store.dispatch('user/updateOrgID', this.organization.id);
         this.$store.dispatch('user/updateOrgs', response);
       });
     },
@@ -320,17 +316,11 @@ export default {
       this.showSwitchDialog = false;
     },
     createHub() {
-      if (
-        !this.hubForm.name ||
-        this.hubForm.name.length < 1
-      ) {
+      if (!this.hubForm.name || this.hubForm.name.length < 1) {
         this.$alert('Please input name');
         return;
       }
-      if (
-        !this.hubForm.description ||
-        this.hubForm.description.length < 1
-      ) {
+      if (!this.hubForm.description || this.hubForm.description.length < 1) {
         this.$alert('Please input description');
         return;
       }
@@ -360,10 +350,7 @@ export default {
       });
     },
     editOrganization() {
-      if (
-        !this.organization.name ||
-        this.organization.name.length < 1
-      ) {
+      if (!this.organization.name || this.organization.name.length < 1) {
         this.$alert('Please input name');
         return;
       }
