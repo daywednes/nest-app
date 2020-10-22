@@ -1,8 +1,21 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="editableTabsValue" style="width:95%; position: absolute;">
+      <el-tab-pane label="" name="-1" v-if="!hubs || hubs.length == 0">
+        <!-- <el-tab-pane label="Default" name="-1" > -->
+        <div
+          style="margin: 60px; text-align: -webkit-center;white-space: pre-wrap; word-wrap: break-word; font-size: 26px;"
+        >
+          <h1>Your new Hub is all set</h1>
+          <br />
+          <h1>
+            You can start connecting devices to this Hub by pressing the +
+            button
+          </h1>
+        </div>
+      </el-tab-pane>
       <el-tab-pane
-        v-for="(item, index) in zonesList"
+        v-for="(item, index) in hubs"
         :key="index"
         :label="item.name"
         :name="item.name"
@@ -41,14 +54,18 @@
         class="filter-item"
         type="primary"
         icon="el-icon-plus"
-        @click="addTab(editableTabsValue)"
+        @click="
+          () => {
+            showAddHUBDialog = true;
+          }
+        "
       >
         Add Hub
       </el-button>
     </div>
 
     <el-button
-      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 51px;"
+      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 59px;"
       type="primary"
       icon="el-icon-circle-plus"
       circle
@@ -97,9 +114,7 @@
 
       <!-- Step 3 -->
       <div v-if="active == 2" style="height: 40vh;">
-        <div
-          style=" width:100%; float: right; display: inline-flex;"
-        >
+        <div style=" width:100%; float: right; display: inline-flex;">
           <div style="width: 35%; margin-right: 30px;word-break: break-word;">
             <h1>
               Devoce Location
@@ -117,15 +132,14 @@
 
       <!-- Step 4 -->
       <div v-if="active == 3" style="height: 40vh;">
-        <div
-          style=" width:100%; float: right; display: inline-flex;"
-        >
+        <div style=" width:100%; float: right; display: inline-flex;">
           <div style="width: 35%; margin-right: 30px;word-break: break-word;">
             <h1>
               Location Type
             </h1>
             <h2>
-              Is this [Device Type] inside the home, outside or at a perimeter entry point, like a door or window ?
+              Is this [Device Type] inside the home, outside or at a perimeter
+              entry point, like a door or window ?
             </h2>
           </div>
           <div style="width: 60%"></div>
@@ -134,15 +148,14 @@
 
       <!-- Step 5 -->
       <div v-if="active == 4" style="height: 40vh;">
-        <div
-          style=" width:100%; float: right; display: inline-flex;"
-        >
+        <div style=" width:100%; float: right; display: inline-flex;">
           <div style="width: 35%; margin-right: 30px;word-break: break-word;">
             <h1>
               Tags
             </h1>
             <h2>
-              Adding Tags can help find this device using search and enable actions on groups of devices in different zones.
+              Adding Tags can help find this device using search and enable
+              actions on groups of devices in different zones.
             </h2>
           </div>
           <div style="width: 60%"></div>
@@ -159,7 +172,7 @@
 
       <div style=" width:100%; ">
         <el-button
-          type="primary"
+          type="info"
           style="margin-top: 12px;"
           @click="previous"
           v-if="active > 0"
@@ -173,12 +186,140 @@
           >Next step</el-button
         >
         <el-button
-          type="primary"
+          type="success"
           style="margin-top: 12px;float: right; "
-          @click="done"
+          @click="cancelPopup"
           v-if="active == 4"
           >Done
         </el-button>
+      </div>
+    </el-dialog>
+
+    <!-- Add Hub -->
+    <el-dialog title="" :visible.sync="showAddHUBDialog">
+      <div
+        v-if="!hubs || hubs.length == 0"
+        style=" width:100%; float: right; display: inline-flex;"
+      >
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            New Hub
+          </h1>
+          <h2>
+            Hubs are the brains of your security system. Give your Hub a
+            uniquename
+          </h2>
+          <h2 style="font-weight: normal; margin-top: 10px;">
+            Example: Madroda House, Main Building, Basement
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
+            autocomplete="on"
+            label-position="left"
+          >
+            <el-form-item prop="hubName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="hubName"
+                v-model="hubForm.name"
+                style="color: black;"
+                placeholder="Hub Name"
+                name="hubName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;">
+                Description</span
+              > -->
+              <el-input
+                ref="hubDescription"
+                v-model="hubForm.description"
+                style="color: black;"
+                placeholder="Hub Description"
+                name="hubDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <div
+        v-if="hubs && hubs.length > 0"
+        style=" width:100%; float: right; display: inline-flex;"
+      >
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            Add a Hub
+          </h1>
+          <h2>
+            How do you want to use this Hub ? You can extend your radio range,
+            add security to separate location, or increase computing power.
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
+            autocomplete="on"
+            label-position="left"
+          >
+            <el-form-item prop="hubName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="hubName"
+                v-model="hubForm.name"
+                style="color: black;"
+                placeholder="Hub Name"
+                name="hubName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;">
+                Description</span
+              > -->
+              <el-input
+                ref="hubDescription"
+                v-model="hubForm.description"
+                style="color: black;"
+                placeholder="Hub Description"
+                name="hubDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+              <el-radio-group
+                v-model="hubForm.option"
+                style="margin-top: 20px; font-size: 24px; display: table-caption;"
+              >
+                <el-radio :label="3">Extent Range</el-radio>
+                <el-radio :label="6">New Location</el-radio>
+                <el-radio :label="9">Increase Performance</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div style=" width:100%;margin-bottom:10px; ">
+        <el-button type="info" @click="cancelPopup">Cancel</el-button>
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="float: right"
+          @click="createHub"
+          >Create Hub</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -229,6 +370,7 @@ import FontResizableContainer from '@/components/FontResizableContainer';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import { getZones, createZone, deleteZone } from '@/api/zone';
+import { getHubs, createHub, deleteHub } from '@/api/hubs';
 
 export default {
   name: 'Hubs',
@@ -240,11 +382,12 @@ export default {
   data() {
     return {
       active: 0,
-      editableTabsValue: '',
       showAddDialog: false,
+      loading: false,
+      showAddHUBDialog: false,
       textSearch: '',
       showDialogZones: false,
-      editableTabsValue: '1',
+      editableTabsValue: '-1',
       isShowLeft: false,
       multipleSelection: [],
       zonesList: [],
@@ -254,6 +397,12 @@ export default {
       ds_master: [],
       ds_commonCode: {},
       group: 'mission',
+      hubForm: {
+        name: '',
+        description: '',
+        option: '',
+        orgId: '',
+      },
       listDrag: [
         {
           header: 'Zone 1',
@@ -294,6 +443,11 @@ export default {
     orgId(val, old) {
       this.getZonesList(val);
     },
+    hubs(val, old) {
+      if (val && val.length > 0) {
+        this.editableTabsValue = val[val.length].name;
+      }
+    },
     textSearch(val, old) {
       this.searchZone(val);
     },
@@ -305,6 +459,19 @@ export default {
       }
 
       return this.$store.getters.orgId;
+    },
+    hubs() {
+      if (
+        this.$store.getters.hubs == null ||
+        this.$store.getters.hubs.length == 0
+      ) {
+        // this.$alert('empty');
+        this.editableTabsValue = '-1';
+        return [];
+      }
+
+      this.editableTabsValue = this.$store.getters.hubs[0].name;
+      return this.$store.getters.hubs;
     },
   },
   methods: {
@@ -322,9 +489,14 @@ export default {
         this.active--;
       }
     },
-    done() {
-      this.active = 0;
+    cancelPopup() {
+      this.showAddHUBDialog = false;
+
       this.showAddDialog = false;
+      this.active = 0;
+      this.hubForm.name = '';
+      this.hubForm.description = '';
+      this.loading = false;
     },
     setData(dataTransfer) {
       // to avoid Firefox bug
@@ -332,30 +504,47 @@ export default {
       dataTransfer.setData('Text', '');
     },
     addTab(targetName) {
-      console.log(targetName);
-      let newTabName = targetName + '1';
-      this.zonesList.push({
+      let newTabName = 'New Tab ' + this.hubs.length;
+      this.hubs.push({
         title: 'New Tab',
         name: newTabName,
         content: 'New Tab content',
       });
       this.editableTabsValue = newTabName;
     },
+    createHub() {
+      if (!this.hubForm.name || this.hubForm.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      if (!this.hubForm.description || this.hubForm.description.length < 1) {
+        this.$alert('Please input description');
+        return;
+      }
+
+      this.hubForm.orgId = this.orgId;
+      this.loading = true;
+      createHub(this.hubForm).then(response => {
+        this.getHubsList();
+      });
+      // .catch(() => {
+      //   this.loading = false;
+      // });
+    },
+    getHubsList() {
+      getHubs(this.orgId).then(response => {
+        this.$store.dispatch('user/updateHubs', response);
+
+        this.cancelPopup();
+      });
+    },
     getZonesList(val) {
       getZones(val).then(response => {
         this.zonesListTmp = response;
         this.zonesList = this.zonesListTmp;
-        this.editableTabsValue = this.zonesList[0].name;
+        // this.editableTabsValue = this.zonesList[0].name;
         this.$store.dispatch('user/updateZones', response);
       });
-    },
-    refreshUI() {
-      this.ZoneForm.name = '';
-      this.ZoneForm.description = '';
-      this.textSearch = '';
-      this.getZonesList(this.orgId);
-      this.isShowLeft = false;
-      this.showDialogZones = false;
     },
   },
 };
