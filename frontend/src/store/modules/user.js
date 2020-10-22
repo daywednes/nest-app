@@ -10,6 +10,7 @@ const state = {
     orgId: '',
     roles: [],
     orgs: [],
+    hubs: [],
     devices: [],
     zones: []
 }
@@ -35,6 +36,9 @@ const mutations = {
     },
     SET_ORGS: (state, orgs) => {
         state.orgs = orgs
+    },
+    SET_HUBS: (state, hubs) => {
+        state.hubs = hubs
     },
     SET_ZONES: (state, zones) => {
         state.zones = zones
@@ -69,6 +73,9 @@ const actions = {
     },
     updateOrgs({ commit }, data) {
         commit('SET_ORGS', data)
+    },
+    updateHubs({ commit }, data) {
+        commit('SET_HUBS', data)
     },
     updateDevices({ commit }, data) {
         commit('SET_DEVICES', data)

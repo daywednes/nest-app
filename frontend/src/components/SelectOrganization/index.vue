@@ -29,156 +29,285 @@
     </el-dropdown>
 
     <!-- Edit Organization -->
-    <el-dialog title="Edit Organization" :visible.sync="showEditDialog">
-      <el-form class="login-form-log" autocomplete="on" label-position="left">
-        <el-form-item prop="orgName">
-          <span style="margin-left:10px;font-size: x-large;"> Name</span>
-          <el-input
-            ref="orgName"
-            v-model="organization.name"
-            style="color: black;"
-            placeholder="Organization Name"
-            name="orgName"
-            type="text"
-            tabindex="1"
+    <el-dialog title="" :visible.sync="showEditDialog">
+      <div style=" width:100%; float: right; display: inline-flex;">
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            Edit Organization
+          </h1>
+          <h2>
+            Organizations contain 1 or more Hubs, collecttions of alarm zones
+            and devices. You can use them to manage security for multiple
+            locations.
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
             autocomplete="on"
-          />
-        </el-form-item>
-        <el-form-item prop="description">
-          <span style="margin-left:10px;font-size: x-large;"> Description</span>
-          <el-input
-            ref="orgDescription"
-            v-model="organization.description"
-            style="color: black;"
-            placeholder="Organization Description"
-            name="orgDescription"
-            type="textarea"
-            tabindex="2"
-            :rows="3"
-            autocomplete="on"
-          />
-        </el-form-item>
+            label-position="left"
+          >
+            <el-form-item prop="orgName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="orgName"
+                v-model="organization.name"
+                style="color: black;"
+                placeholder="Organization Name"
+                name="orgName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Description</span> -->
+              <el-input
+                ref="orgDescription"
+                v-model="organization.description"
+                style="color: black;"
+                placeholder="Organization Description"
+                name="orgDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
 
-        <!-- <el-tooltip
-          v-model="capsTooltip"
-          content="Caps lock is On"
-          placement="right"
-          manual
-        >
-        </el-tooltip> -->
-        <el-button
-          type="primary"
-          style="width:100%;margin-bottom:10px;"
-          @click="editOrganization"
+      <div style=" width:100%;margin-bottom:10px; ">
+        <el-button type="info" @click="cancelPopup">Cancel</el-button>
+        <el-button type="primary" style="float: right" @click="editOrganization"
           >Edit Organization</el-button
         >
-      </el-form>
+      </div>
     </el-dialog>
 
     <!-- Add Organization -->
-    <el-dialog title="New Organization" :visible.sync="showAddDialog">
-      <el-form class="login-form-log" autocomplete="on" label-position="left">
-        <el-form-item prop="orgName">
-          <span style="margin-left:10px;font-size: x-large;"> Name</span>
-          <el-input
-            ref="orgName"
-            v-model="organizationForm.name"
-            style="color: black;"
-            placeholder="Organization Name"
-            name="orgName"
-            type="text"
-            tabindex="1"
+    <el-dialog title="" :visible.sync="showAddDialog">
+      <div style=" width:100%; float: right; display: inline-flex;">
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            New Organization
+          </h1>
+          <h2>
+            Organizations contain 1 or more Hubs, collecttions of alarm zones
+            and devices. You can use them to manage security for multiple
+            locations.
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
+            style=""
             autocomplete="on"
-          />
-        </el-form-item>
-        <el-form-item prop="description">
-          <span style="margin-left:10px;font-size: x-large;"> Description</span>
-          <el-input
-            ref="orgDescription"
-            v-model="organizationForm.description"
-            style="color: black;"
-            placeholder="Organization Description"
-            name="orgDescription"
-            type="textarea"
-            tabindex="2"
-            :rows="3"
-            autocomplete="on"
-          />
-        </el-form-item>
+            label-position="left"
+          >
+            <el-form-item prop="orgName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="orgName"
+                v-model="organizationForm.name"
+                style="color: black;"
+                placeholder="Organization Name"
+                name="orgName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;">
+                Description</span
+              > -->
+              <el-input
+                ref="orgDescription"
+                v-model="organizationForm.description"
+                style="color: black;"
+                placeholder="Organization Description"
+                name="orgDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <div style=" width:100%;margin-bottom:10px; ">
+        <el-button type="info" @click="cancelPopup">Cancel</el-button>
         <el-button
           type="primary"
-          style="width:100%;margin-bottom:10px;"
+          style="float: right"
           @click="createOrganization"
           >Create Organization</el-button
         >
-      </el-form>
+      </div>
     </el-dialog>
 
     <!-- Add Hub -->
-    <el-dialog title="New Hub" :visible.sync="showAddHUBDialog">
-      <el-form class="login-form-log" autocomplete="on" label-position="left">
-        <el-form-item prop="hubName">
-          <span style="margin-left:10px;font-size: x-large;"> Name</span>
-          <el-input
-            ref="hubName"
-            v-model="hubForm.name"
-            style="color: black;"
-            placeholder="Hub Name"
-            name="hubName"
-            type="text"
-            tabindex="1"
+    <el-dialog title="" :visible.sync="showAddHUBDialog">
+      <div
+        v-if="!hubList || hubList.length == 0"
+        style=" width:100%; float: right; display: inline-flex;"
+      >
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            New Hub
+          </h1>
+          <h2>
+            Hubs are the brains of your security system. Give your Hub a
+            uniquename
+          </h2>
+          <h2 style="font-weight: normal; margin-top: 10px;">
+            Example: Madroda House, Main Building, Basement
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
             autocomplete="on"
-          />
-        </el-form-item>
-        <el-form-item prop="description">
-          <span style="margin-left:10px;font-size: x-large;"> Description</span>
-          <el-input
-            ref="hubDescription"
-            v-model="hubForm.description"
-            style="color: black;"
-            placeholder="Hub Description"
-            name="hubDescription"
-            type="textarea"
-            tabindex="2"
-            :rows="3"
+            label-position="left"
+          >
+            <el-form-item prop="hubName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="hubName"
+                v-model="hubForm.name"
+                style="color: black;"
+                placeholder="Hub Name"
+                name="hubName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;">
+                Description</span
+              > -->
+              <el-input
+                ref="hubDescription"
+                v-model="hubForm.description"
+                style="color: black;"
+                placeholder="Hub Description"
+                name="hubDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <div
+        v-if="hubList && hubList.length > 0"
+        style=" width:100%; float: right; display: inline-flex;"
+      >
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            Add a Hub
+          </h1>
+          <h2>
+            How do you want to use this Hub ? You can extend your radio range,
+            add security to separate location, or increase computing power.
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-form
+            class="login-form-log"
             autocomplete="on"
-          />
-        </el-form-item>
-        <el-button
-          type="primary"
-          style="width:100%;margin-bottom:10px;"
-          @click="createHub"
+            label-position="left"
+          >
+            <el-form-item prop="hubName">
+              <!-- <span style="margin-left:10px;font-size: x-large;"> Name</span> -->
+              <el-input
+                ref="hubName"
+                v-model="hubForm.name"
+                style="color: black;"
+                placeholder="Hub Name"
+                name="hubName"
+                type="text"
+                tabindex="1"
+                autocomplete="on"
+              />
+            </el-form-item>
+            <el-form-item prop="description">
+              <!-- <span style="margin-left:10px;font-size: x-large;">
+                Description</span
+              > -->
+              <el-input
+                ref="hubDescription"
+                v-model="hubForm.description"
+                style="color: black;"
+                placeholder="Hub Description"
+                name="hubDescription"
+                type="textarea"
+                tabindex="2"
+                :rows="3"
+                autocomplete="on"
+              />
+              <el-radio-group
+                v-model="hubForm.option"
+                style="margin-top: 20px; font-size: 24px; display: table-caption;"
+              >
+                <el-radio :label="3">Extent Range</el-radio>
+                <el-radio :label="6">New Location</el-radio>
+                <el-radio :label="9">Increase Performance</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div style=" width:100%;margin-bottom:10px; ">
+        <el-button type="info" @click="cancelPopup">Cancel</el-button>
+        <el-button type="primary" style="float: right" @click="createHub"
           >Create Hub</el-button
         >
-      </el-form>
+      </div>
     </el-dialog>
 
     <!-- Switch Organization -->
-    <el-dialog title="Switch Organization" :visible.sync="showSwitchDialog">
-      <el-select
-        v-model="organization.id"
-        style="align-self: center; text-align-last: left;inline-size: fit-content;margin: 0 30px 0 10px;"
-        @change="updateOrgID(organization.id)"
-      >
-        <el-option
-          style="align-self: center; text-align-last: left;"
-          v-for="item in orgList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        >
-          <!-- <el-button
-            style="float: left; 
-            margin: 3px; 
-            background: transparent;"
-            class="show-icon"
-            @click="fn_delete(item.id)"
+    <el-dialog :visible.sync="showSwitchDialog">
+      <div style=" width:100%; float: right; display: inline-flex;">
+        <div style="width: 50%; margin-right: 30px;word-break: break-word;">
+          <h1>
+            Switch Organization
+          </h1>
+          <h2>
+            Organizations contain 1 or more Hubs, collecttions of alarm zones
+            and devices. You can use them to manage security for multiple
+            locations.
+          </h2>
+        </div>
+        <div style="width: 50%; margin-top:50px;">
+          <el-select
+            v-model="organization.id"
+            style="align-self: center; text-align-last: left;inline-size: fit-content;margin: 0 30px 0 10px;"
+            @change="updateOrgID(organization.id)"
           >
-            <i class="el-icon-close" />
-          </el-button> -->
-          {{ item.name }}</el-option
-        >
-      </el-select>
+            <el-option
+              style="align-self: center; text-align-last: left;"
+              v-for="item in orgList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+              {{ item.name }}</el-option
+            >
+          </el-select>
+        </div>
+      </div>
+      <div style=" width:100%;margin-bottom:10px; ">
+        <el-button type="info" @click="cancelPopup">Cancel</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -196,8 +325,8 @@
 .el-select-dropdown__item {
   padding: 0px;
   margin: 5px;
-  height: 40px;
-  line-height: 40px;
+  height: 50px;
+  line-height: 50px;
 }
 .item-btn {
   margin-bottom: 15px;
@@ -211,7 +340,7 @@
   cursor: pointer;
   border: 2px black;
   width: 300px;
-  /* color: #409EFF; */
+  /* color: #509EFF; */
 }
 .el-dropdown-box {
   border: 1px solid black;
@@ -233,6 +362,7 @@ export default {
     return {
       organization: {},
       orgList: [],
+      hubList: [],
       showAddDialog: false,
       showAddHUBDialog: false,
       showSwitchDialog: false,
@@ -245,6 +375,8 @@ export default {
       hubForm: {
         name: '',
         description: '',
+        option: '',
+        orgId: '',
       },
     };
   },
@@ -296,17 +428,30 @@ export default {
       });
     },
     getOrgList() {
-      getOrgs().then(response => {
-        this.orgList = response;
-        if (
-          this.orgList &&
-          this.orgList.length > 0 &&
-          (!this.organization || this.organization)
-        ) {
-          this.organization = this.orgList[0];
-        }
-        this.$store.dispatch('user/updateOrgID', this.organization.id);
-        this.$store.dispatch('user/updateOrgs', response);
+      getOrgs()
+        .then(response => {
+          this.orgList = response;
+          if (
+            this.orgList &&
+            this.orgList.length > 0 &&
+            (!this.organization || this.organization)
+          ) {
+            this.organization = this.orgList[0];
+          }
+          console.log;
+          this.$store.dispatch('user/updateOrgID', this.organization.id);
+          this.$store.dispatch('user/updateOrgs', response);
+          this.getHubsList(this.organization.id);
+        })
+        // .catch(error => {
+        //   console.log(error);
+        //   store.dispatch('user/logout');
+        // });
+    },
+    getHubsList(orgId) {
+      getHubs(orgId).then(response => {
+        this.hubList = response;
+        this.$store.dispatch('user/updateHubs', response);
       });
     },
     updateOrgID(id) {
@@ -324,10 +469,22 @@ export default {
         this.$alert('Please input description');
         return;
       }
+      this.hubForm.orgId = this.organization.id;
       createHub(this.hubForm).then(response => {
         this.getOrgList();
         this.showAddHUBDialog = false;
       });
+    },
+    cancelPopup() {
+      this.showAddDialog = false;
+      this.showAddHUBDialog = false;
+      this.showSwitchDialog = false;
+      this.showEditDialog = false;
+      this.showEditHUBDialog = false;
+      this.organizationForm.name = '';
+      this.organizationForm.description = '';
+      this.hubForm.name = '';
+      this.hubForm.description = '';
     },
     createOrganization() {
       if (
