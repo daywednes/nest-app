@@ -46,8 +46,141 @@
         Add Hub
       </el-button>
     </div>
-    
-  <el-button  style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 51px;" type="primary" icon="el-icon-circle-plus" circle></el-button>
+
+    <el-button
+      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 51px;"
+      type="primary"
+      icon="el-icon-circle-plus"
+      circle
+      @click="
+        () => {
+          showAddDialog = true;
+        }
+      "
+    ></el-button>
+
+    <el-dialog title="" :visible.sync="showAddDialog">
+      <!-- Step 1 -->
+      <div
+        v-if="active == 0"
+        style="height: 40vh; text-align: -webkit-center;white-space: pre-wrap; word-wrap: break-word; font-size: 20px;"
+      >
+        <h1>
+          HARDWARE
+        </h1>
+        <h1>
+          SCANNING &
+        </h1>
+        <h1>
+          PARING
+        </h1>
+        <h1>
+          INSTRUCTIONS TBD
+        </h1>
+      </div>
+
+      <!-- Step 2 -->
+      <div v-if="active == 1" style="height: 40vh;">
+        <div style=" width:100%; float: right;    display: inline-flex;">
+          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+            <h1>
+              Alarm Zone
+            </h1>
+            <h2>
+              Alarm zones are groups of security devices that can be armed and
+              dissarmed. Select or create a new zone for your [Device Type]
+            </h2>
+          </div>
+          <div style="width: 60%"></div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div v-if="active == 2" style="height: 40vh;">
+        <div
+          style=" width:100%; float: right; display: inline-flex;"
+        >
+          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+            <h1>
+              Devoce Location
+            </h1>
+            <h2>
+              Where in [Zone Name] is this device located ?
+            </h2>
+            <h2>
+              Example: Front Door or East Window.
+            </h2>
+          </div>
+          <div style="width: 60%"></div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div v-if="active == 3" style="height: 40vh;">
+        <div
+          style=" width:100%; float: right; display: inline-flex;"
+        >
+          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+            <h1>
+              Location Type
+            </h1>
+            <h2>
+              Is this [Device Type] inside the home, outside or at a perimeter entry point, like a door or window ?
+            </h2>
+          </div>
+          <div style="width: 60%"></div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div v-if="active == 4" style="height: 40vh;">
+        <div
+          style=" width:100%; float: right; display: inline-flex;"
+        >
+          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+            <h1>
+              Tags
+            </h1>
+            <h2>
+              Adding Tags can help find this device using search and enable actions on groups of devices in different zones.
+            </h2>
+          </div>
+          <div style="width: 60%"></div>
+        </div>
+      </div>
+      <br />
+      <el-steps :active="active" finish-status="success">
+        <el-step title="Scanning"></el-step>
+        <el-step title="Alarm Zone"></el-step>
+        <el-step title="Device Location"></el-step>
+        <el-step title="Location Type"></el-step>
+        <el-step title="Tags"></el-step>
+      </el-steps>
+
+      <div style=" width:100%; ">
+        <el-button
+          type="primary"
+          style="margin-top: 12px;"
+          @click="previous"
+          v-if="active > 0"
+          >Previos step</el-button
+        >
+        <el-button
+          type="primary"
+          style="margin-top: 12px;"
+          @click="next"
+          v-if="active < 4"
+          >Next step</el-button
+        >
+        <el-button
+          type="primary"
+          style="margin-top: 12px;float: right; "
+          @click="done"
+          v-if="active == 4"
+          >Done
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -87,7 +220,7 @@
   width: 300px;
 }
 .el-button--medium.is-circle {
-    padding: 0px;
+  padding: 0px;
 }
 </style>
 <script>
@@ -106,7 +239,9 @@ export default {
   },
   data() {
     return {
+      active: 0,
       editableTabsValue: '',
+      showAddDialog: false,
       textSearch: '',
       showDialogZones: false,
       editableTabsValue: '1',
@@ -121,8 +256,8 @@ export default {
       group: 'mission',
       listDrag: [
         {
-          header:'Zone 1',
-          listClass:'kanban todo',
+          header: 'Zone 1',
+          listClass: 'kanban todo',
           list: [
             { name: 'Mission', id: 1 },
             { name: 'Mission', id: 2 },
@@ -131,8 +266,8 @@ export default {
           ],
         },
         {
-          header:'Zone 2',
-          listClass:'kanban working',
+          header: 'Zone 2',
+          listClass: 'kanban working',
           list: [
             { name: 'Mission', id: 5 },
             { name: 'Mission', id: 6 },
@@ -140,8 +275,8 @@ export default {
           ],
         },
         {
-          header:'Zone 3',
-          listClass:'kanban done',
+          header: 'Zone 3',
+          listClass: 'kanban done',
           list: [
             { name: 'Mission', id: 8 },
             { name: 'Mission', id: 9 },
@@ -173,6 +308,24 @@ export default {
     },
   },
   methods: {
+    next() {
+      if (this.active + 1 > 4) {
+        this.active = 4;
+      } else {
+        this.active++;
+      }
+    },
+    previous() {
+      if (this.active - 1 < 0) {
+        this.active = 0;
+      } else {
+        this.active--;
+      }
+    },
+    done() {
+      this.active = 0;
+      this.showAddDialog = false;
+    },
     setData(dataTransfer) {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
