@@ -22,22 +22,36 @@
       >
         <keep-alive>
           <!-- <Zones /> -->
+          <div style="width:100%"> 
+            <div style="margin-botom: 20px;">
+            <el-checkbox v-model="autoSaveChecked"
+              >Auto Save After 5 Seconds</el-checkbox
+            >
 
-          <draggable
-            :list="zonesList"
-            v-bind="$attrs"
-            class="board-column-content"
-            :set-data="setData"
-          >
-            <Kanban
-              v-for="(item, index) in zonesList"
-              :key="index"
-              :list="item.devices"
-              :group="group"
-              :class="item.name"
-              :header-text="item.name"
-            />
-          </draggable>
+            <el-button
+              style="margin-left: 40px;"
+              type="primary"
+              icon="el-icon-bottom"
+            >
+              Save Changes
+            </el-button>
+            </div>
+            <draggable
+              :list="zonesList"
+              v-bind="$attrs"
+              class="board-column-content"
+              :set-data="setData"
+            >
+              <Kanban
+                v-for="(item, index) in zonesList"
+                :key="index"
+                :list="item.devices"
+                :group="group"
+                :class="item.name"
+                :header-text="item.name"
+              />
+            </draggable>
+          </div>
         </keep-alive>
       </el-tab-pane>
     </el-tabs>
@@ -46,7 +60,7 @@
       <el-input
         placeholder="Type something"
         prefix-icon="el-icon-search"
-        style="width: 60%; margin-right: 10px;"
+        style="width: 50%; margin-right: 10px;"
         v-model="textSearch"
       >
       </el-input>
@@ -99,7 +113,7 @@
       <!-- Step 2 -->
       <div v-if="active == 1" style="height: 40vh;">
         <div style=" width:100%; float: right;    display: inline-flex;">
-          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
             <h1>
               Alarm Zone
             </h1>
@@ -108,32 +122,85 @@
               dissarmed. Select or create a new zone for your [Device Type]
             </h2>
           </div>
-          <div style="width: 60%"></div>
+          <div style="width: 50%">
+            <h2>
+              Choose zone of your devices:
+            </h2>
+            <el-select
+              v-model="addDevice.zoneId"
+              filterable
+              allow-create
+              default-first-option
+            >
+              <el-option
+                v-for="item in zonesList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
         </div>
       </div>
 
       <!-- Step 3 -->
       <div v-if="active == 2" style="height: 40vh;">
         <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
             <h1>
-              Devoce Location
+              Device Location
             </h1>
             <h2>
-              Where in [Zone Name] is this device located ?
+              Where in {{zoneName}} is this device located ?
             </h2>
             <h2>
               Example: Front Door or East Window.
             </h2>
           </div>
-          <div style="width: 60%"></div>
+          <div style="width: 50%">
+            <h3>Device Name</h3>
+            <el-input
+              v-model="addDevice.name"
+              style="color: black;"
+              placeholder="Device Name"
+              name="DeviceName"
+              type="text"
+              tabindex="1"
+              autocomplete="on"
+            />
+
+            <h3>Device Description</h3>
+            <el-input
+              v-model="addDevice.description"
+              style="color: black;"
+              placeholder="Description"
+              name="DeviceDescription"
+              type="textarea"
+              tabindex="2"
+              :rows="3"
+              autocomplete="on"
+            />
+            <br />
+
+            <h3>Device Location</h3>
+            <el-input
+              v-model="addDevice.location"
+              style="color: black;"
+              placeholder="Device Location"
+              name="DeviceLocation"
+              type="text"
+              tabindex="3"
+              autocomplete="on"
+            />
+          </div>
         </div>
       </div>
 
       <!-- Step 4 -->
       <div v-if="active == 3" style="height: 40vh;">
         <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
             <h1>
               Location Type
             </h1>
@@ -142,14 +209,23 @@
               entry point, like a door or window ?
             </h2>
           </div>
-          <div style="width: 60%"></div>
+          <div style="width: 50%">
+            <el-radio-group
+              v-model="addDevice.locationType"
+              style="margin-top: 20px; font-size: 24px; display: table-caption;"
+            >
+              <el-radio :label="3">Inside the Home</el-radio>
+              <el-radio :label="6">Outside the Home</el-radio>
+              <el-radio :label="9">Entry Point</el-radio>
+            </el-radio-group>
+          </div>
         </div>
       </div>
 
       <!-- Step 5 -->
       <div v-if="active == 4" style="height: 40vh;">
         <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 35%; margin-right: 30px;word-break: break-word;">
+          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
             <h1>
               Tags
             </h1>
@@ -158,7 +234,26 @@
               actions on groups of devices in different zones.
             </h2>
           </div>
-          <div style="width: 60%"></div>
+          <div style="width: 50%">
+            <h2>
+              Add tags:
+            </h2>
+            <el-select
+              v-model="addDevice.tagsId"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+            >
+              <el-option
+                v-for="item in optionsTag"
+                :key="item"
+                :label="item"
+                :value="item"
+              >
+              </el-option>
+            </el-select>
+          </div>
         </div>
       </div>
       <br />
@@ -363,6 +458,9 @@
 .el-button--medium.is-circle {
   padding: 0px;
 }
+.el-radio__label {
+  font-size: 20px;
+}
 </style>
 <script>
 import draggable from 'vuedraggable';
@@ -371,6 +469,7 @@ import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import { getZones, createZone, deleteZone } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
+import { getTags, getTagsById } from '@/api/tags';
 
 export default {
   name: 'Hubs',
@@ -382,6 +481,7 @@ export default {
   data() {
     return {
       active: 0,
+      autoSaveChecked: false,
       showAddDialog: false,
       loading: false,
       showAddHUBDialog: false,
@@ -390,6 +490,7 @@ export default {
       editableTabsValue: '-1',
       isShowLeft: false,
       multipleSelection: [],
+      optionsTag: [],
       zonesList: [],
       zonesListTmp: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
@@ -402,6 +503,15 @@ export default {
         description: '',
         option: '',
         orgId: '',
+      },
+      addDevice: {
+        zoneId: '',
+        tagsId: '',
+        name: '',
+        description: '',
+        orgId: '',
+        location: '',
+        locationType: 3,
       },
       listZones: [
         {
@@ -439,6 +549,7 @@ export default {
   mounted: function() {
     this.getZonesList();
 
+    this.getTagsList();
     this.editableTabsValue = this.$store.getters.hubs[0].name;
   },
   watch: {
@@ -447,7 +558,7 @@ export default {
     },
     hubs(val, old) {
       if (val && val.length > 0) {
-        this.editableTabsValue = val[val.length].name;
+        this.editableTabsValue = val[val.length - 1].name;
       }
     },
     textSearch(val, old) {
@@ -468,8 +579,18 @@ export default {
     hubs() {
       return this.$store.getters.hubs;
     },
+    zoneName() {
+      return this.zonesList.find(y=> y.id == this.addDevice.zoneId).name ;
+    },
   },
   methods: {
+    getTagsList() {
+      getTags().then(response => {
+        this.optionsTag = response.map(x => x.name)
+          ? response.map(x => x.name)
+          : [];
+      });
+    },
     next() {
       if (this.active + 1 > 4) {
         this.active = 4;
@@ -540,6 +661,10 @@ export default {
 
           this.cancelPopup();
         })
+        .catch(() => {
+          this.editableTabsValue = '-1';
+          this.$store.dispatch('user/updateHubs', []);
+        })
         .finally(() => {
           loading.close();
         });
@@ -556,9 +681,13 @@ export default {
         .then(response => {
           this.zonesListTmp = response;
           this.zonesList = this.zonesListTmp;
-          // this.editableTabsValue = this.zonesList[0].name;
+          this.addDevice.zoneId = this.zonesList[0].id;
           this.$store.dispatch('user/updateZones', response);
-        }).finally(() => {
+        })
+        .catch(() => {
+          this.$store.dispatch('user/updateZones', []);
+        })
+        .finally(() => {
           loading.close();
         });
     },
