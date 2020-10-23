@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-    // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+    baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
     timeout: 0 // request timeout
 })
@@ -44,7 +44,7 @@ service.interceptors.response.use(
      */
     response => {
         const res = response.data
-            // if the custom code is not 20000, it is judged as an error.
+        // if the custom code is not 20000, it is judged as an error.
         if (!res) {
             // Message({
             //     message: res.message || 'Error',
@@ -73,12 +73,12 @@ service.interceptors.response.use(
     },
     error => {
         console.log('err' + error.response.data.error) // for debug
-            // let showError = error.response.data.error + ':  ' + error.response.data.message
-            // Message({
-            //     message: showError,
-            //     type: 'error',
-            //     duration: 5 * 1000
-            // })
+        // let showError = error.response.data.error + ':  ' + error.response.data.message
+        // Message({
+        //     message: showError,
+        //     type: 'error',
+        //     duration: 5 * 1000
+        // })
 
         if (error.response.data && error.response.data.statusCode == 401) {
             store.dispatch('user/logout')
