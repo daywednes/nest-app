@@ -289,14 +289,14 @@
         </div>
         <div style="width: 50%; margin-top:50px;">
           <el-select
-            v-model="organization.id"
+            v-model="organizationId"
             style="align-self: center; text-align-last: left;inline-size: fit-content;margin: 0 30px 0 10px;"
-            @change="updateOrgID(organization.id)"
+            @change="updateOrgID(organizationId)"
           >
             <el-option
               style="align-self: center; text-align-last: left;"
-              v-for="item in orgList"
-              :key="item.id"
+              v-for="(item, index) in orgList"
+              :key="index"
               :label="item.name"
               :value="item.id"
             >
@@ -361,6 +361,7 @@ export default {
   data() {
     return {
       organization: {},
+      organizationId:'',
       orgList: [],
       hubList: [],
       showAddDialog: false,
@@ -421,7 +422,7 @@ export default {
       }
       deleteOrg(id).then(response => {
         this.organization = {};
-        // this.organization.id = '';
+        this.organizationId = '';
         // this.organization.name = '';
         this.$store.dispatch('user/updateOrgID', '');
         this.getOrgList();
@@ -437,11 +438,11 @@ export default {
             (!this.organization || this.organization)
           ) {
             this.organization = this.orgList[0];
+            this.organizationId = this.orgList[0].id;
           }
-          console.log;
-          this.$store.dispatch('user/updateOrgID', this.organization.id);
+          this.$store.dispatch('user/updateOrgID', this.organizationId);
           this.$store.dispatch('user/updateOrgs', response);
-          this.getHubsList(this.organization.id);
+          this.getHubsList(this.organizationId);
         })
         // .catch(error => {
         //   console.log(error);
@@ -456,8 +457,9 @@ export default {
     },
     updateOrgID(id) {
       this.organization = this.orgList.find(x => x.id == id);
+      console.log(this.organization);
       this.$store.dispatch('user/updateOrgID', id);
-
+      this.organizationId = id;
       this.showSwitchDialog = false;
     },
     createHub() {
@@ -469,7 +471,7 @@ export default {
         this.$alert('Please input description');
         return;
       }
-      this.hubForm.orgId = this.organization.id;
+      this.hubForm.orgId = this.organizationId;
       createHub(this.hubForm).then(response => {
         this.getOrgList();
         this.showAddHUBDialog = false;
