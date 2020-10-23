@@ -13,7 +13,8 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     id: number,
   ): Promise<ZoneEntity[]> {
     
-    const query = this.createQueryBuilder('zone_entity');
+    const query = this.createQueryBuilder('zone_entity')
+    .leftJoinAndSelect('zone_entity.devices', 'devices');
     query.where('zone_entity.orgId = :orgId', { orgId: id });
     try {
       const zones = await query.getMany();

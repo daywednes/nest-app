@@ -24,18 +24,18 @@
           <!-- <Zones /> -->
 
           <draggable
-            :list="listDrag"
+            :list="zonesList"
             v-bind="$attrs"
             class="board-column-content"
             :set-data="setData"
           >
             <Kanban
-              v-for="(item, index) in listDrag"
+              v-for="(item, index) in zonesList"
               :key="index"
-              :list="item.list"
+              :list="item.devices"
               :group="group"
-              :class="item.listClass"
-              :header-text="item.header"
+              :class="item.name"
+              :header-text="item.name"
             />
           </draggable>
         </keep-alive>
@@ -396,14 +396,14 @@ export default {
       selectedZone: { ...DEFAULT_ITEM },
       ds_master: [],
       ds_commonCode: {},
-      group: 'mission',
+      group: 'device',
       hubForm: {
         name: '',
         description: '',
         option: '',
         orgId: '',
       },
-      listDrag: [
+      listZones: [
         {
           header: 'Zone 1',
           listClass: 'kanban todo',
@@ -437,11 +437,13 @@ export default {
     };
   },
   mounted: function() {
-    this.getZonesList(this.orgId);
+    this.getZonesList();
+
+    this.editableTabsValue = this.$store.getters.hubs[0].name;
   },
   watch: {
     orgId(val, old) {
-      this.getZonesList(val);
+      this.getHubsList();
     },
     hubs(val, old) {
       if (val && val.length > 0) {
@@ -450,6 +452,9 @@ export default {
     },
     textSearch(val, old) {
       this.searchZone(val);
+    },
+    editableTabsValue(val, old) {
+      this.getZonesList();
     },
   },
   computed: {
@@ -461,16 +466,6 @@ export default {
       return this.$store.getters.orgId;
     },
     hubs() {
-      if (
-        this.$store.getters.hubs == null ||
-        this.$store.getters.hubs.length == 0
-      ) {
-        // this.$alert('empty');
-        this.editableTabsValue = '-1';
-        return [];
-      }
-
-      this.editableTabsValue = this.$store.getters.hubs[0].name;
       return this.$store.getters.hubs;
     },
   },
@@ -532,19 +527,40 @@ export default {
       // });
     },
     getHubsList() {
-      getHubs(this.orgId).then(response => {
-        this.$store.dispatch('user/updateHubs', response);
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
 
-        this.cancelPopup();
-      });
+      getHubs(this.orgId)
+        .then(response => {
+          this.$store.dispatch('user/updateHubs', response);
+
+          this.cancelPopup();
+        })
+        .finally(() => {
+          loading.close();
+        });
     },
-    getZonesList(val) {
-      getZones(val).then(response => {
-        this.zonesListTmp = response;
-        this.zonesList = this.zonesListTmp;
-        // this.editableTabsValue = this.zonesList[0].name;
-        this.$store.dispatch('user/updateZones', response);
+    getZonesList() {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
       });
+
+      getZones(this.orgId)
+        .then(response => {
+          this.zonesListTmp = response;
+          this.zonesList = this.zonesListTmp;
+          // this.editableTabsValue = this.zonesList[0].name;
+          this.$store.dispatch('user/updateZones', response);
+        }).finally(() => {
+          loading.close();
+        });
     },
   },
 };
