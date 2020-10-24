@@ -12,6 +12,12 @@ export class UpdateDeviceDto {
   description: string;
   @IsOptional()
   @ApiProperty()
+  location: string;
+  @IsOptional()
+  @ApiProperty()
+  locationType: string;
+  @IsOptional()
+  @ApiProperty()
   orgId: number;
   @IsOptional()
   @ApiProperty()
