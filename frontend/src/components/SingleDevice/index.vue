@@ -8,7 +8,7 @@
         style="margin-left:10px;font-size: large;"
         icon-class="example"
       />
-      <span style="margin-left:10px;font-size: large;">{{ item.name }} </span>
+      <span style="margin-left:10px;font-size: medium;">{{ item.name }} </span>
 
       <!-- <el-checkbox  :label="item.name" style="font-size: xx-large;">
         
@@ -18,29 +18,38 @@
       <!-- <el-checkbox  label="Test Zone" style="margin:10px 0px 30px 0px;display:block; font-size: x-large;">
         
       </el-checkbox> -->
-      <span style="margin:10px 0px 10px 0px;display:block; font-size: large;">ID: {{
-        item.id
-      }}</span>
-      <span style="margin:10px 0px 10px 0px;display:block; font-size: large;">Description: {{
-        item.description
-      }}</span>
+      <!-- <span style="margin:10px 0px 10px 0px;display:block; font-size: medium;"
+        >ID: {{ item.id }}</span
+      >
+      <span style="margin:10px 0px 10px 0px;display:block; font-size: medium;"
+        >Description: {{ item.description }}</span
+      > -->
+      <span style="margin:0px 0px 10px 0px;display:block; font-size: medium;"
+        >Location: {{ item.location }}</span
+      >
+      <span style="margin:10px 0px 10px 0px;display:block; font-size: medium;"
+        >Location Type: {{ item.locationType }}</span
+      >
       <!-- <el-button type="primary" icon="el-icon-share"> </el-button>
       <el-button type="primary" icon="el-icon-s-custom"> </el-button>
       <el-button type="primary" icon="el-icon-s-data"> </el-button>
       <el-button type="primary" icon="el-icon-delete-solid"> </el-button> -->
-      <!-- <span
-        style="margin:10px 0px 5px 0px;display:block; font-size: medium;
+
+      <div style=" min-height: 60px;">
+        <span
+          style="margin:10px 0px 5px 0px;display:block; font-size: medium;
     font-weight: bold;"
-        >TAGS :
-      </span>
-      <el-tag
-        v-for="tag in item.tags"
-        :key="tag"
-        style="margin:10px 10px 5px 0px;"
-        type="info"
-      >
-        {{ tag }}
-      </el-tag> -->
+          >TAGS :
+        </span>
+        <el-tag
+          v-for="tag in itemTags"
+          :key="tag"
+          style="margin:5px 5px 5px 0px;"
+          type="info"
+        >
+          {{ tag }}
+        </el-tag>
+      </div>
     </div>
   </el-card>
 </template>
@@ -59,12 +68,27 @@
 }
 </style>
 <script>
+import { getTags, getTagsById } from '@/api/tags';
 export default {
+  data() {
+    return {
+      itemTags: [],
+    };
+  },
   props: {
     item: {
       type: Object,
       required: true,
     },
+  },
+  watch: {
+    item(val, old) {
+      console.log(val);
+      this.getTagsDeviceList();
+    },
+  },
+  mounted: function() {
+    this.getTagsDeviceList();
   },
   computed: {
     language() {
@@ -81,6 +105,14 @@ export default {
       this.$message({
         message: 'Switch Language Success',
         type: 'success',
+      });
+    },
+
+    getTagsDeviceList() {
+      getTagsById(this.item.id).then(response => {
+        this.itemTags = response.map(x => x.name)
+          ? response.map(x => x.name)
+          : [];
       });
     },
   },

@@ -6,6 +6,12 @@ export function getZones(orgId) {
         method: 'get'
     })
 }
+export function getZonesHub(hubId) {
+    return request({
+        url: '/zone/hub/' + hubId,
+        method: 'get'
+    })
+}
 export function getZoneDetails(orgId) {
     return request({
         url: '/zone/details/' + orgId,

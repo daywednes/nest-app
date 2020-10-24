@@ -84,38 +84,40 @@ export const constantRoutes = [{
             name: 'Dashboard',
             meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
         }]
-    }, {
+    }, 
+    // {
+    //     path: '/devices',
+    //     component: Layout,
+    //     redirect: '/devices',
+    //     children: [{
+    //         path: '/devices',
+    //         component: () =>
+    //             import ('@/views/devices/index'),
+    //         name: 'Devices',
+    //         meta: { title: 'Devices', icon: 'guide'}
+    //     }]
+    // }, {
+    //     path: '/zones',
+    //     component: Layout,
+    //     redirect: '/zones',
+    //     children: [{
+    //         path: '/zones',
+    //         component: () =>
+    //             import ('@/views/zones/index'),
+    //         name: 'Zones',
+    //         meta: { title: 'Zones', icon: 'icon'}
+    //     }]
+    // },
+    {
         path: '/devices',
         component: Layout,
         redirect: '/devices',
         children: [{
             path: '/devices',
             component: () =>
-                import ('@/views/devices/index'),
+                import ('@/views/hubs/index'),
             name: 'Devices',
             meta: { title: 'Devices', icon: 'guide'}
-        }]
-    }, {
-        path: '/zones',
-        component: Layout,
-        redirect: '/zones',
-        children: [{
-            path: '/zones',
-            component: () =>
-                import ('@/views/zones/index'),
-            name: 'Zones',
-            meta: { title: 'Zones', icon: 'icon'}
-        }]
-    },{
-        path: '/hubs',
-        component: Layout,
-        redirect: '/hubs',
-        children: [{
-            path: '/hubs',
-            component: () =>
-                import ('@/views/hubs/index'),
-            name: 'Zones',
-            meta: { title: 'Hubs', icon: 'guide'}
         }]
     },{
         path: '/automations',
