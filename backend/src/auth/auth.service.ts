@@ -34,6 +34,7 @@ export class AuthService {
     this.logger.debug(
       `Generated JWT Token with payload ${JSON.stringify(payload)}`,
     );
+    
 
     return { accessToken };
   }

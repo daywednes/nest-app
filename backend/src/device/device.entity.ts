@@ -15,7 +15,7 @@ import { TagsDevicesEntity } from 'src/tags/tags_divice.entity';
 import { IsOptional } from 'class-validator';
 
 @Entity('device')
-export class DeviceEntity  extends BaseEntity {
+export class DeviceEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,6 +24,10 @@ export class DeviceEntity  extends BaseEntity {
 
   @Column({ default: '' })
   description: string;
+  @Column({ default: '' })
+  location: string;
+  @Column({ default: '' })
+  locationType: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
@@ -44,7 +48,7 @@ export class DeviceEntity  extends BaseEntity {
     type => User,
     user => user.devices,
   )
-   user: User;
+  user: User;
 
   @ManyToOne(
     type => ZoneEntity,
@@ -65,11 +69,9 @@ export class DeviceEntity  extends BaseEntity {
   )
   tagsdevice: TagsDevicesEntity[];
 
-
   @Column({ default: 0 })
   favoriteCount: number;
 
   @IsOptional()
-  tags:string[]
-  
+  tags: string[];
 }

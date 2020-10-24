@@ -22,19 +22,19 @@
       >
         <keep-alive>
           <!-- <Zones /> -->
-          <div style="width:100%"> 
+          <div style="width:100%">
             <div style="margin-botom: 20px;">
-            <el-checkbox v-model="autoSaveChecked"
-              >Auto Save After 5 Seconds</el-checkbox
-            >
+              <el-checkbox v-model="autoSaveChecked"
+                >Auto Save After 5 Seconds</el-checkbox
+              >
 
-            <el-button
-              style="margin-left: 40px;"
-              type="primary"
-              icon="el-icon-bottom"
-            >
-              Save Changes
-            </el-button>
+              <el-button
+                style="margin-left: 40px;"
+                type="primary"
+                icon="el-icon-bottom"
+              >
+                Save Changes
+              </el-button>
             </div>
             <draggable
               :list="zonesList"
@@ -85,6 +85,7 @@
       circle
       @click="
         () => {
+          active = 0;
           showAddDialog = true;
         }
       "
@@ -140,6 +141,19 @@
               >
               </el-option>
             </el-select>
+
+            <el-button
+              style="margin-top: 40px;"
+              type="primary"
+              icon="el-icon-plus"
+              @click="
+                () => {
+                  showDialogZones = true;
+                }
+              "
+            >
+              Create New Zone
+            </el-button>
           </div>
         </div>
       </div>
@@ -151,9 +165,7 @@
             <h1>
               Device Location
             </h1>
-            <h2>
-              Where in {{zoneName}} is this device located ?
-            </h2>
+            <h2>Where in {{ zoneName }} is this device located ?</h2>
             <h2>
               Example: Front Door or East Window.
             </h2>
@@ -239,7 +251,7 @@
               Add tags:
             </h2>
             <el-select
-              v-model="addDevice.tagsId"
+              v-model="addDevice.tagsName"
               multiple
               filterable
               allow-create
@@ -281,9 +293,10 @@
           >Next step</el-button
         >
         <el-button
+         :loading="loading"
           type="success"
           style="margin-top: 12px;float: right; "
-          @click="cancelPopup"
+          @click="createDeviceEntity"
           v-if="active == 4"
           >Done
         </el-button>
@@ -417,6 +430,45 @@
         >
       </div>
     </el-dialog>
+
+    <!-- Add Zone -->
+
+    <el-dialog title="New Zone" :visible.sync="showDialogZones">
+      <el-form class="login-form-log" autocomplete="on" label-position="left">
+        <el-form-item prop="ZoneName">
+          <span style="margin-left:10px;font-size: large;"> Name</span>
+          <el-input
+            ref="ZoneName"
+            v-model="ZoneForm.name"
+            style="color: black;"
+            placeholder="Zone Name"
+            name="ZoneName"
+            type="text"
+            tabindex="1"
+            autocomplete="on"
+          />
+        </el-form-item>
+        <el-form-item prop="description">
+          <span style="margin-left:10px;font-size: large;"> Description</span>
+          <el-input
+            ref="ZoneType"
+            v-model="ZoneForm.description"
+            style="color: black;"
+            placeholder="Zone Description"
+            name="ZoneType"
+            type="text"
+            tabindex="2"
+            autocomplete="on"
+          />
+        </el-form-item>
+        <el-button
+          type="primary"
+          style="width:100%;margin-bottom:10px;"
+          @click="createZoneEntity"
+          >Create Zone</el-button
+        >
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -467,9 +519,10 @@ import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
-import { getZones, createZone, deleteZone } from '@/api/zone';
+import { getZones, createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
+import { createDevice } from '@/api/device';
 
 export default {
   name: 'Hubs',
@@ -498,6 +551,14 @@ export default {
       ds_master: [],
       ds_commonCode: {},
       group: 'device',
+      ZoneForm: {
+        name: '',
+        ZoneType: '',
+        ZoneLabel: '',
+        description: '',
+        orgId: '',
+        hubId: '',
+      },
       hubForm: {
         name: '',
         description: '',
@@ -506,7 +567,7 @@ export default {
       },
       addDevice: {
         zoneId: '',
-        tagsId: '',
+        tagsName: '',
         name: '',
         description: '',
         orgId: '',
@@ -547,10 +608,8 @@ export default {
     };
   },
   mounted: function() {
-    this.getZonesList();
-
+    this.getHubsList();
     this.getTagsList();
-    this.editableTabsValue = this.$store.getters.hubs[0].name;
   },
   watch: {
     orgId(val, old) {
@@ -565,6 +624,7 @@ export default {
       this.searchZone(val);
     },
     editableTabsValue(val, old) {
+      this.ZoneForm.hubId = this.currentHubId;
       this.getZonesList();
     },
   },
@@ -578,6 +638,25 @@ export default {
     },
     hubs() {
       return this.$store.getters.hubs;
+    },
+    currentHubId() {
+      let tmpId = this.$store.getters.hubs.find(
+        x => x.name == this.editableTabsValue,
+      );
+
+      if (tmpId) {
+        return tmpId.id;
+      }
+
+      return null;
+    },
+    zoneName() {
+      let tmpName = this.zonesList.find(y => y.id == this.addDevice.zoneId);
+      if (tmpName) {
+        return tmpName.name;
+      }
+
+      return null;
     },
     zoneName() {
       return this.zonesList.find(y=> y.id == this.addDevice.zoneId).name ;
@@ -607,11 +686,15 @@ export default {
     },
     cancelPopup() {
       this.showAddHUBDialog = false;
-
       this.showAddDialog = false;
+      this.showDialogZones = false;
       this.active = 0;
       this.hubForm.name = '';
       this.hubForm.description = '';
+      this.addDevice.tagsName = [];
+      this.addDevice.name = '';
+      this.addDevice.description = '';
+      this.addDevice.location = '';
       this.loading = false;
     },
     setData(dataTransfer) {
@@ -629,6 +712,12 @@ export default {
       this.editableTabsValue = newTabName;
     },
     createHub() {
+      this.hubForm.orgId = this.orgId;
+      if (!this.hubForm.orgId && this.hubForm.orgId.length < 1) {
+        this.$alert(
+          'Please create Organization of Hub first' + this.ZoneForm.orgId,
+        );
+      }
       if (!this.hubForm.name || this.hubForm.name.length < 1) {
         this.$alert('Please input name');
         return;
@@ -638,7 +727,6 @@ export default {
         return;
       }
 
-      this.hubForm.orgId = this.orgId;
       this.loading = true;
       createHub(this.hubForm).then(response => {
         this.getHubsList();
@@ -648,11 +736,78 @@ export default {
       // });
     },
     getHubsList() {
+      this.editableTabsValue = '-1';
+      this.$store.dispatch('user/updateHubs', []);
       const loading = this.$loading({
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)',
+      });
+
+      getHubs(this.orgId)
+        .then(response => {
+          this.$store.dispatch('user/updateHubs', response);
+          this.cancelPopup();
+        })
+        .finally(() => {
+          loading.close();
+        });
+    },
+    getZonesList() {
+      if (!this.currentHubId) {
+        this.$store.dispatch('user/updateZones', []);
+        return;
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+
+      getZonesHub(this.currentHubId)
+        .then(response => {
+          this.zonesListTmp = response;
+          this.zonesList = this.zonesListTmp;
+          if (zonesList && zonesList.length > 0) {
+            this.addDevice.zoneId = this.zonesList[0].id;
+          }
+          this.$store.dispatch('user/updateZones', response);
+        })
+        .catch(() => {
+          this.$store.dispatch('user/updateZones', []);
+        })
+        .finally(() => {
+          loading.close();
+        });
+    },
+    createDeviceEntity() {
+      
+      this.loading = true;
+      this.addDevice.orgId = this.orgId;
+      if (!this.addDevice.orgId && this.addDevice.orgId.length < 1) {
+        this.$alert('Please create Organization of Device first');
+      }
+
+      if (!this.addDevice.name || this.addDevice.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      if (
+        !this.addDevice.description ||
+        this.addDevice.description.length < 1
+      ) {
+        this.$alert('Please input description');
+        return;
+      }
+      if (!this.addDevice.location || this.addDevice.description.length < 1) {
+        this.$alert('Please input location');
+        return;
+      }
+      createDevice(this.addDevice).then(response => {
+        this.cancelPopup();
+        this.getZonesList();
       });
 
       getHubs(this.orgId)
@@ -669,12 +824,25 @@ export default {
           loading.close();
         });
     },
-    getZonesList() {
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)',
+    createZoneEntity() {
+      this.ZoneForm.orgId = this.orgId;
+      if (!this.ZoneForm.orgId && this.ZoneForm.orgId.length < 1) {
+        this.$alert(
+          'Please create Organization of Zone first' + this.ZoneForm.orgId,
+        );
+      }
+      if (!this.ZoneForm.name || this.ZoneForm.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      if (!this.ZoneForm.description || this.ZoneForm.description.length < 1) {
+        this.$alert('Please input description');
+        return;
+      }
+
+      createZone(this.ZoneForm).then(response => {
+        this.getZonesList();
+        this.showDialogZones = false;
       });
 
       getZones(this.orgId)
