@@ -7,6 +7,7 @@ import { GetZoneFilterDto } from './dto/get-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneRepository } from './zone.repository';
 import { OrgRepository } from '../org/org.repository';
+import { HubsRepository } from '../hubs/hubs.repository';
 
 @Injectable()
 export class ZoneService {
@@ -15,10 +16,16 @@ export class ZoneService {
     private zoneRepository: ZoneRepository,
     @InjectRepository(OrgRepository)
     private orgRepository: OrgRepository,
+    @InjectRepository(HubsRepository)
+    private hubsRepository: HubsRepository,
   ) { }
 
   getzones(orgId: number): Promise<ZoneEntity[]> {
     return this.zoneRepository.getZones(orgId);
+  }
+
+  getzonesHub(hubId: number): Promise<ZoneEntity[]> {
+    return this.zoneRepository.getZonesHub(hubId);
   }
 
   async getzoneById(id: number): Promise<ZoneEntity> {
@@ -40,9 +47,12 @@ export class ZoneService {
 
   async createzone(createzoneDto: CreateZoneDto, user: User): Promise<ZoneEntity> {
     const org = await this.orgRepository.findOne({
-      where: { id: createzoneDto.orgId, userId: user.id },
+      where: { id: createzoneDto.orgId},
     });
-    return await this.zoneRepository.createZone(createzoneDto, org);
+    const hub = await this.hubsRepository.findOne({
+      where: { id: createzoneDto.hubId },
+    });
+    return await this.zoneRepository.createZone(createzoneDto, org, hub);
   }
 
   async updatezone(id: number, createzoneDto: CreateZoneDto): Promise<ZoneEntity> {

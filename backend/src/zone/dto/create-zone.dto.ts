@@ -10,4 +10,7 @@ export class CreateZoneDto {
   @IsNotEmpty()
   @ApiProperty()
   orgId: number;
+  @IsNotEmpty()
+  @ApiProperty()
+  hubId: number;
 }

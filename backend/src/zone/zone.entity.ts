@@ -28,15 +28,19 @@ export class ZoneEntity extends BaseEntity {
   )
   org: OrgEntity;
 
+  @Column()
+  orgId: number;
+
   @ManyToOne(
     type => HubsEntity,
     hub => hub.zones,
     { eager: false },
   )
   hub: HubsEntity;
-
+  
   @Column()
-  orgId: number;
+  hubId: number;
+
 
   @OneToMany(
     type => DeviceEntity,

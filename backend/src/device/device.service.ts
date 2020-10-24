@@ -79,7 +79,10 @@ export class DeviceService {
     user: User,
   ): Promise<DeviceEntity> {
     const org = await this.orgRepository.findOne({
-      where: { id: createdeviceDto.orgId, userId: user.id },
+      where: { id: createdeviceDto.orgId},
+    });
+    const zone = await this.zoneRepository.findOne({
+      where: { id: createdeviceDto.zoneId },
     });
 
     var newTagsList = [];
@@ -93,6 +96,7 @@ export class DeviceService {
     var device = await this.deviceRepository.createDevice(
       createdeviceDto,
       org,
+      zone,
       user,
     );
 
@@ -178,6 +182,8 @@ export class DeviceService {
 
     //Update orther prop
     device.description = dto.description ? dto.description : device.description;
+    device.location = dto.location ? dto.location : device.location;
+    device.locationType = dto.locationType ? dto.locationType : device.locationType;
     device.name = dto.name ? dto.name : device.name;
     device.zone = zone;
     device.org = org ? org : device.org;
