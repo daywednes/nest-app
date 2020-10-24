@@ -293,7 +293,7 @@
           >Next step</el-button
         >
         <el-button
-         :loading="loading"
+          :loading="loading"
           type="success"
           style="margin-top: 12px;float: right; "
           @click="createDeviceEntity"
@@ -716,7 +716,7 @@ export default {
         );
       }
       if (!this.hubForm.name || this.hubForm.name.length < 1) {
-        this.$alert('Please input name');
+        this.$alert('Please input hub name');
         return;
       }
       if (!this.hubForm.description || this.hubForm.description.length < 1) {
@@ -780,15 +780,25 @@ export default {
         });
     },
     createDeviceEntity() {
-      
       this.loading = true;
       this.addDevice.orgId = this.orgId;
       if (!this.addDevice.orgId && this.addDevice.orgId.length < 1) {
         this.$alert('Please create Organization of Device first');
+        this.cancelPopup();
+        return;
+      }
+
+      if (!this.zoneName || this.zoneName.length < 1) {
+        this.$alert('Please input zone name');
+        this.active = 1;
+        this.loading = false;
+        return;
       }
 
       if (!this.addDevice.name || this.addDevice.name.length < 1) {
-        this.$alert('Please input name');
+        this.$alert('Please input device name');
+        this.active = 2;
+        this.loading = false;
         return;
       }
       if (
@@ -796,16 +806,34 @@ export default {
         this.addDevice.description.length < 1
       ) {
         this.$alert('Please input description');
+        this.active = 2;
+        this.loading = false;
         return;
       }
       if (!this.addDevice.location || this.addDevice.description.length < 1) {
         this.$alert('Please input location');
+        this.active = 2;
+        this.loading = false;
         return;
       }
       createDevice(this.addDevice).then(response => {
         this.cancelPopup();
         this.getZonesList();
       });
+
+      getHubs(this.orgId)
+        .then(response => {
+          this.$store.dispatch('user/updateHubs', response);
+
+          this.cancelPopup();
+        })
+        .catch(() => {
+          this.editableTabsValue = '-1';
+          this.$store.dispatch('user/updateHubs', []);
+        })
+        .finally(() => {
+          loading.close();
+        });
     },
     createZoneEntity() {
       this.ZoneForm.orgId = this.orgId;
@@ -827,6 +855,20 @@ export default {
         this.getZonesList();
         this.showDialogZones = false;
       });
+
+      getZones(this.orgId)
+        .then(response => {
+          this.zonesListTmp = response;
+          this.zonesList = this.zonesListTmp;
+          this.addDevice.zoneId = this.zonesList[0].id;
+          this.$store.dispatch('user/updateZones', response);
+        })
+        .catch(() => {
+          this.$store.dispatch('user/updateZones', []);
+        })
+        .finally(() => {
+          loading.close();
+        });
     },
   },
 };
