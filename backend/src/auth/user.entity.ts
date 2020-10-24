@@ -29,21 +29,21 @@ export class User extends BaseEntity {
   @OneToMany(
     type => Task,
     task => task.user,
-    { eager: true },
+    { eager: false },
   )
   tasks: Task[];
 
   @OneToMany(
     type => DeviceEntity,
     device => device.user,
-    { eager: true },
+    { eager: false },
   )
   devices: DeviceEntity[];
 
   @OneToMany(
     type => OrgEntity,
     org => org.user,
-    { eager: true },
+    { eager: false },
   )
   orgs: OrgEntity[];
 

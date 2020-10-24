@@ -6,6 +6,7 @@ import { CreateDeviceDto } from './dto/create-device.dto';
 import { GetDeviceFilterDto } from './dto/get-device.dto';
 import { AddDeviceZoneDto } from './dto/add-device-to-zone.dto';
 import { DeviceEntity } from './device.entity';
+import { ZoneEntity } from '../zone/zone.entity';
 
 @EntityRepository(DeviceEntity)
 export class DeviceRepository extends Repository<DeviceEntity> {
@@ -61,12 +62,15 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     }
   }
 
-  async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity, user: User): Promise<DeviceEntity> {
-    const { name, description } = createDeviceDto;
+  async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity,zone: ZoneEntity, user: User): Promise<DeviceEntity> {
+    const { name, description,location,locationType } = createDeviceDto;
     const device = new DeviceEntity();
     device.description = description;
+    device.location = location;
+    device.locationType = locationType;
     device.name = name;
     device.org = org;
+    device.zone = zone;
     device.user = user ;
 
     await device.save();

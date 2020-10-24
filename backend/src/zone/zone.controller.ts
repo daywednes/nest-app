@@ -36,6 +36,15 @@ export class ZoneController {
   ): Promise<ZoneEntity[]> {
     return this.zonesService.getzones(orgId);
   }
+  
+  @Get('hub/:hubId')
+  @ApiOperation({ summary: 'Get All Zones by Hub Id' })
+  getZonesHub(
+    @Param('hubId', ParseIntPipe) hubId: number,
+    @GetUser() user: User,
+  ): Promise<ZoneEntity[]> {
+    return this.zonesService.getzonesHub(hubId);
+  }
 
   @Get('/details/:id')
   @ApiOperation({ summary: 'Get Zone by Id' })
