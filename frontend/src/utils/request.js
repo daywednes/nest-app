@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
@@ -82,6 +83,7 @@ service.interceptors.response.use(
 
         if (error.response.data && error.response.data.statusCode == 401) {
             store.dispatch('user/logout')
+            router.push(`/login`)
         }
 
         return Promise.reject(error)

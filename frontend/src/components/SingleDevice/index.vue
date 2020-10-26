@@ -37,14 +37,14 @@
 
       <div style=" min-height: 60px;">
         <span
-          style="margin:10px 0px 5px 0px;display:block; font-size: medium;
+          style="margin:10px 0px 5px 0px;display:block; font-size: small;float: left;
     font-weight: bold;"
           >TAGS :
         </span>
         <el-tag
           v-for="tag in itemTags"
           :key="tag"
-          style="margin:5px 5px 5px 0px;"
+          style="margin:5px 5px 5px 0px; float: left;"
           type="info"
         >
           {{ tag }}
@@ -83,7 +83,6 @@ export default {
   },
   watch: {
     item(val, old) {
-      console.log(val);
       this.getTagsDeviceList();
     },
   },
