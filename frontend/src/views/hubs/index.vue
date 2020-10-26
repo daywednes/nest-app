@@ -128,7 +128,7 @@
               Choose zone of your devices:
             </h2>
             <el-select
-              v-model="addDevice.zoneId"
+              v-model="addDeviceZoneId"
               filterable
               allow-create
               default-first-option
@@ -293,7 +293,7 @@
           >Next step</el-button
         >
         <el-button
-          :loading="loading"
+          :loading="loadingDevice"
           type="success"
           style="margin-top: 12px;float: right; "
           @click="createDeviceEntity"
@@ -422,7 +422,7 @@
       <div style=" width:100%;margin-bottom:10px; ">
         <el-button type="info" @click="cancelPopup">Cancel</el-button>
         <el-button
-          :loading="loading"
+          :loading="loadingDevice"
           type="primary"
           style="float: right"
           @click="createHub"
@@ -519,7 +519,7 @@ import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
-import { getZones, createZone, getZonesHub } from '@/api/zone';
+import { createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
 import { createDevice } from '@/api/device';
@@ -536,7 +536,7 @@ export default {
       active: 0,
       autoSaveChecked: false,
       showAddDialog: false,
-      loading: false,
+      loadingDevice: false,
       showAddHUBDialog: false,
       textSearch: '',
       showDialogZones: false,
@@ -551,6 +551,7 @@ export default {
       ds_master: [],
       ds_commonCode: {},
       group: 'device',
+      addDeviceZoneId: '',
       ZoneForm: {
         name: '',
         ZoneType: '',
@@ -620,6 +621,11 @@ export default {
         this.editableTabsValue = val[val.length - 1].name;
       }
     },
+    zonesList(val, old) {
+      if (val && val.length > 0) {
+        this.addDeviceZoneId = val[val.length - 1].id;
+      }
+    },
     textSearch(val, old) {
       this.searchZone(val);
     },
@@ -651,7 +657,7 @@ export default {
       return null;
     },
     zoneName() {
-      let tmpName = this.zonesList.find(y => y.id == this.addDevice.zoneId);
+      let tmpName = this.zonesList.find(y => y.id == this.addDeviceZoneId);
       if (tmpName) {
         return tmpName.name;
       }
@@ -692,7 +698,7 @@ export default {
       this.addDevice.name = '';
       this.addDevice.description = '';
       this.addDevice.location = '';
-      this.loading = false;
+      this.loadingDevice = false;
     },
     setData(dataTransfer) {
       // to avoid Firefox bug
@@ -724,13 +730,14 @@ export default {
         return;
       }
 
-      this.loading = true;
-      createHub(this.hubForm).then(response => {
-        this.getHubsList();
-      });
-      // .catch(() => {
-      //   this.loading = false;
-      // });
+      this.loadingDevice = true;
+      createHub(this.hubForm)
+        .then(response => {
+          this.getHubsList();
+        })
+        .catch(() => {
+          this.loadingDevice = false;
+        });
     },
     getHubsList() {
       this.editableTabsValue = '-1';
@@ -767,9 +774,6 @@ export default {
         .then(response => {
           this.zonesListTmp = response;
           this.zonesList = this.zonesListTmp;
-          if (zonesList && zonesList.length > 0) {
-            this.addDevice.zoneId = this.zonesList[0].id;
-          }
           this.$store.dispatch('user/updateZones', response);
         })
         .catch(() => {
@@ -780,8 +784,9 @@ export default {
         });
     },
     createDeviceEntity() {
-      this.loading = true;
+      this.loadingDevice = true;
       this.addDevice.orgId = this.orgId;
+      this.addDevice.zoneId = this.addDeviceZoneId;
       if (!this.addDevice.orgId && this.addDevice.orgId.length < 1) {
         this.$alert('Please create Organization of Device first');
         this.cancelPopup();
@@ -791,14 +796,14 @@ export default {
       if (!this.zoneName || this.zoneName.length < 1) {
         this.$alert('Please input zone name');
         this.active = 1;
-        this.loading = false;
+        this.loadingDevice = false;
         return;
       }
 
       if (!this.addDevice.name || this.addDevice.name.length < 1) {
         this.$alert('Please input device name');
         this.active = 2;
-        this.loading = false;
+        this.loadingDevice = false;
         return;
       }
       if (
@@ -807,13 +812,13 @@ export default {
       ) {
         this.$alert('Please input description');
         this.active = 2;
-        this.loading = false;
+        this.loadingDevice = false;
         return;
       }
       if (!this.addDevice.location || this.addDevice.description.length < 1) {
         this.$alert('Please input location');
         this.active = 2;
-        this.loading = false;
+        this.loadingDevice = false;
         return;
       }
       createDevice(this.addDevice).then(response => {
@@ -837,6 +842,12 @@ export default {
     },
     createZoneEntity() {
       this.ZoneForm.orgId = this.orgId;
+      const loadingZone = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
       if (!this.ZoneForm.orgId && this.ZoneForm.orgId.length < 1) {
         this.$alert(
           'Please create Organization of Zone first' + this.ZoneForm.orgId,
@@ -851,23 +862,15 @@ export default {
         return;
       }
 
-      createZone(this.ZoneForm).then(response => {
-        this.getZonesList();
-        this.showDialogZones = false;
-      });
-
-      getZones(this.orgId)
+      createZone(this.ZoneForm)
         .then(response => {
-          this.zonesListTmp = response;
-          this.zonesList = this.zonesListTmp;
-          this.addDevice.zoneId = this.zonesList[0].id;
-          this.$store.dispatch('user/updateZones', response);
-        })
-        .catch(() => {
-          this.$store.dispatch('user/updateZones', []);
+          this.getZonesList();
+          this.showDialogZones = false;
         })
         .finally(() => {
-          loading.close();
+          this.ZoneForm.name = '';
+          this.ZoneForm.description = '';
+          loadingZone.close();
         });
     },
   },

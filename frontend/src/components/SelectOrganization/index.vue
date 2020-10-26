@@ -361,7 +361,7 @@ export default {
   data() {
     return {
       organization: {},
-      organizationId:'',
+      organizationId: '',
       orgList: [],
       hubList: [],
       showAddDialog: false,
@@ -384,6 +384,16 @@ export default {
 
   created() {
     this.getOrgList();
+  },
+  watch: {
+    orgList(val, old) {
+      if (val && val.length > 0) {
+        this.organization = val[val.length - 1];
+        this.organizationId = val[val.length - 1].id;
+      }
+      this.$store.dispatch('user/updateOrgID', this.organizationId);
+      this.getHubsList(this.organizationId);
+    },
   },
   computed: {
     language() {
@@ -429,25 +439,15 @@ export default {
       });
     },
     getOrgList() {
-      getOrgs()
-        .then(response => {
-          this.orgList = response;
-          if (
-            this.orgList &&
-            this.orgList.length > 0 &&
-            (!this.organization || this.organization)
-          ) {
-            this.organization = this.orgList[0];
-            this.organizationId = this.orgList[0].id;
-          }
-          this.$store.dispatch('user/updateOrgID', this.organizationId);
-          this.$store.dispatch('user/updateOrgs', response);
-          this.getHubsList(this.organizationId);
-        })
-        // .catch(error => {
-        //   console.log(error);
-        //   store.dispatch('user/logout');
-        // });
+      getOrgs().then(response => {
+        this.orgList = response;
+        3;
+        this.$store.dispatch('user/updateOrgs', response);
+      });
+      // .catch(error => {
+      //   console.log(error);
+      //   store.dispatch('user/logout');
+      // });
     },
     getHubsList(orgId) {
       getHubs(orgId).then(response => {
