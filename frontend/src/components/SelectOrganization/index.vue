@@ -457,7 +457,6 @@ export default {
     },
     updateOrgID(id) {
       this.organization = this.orgList.find(x => x.id == id);
-      console.log(this.organization);
       this.$store.dispatch('user/updateOrgID', id);
       this.organizationId = id;
       this.showSwitchDialog = false;

@@ -32,6 +32,7 @@
                 style="margin-left: 40px;"
                 type="primary"
                 icon="el-icon-bottom"
+                @click="saveChanges"
               >
                 Save Changes
               </el-button>
@@ -49,6 +50,7 @@
                 :group="group"
                 :class="item.name"
                 :header-text="item.name"
+                @fn_resetInterval="resetInterval()"
               />
             </draggable>
           </div>
@@ -575,37 +577,8 @@ export default {
         location: '',
         locationType: 3,
       },
-      listZones: [
-        {
-          header: 'Zone 1',
-          listClass: 'kanban todo',
-          list: [
-            { name: 'Mission', id: 1 },
-            { name: 'Mission', id: 2 },
-            { name: 'Mission', id: 3 },
-            { name: 'Mission', id: 4 },
-          ],
-        },
-        {
-          header: 'Zone 2',
-          listClass: 'kanban working',
-          list: [
-            { name: 'Mission', id: 5 },
-            { name: 'Mission', id: 6 },
-            { name: 'Mission', id: 7 },
-          ],
-        },
-        {
-          header: 'Zone 3',
-          listClass: 'kanban done',
-          list: [
-            { name: 'Mission', id: 8 },
-            { name: 'Mission', id: 9 },
-            { name: 'Mission', id: 10 },
-          ],
-        },
-      ],
       uploadProgress: { ...DEFAULT_PROGRESS },
+      runInterval: null,
     };
   },
   mounted: function() {
@@ -614,20 +587,37 @@ export default {
   },
   watch: {
     orgId(val, old) {
+      this.saveChanges();
       this.getHubsList();
     },
     hubs(val, old) {
       if (val && val.length > 0) {
         this.editableTabsValue = val[val.length - 1].name;
+      } else {
+        this.editableTabsValue = '-1';
       }
     },
     zonesList(val, old) {
+      if (this.autoSaveChecked) {
+        this.resetInterval();
+      }
       if (val && val.length > 0) {
         this.addDeviceZoneId = val[val.length - 1].id;
+      } else {
+        this.addDeviceZoneId = null;
       }
     },
     textSearch(val, old) {
       this.searchZone(val);
+    },
+    autoSaveChecked(val, old) {
+      if (val) {
+        this.resetInterval();
+      } else {
+        if (this.runInterval) {
+          clearInterval(this.runInterval);
+        }
+      }
     },
     editableTabsValue(val, old) {
       this.ZoneForm.hubId = this.currentHubId;
@@ -666,6 +656,12 @@ export default {
     },
   },
   methods: {
+    resetInterval() {
+      if (this.runInterval) {
+        clearInterval(this.runInterval);
+      }
+      this.runInterval = setInterval(this.saveChanges, 5000);
+    },
     getTagsList() {
       getTags().then(response => {
         this.optionsTag = response.map(x => x.name)
@@ -714,6 +710,23 @@ export default {
       });
       this.editableTabsValue = newTabName;
     },
+    saveChanges() {
+      for (let index = 0; index < this.zonesList.length; index++) {
+        const tmpZone = this.zonesList[index];
+        tmpZone.index = index;
+        for (
+          let indexDevice = 0;
+          indexDevice < tmpZone.devices.length;
+          indexDevice++
+        ) {
+          const tmpDevice = tmpZone.devices[index];
+          tmpDevice.index = index;
+        }
+      }
+      console.log(this.zonesList);
+      clearInterval(this.runInterval);
+      this.$alert('Save Changes');
+    },
     createHub() {
       this.hubForm.orgId = this.orgId;
       if (!this.hubForm.orgId && this.hubForm.orgId.length < 1) {
@@ -759,6 +772,7 @@ export default {
         });
     },
     getZonesList() {
+      this.saveChanges();
       if (!this.currentHubId) {
         this.$store.dispatch('user/updateZones', []);
         return;

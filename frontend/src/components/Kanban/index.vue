@@ -33,6 +33,11 @@ export default {
     draggable,
     SingleDevice,
   },
+  watch: {
+    list(val, old) {
+      this.resetInterval();
+    },
+  },
   props: {
     headerText: {
       type: String,
@@ -52,6 +57,9 @@ export default {
     },
   },
   methods: {
+    resetInterval: function() {
+      this.$emit('fn_resetInterval');
+    },
     setData(dataTransfer) {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
