@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateZoneDto {
   @IsNotEmpty()
@@ -13,4 +13,7 @@ export class CreateZoneDto {
   @IsNotEmpty()
   @ApiProperty()
   hubId: number;
+  @IsOptional()
+  @ApiProperty()
+  index: number;
 }

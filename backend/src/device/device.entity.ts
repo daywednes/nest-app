@@ -72,6 +72,11 @@ export class DeviceEntity extends BaseEntity {
   @Column({ default: 0 })
   favoriteCount: number;
 
+  
+  @Column({ default: 999 })
+  index: number;
+
+
   @IsOptional()
   tags: string[];
 }

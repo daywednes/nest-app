@@ -37,10 +37,12 @@ export class ZoneEntity extends BaseEntity {
     { eager: false },
   )
   hub: HubsEntity;
-  
+
   @Column()
   hubId: number;
-
+  
+  @Column({ default: 999 })
+  index: number;
 
   @OneToMany(
     type => DeviceEntity,

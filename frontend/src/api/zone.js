@@ -41,3 +41,10 @@ export function updateZone(data) {
         data
     })
 }
+export function saveChanges(data) {
+    return request({
+        url: '/zone/saveChanges',
+        method: 'post',
+        data
+    })
+}
