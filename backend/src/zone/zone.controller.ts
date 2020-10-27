@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
+import { UpdateZoneDto } from './dto/update-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneService } from './zone.service';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
@@ -86,5 +87,15 @@ export class ZoneController {
   ): Promise<ZoneEntity> {
     //Get Org from here
     return this.zonesService.updatezone(id, createzoneDto);
+  }
+
+  @Post('/saveChanges')
+  @ApiOperation({ summary: 'Update Zone' })
+  saveChanges(
+    @Body() updateZoneDtos: [UpdateZoneDto],
+    @GetUser() user: User,
+  ): Promise<void> {
+    //Get Org from here
+    return this.zonesService.saveChanges(updateZoneDtos);
   }
 }

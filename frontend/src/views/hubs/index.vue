@@ -1,6 +1,10 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="editableTabsValue" style="width:95%; position: absolute;">
+    <el-tabs
+      v-model="editableTabsValue"
+      style="width:95%; position: absolute;"
+      @tab-click="askForSave"
+    >
       <el-tab-pane label="" name="-1" v-if="!hubs || hubs.length == 0">
         <!-- <el-tab-pane label="Default" name="-1" > -->
         <div
@@ -32,7 +36,7 @@
                 style="margin-left: 40px;"
                 type="primary"
                 icon="el-icon-bottom"
-                @click="saveChanges"
+                @click="saveChangesHub"
               >
                 Save Changes
               </el-button>
@@ -521,7 +525,7 @@ import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
-import { createZone, getZonesHub } from '@/api/zone';
+import { saveChanges, createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
 import { createDevice } from '@/api/device';
@@ -587,7 +591,7 @@ export default {
   },
   watch: {
     orgId(val, old) {
-      this.saveChanges();
+      this.saveChangesHub();
       this.getHubsList();
     },
     hubs(val, old) {
@@ -598,9 +602,7 @@ export default {
       }
     },
     zonesList(val, old) {
-      if (this.autoSaveChecked) {
-        this.resetInterval();
-      }
+      this.resetInterval();
       if (val && val.length > 0) {
         this.addDeviceZoneId = val[val.length - 1].id;
       } else {
@@ -620,6 +622,7 @@ export default {
       }
     },
     editableTabsValue(val, old) {
+      // this.askForSave();
       this.ZoneForm.hubId = this.currentHubId;
       this.getZonesList();
     },
@@ -657,10 +660,12 @@ export default {
   },
   methods: {
     resetInterval() {
-      if (this.runInterval) {
-        clearInterval(this.runInterval);
+      if (this.autoSaveChecked) {
+        if (this.runInterval) {
+          clearInterval(this.runInterval);
+        }
+        this.runInterval = setInterval(this.saveChangesHub, 5000);
       }
-      this.runInterval = setInterval(this.saveChanges, 5000);
     },
     getTagsList() {
       getTags().then(response => {
@@ -710,22 +715,68 @@ export default {
       });
       this.editableTabsValue = newTabName;
     },
-    saveChanges() {
-      for (let index = 0; index < this.zonesList.length; index++) {
-        const tmpZone = this.zonesList[index];
-        tmpZone.index = index;
-        for (
-          let indexDevice = 0;
-          indexDevice < tmpZone.devices.length;
-          indexDevice++
-        ) {
-          const tmpDevice = tmpZone.devices[index];
-          tmpDevice.index = index;
-        }
+    askForSave() {
+      let oldList = this.zonesList;
+      if (oldList && oldList.length > 0) {
+        this.$confirm(
+          'Would you like to save changes of previous HUB ?',
+          'Warning',
+          {
+            confirmButtonText: 'YES',
+            cancelButtonText: 'NO',
+            type: 'warning',
+          },
+        )
+          .then(() => {
+            console.log(oldList);
+
+            saveChanges(oldList);
+
+            this.$message({
+              type: 'success',
+              message: 'Save changes completed',
+            });
+            return true;
+          })
+          .catch(() => {
+            return false;
+          });
       }
-      console.log(this.zonesList);
+      return;
+    },
+    saveChangesHub() {
+      if (this.zonesList && this.zonesList.length > 0) {
+        const loadingSaveChanges = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+        });
+
+        for (let index = 0; index < this.zonesList.length; index++) {
+          const tmpZone = this.zonesList[index];
+          tmpZone.index = index;
+          if (tmpZone.devices) {
+            for (
+              let indexDevice = 0;
+              indexDevice < tmpZone.devices.length;
+              indexDevice++
+            ) {
+              const tmpDevice = tmpZone.devices[indexDevice];
+              tmpDevice.index = indexDevice;
+            }
+          }
+        }
+
+        saveChanges(this.zonesList);
+        this.$message({
+          type: 'success',
+          message: 'Save changes completed',
+        });
+        loadingSaveChanges.close();
+      }
+
       clearInterval(this.runInterval);
-      this.$alert('Save Changes');
     },
     createHub() {
       this.hubForm.orgId = this.orgId;
@@ -772,7 +823,7 @@ export default {
         });
     },
     getZonesList() {
-      this.saveChanges();
+      // this.saveChangesHub();
       if (!this.currentHubId) {
         this.$store.dispatch('user/updateZones', []);
         return;
@@ -787,7 +838,15 @@ export default {
       getZonesHub(this.currentHubId)
         .then(response => {
           this.zonesListTmp = response;
-          this.zonesList = this.zonesListTmp;
+          for (let index = 0; index < this.zonesListTmp.length; index++) {
+            const element = this.zonesListTmp[index];
+            if (element.devices) {
+              element.devices.sort((a, b) => (a.index > b.index ? 1 : -1));
+            }
+          }
+          this.zonesList = this.zonesListTmp.sort((a, b) =>
+            a.index > b.index ? 1 : -1,
+          );
           this.$store.dispatch('user/updateZones', response);
         })
         .catch(() => {

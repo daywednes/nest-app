@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateDeviceDto {
   @IsNotEmpty()
   @ApiProperty()
-  id: string;
+  id: number;
   @IsOptional()
   @ApiProperty()
   name: string;
@@ -25,4 +25,7 @@ export class UpdateDeviceDto {
   @IsOptional()
   @ApiProperty()
   tags: [string];
+  @IsOptional()
+  @ApiProperty()
+  index: number;
 }

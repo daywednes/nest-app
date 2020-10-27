@@ -1,13 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrgEntity } from 'src/org/org.entity';
 import { User } from 'src/auth/user.entity';
 import { CreateZoneDto } from './dto/create-zone.dto';
 import { GetZoneFilterDto } from './dto/get-zone.dto';
+import { UpdateZoneDto } from './dto/update-zone.dto';
 import { ZoneEntity } from './zone.entity';
 import { ZoneRepository } from './zone.repository';
 import { OrgRepository } from '../org/org.repository';
 import { HubsRepository } from '../hubs/hubs.repository';
+import { DeviceRepository } from '../device/device.repository';
 
 @Injectable()
 export class ZoneService {
@@ -18,7 +24,9 @@ export class ZoneService {
     private orgRepository: OrgRepository,
     @InjectRepository(HubsRepository)
     private hubsRepository: HubsRepository,
-  ) { }
+    @InjectRepository(DeviceRepository)
+    private deviceRepository: DeviceRepository,
+  ) {}
 
   getzones(orgId: number): Promise<ZoneEntity[]> {
     return this.zoneRepository.getZones(orgId);
@@ -45,9 +53,12 @@ export class ZoneService {
     }
   }
 
-  async createzone(createzoneDto: CreateZoneDto, user: User): Promise<ZoneEntity> {
+  async createzone(
+    createzoneDto: CreateZoneDto,
+    user: User,
+  ): Promise<ZoneEntity> {
     const org = await this.orgRepository.findOne({
-      where: { id: createzoneDto.orgId},
+      where: { id: createzoneDto.orgId },
     });
     const hub = await this.hubsRepository.findOne({
       where: { id: createzoneDto.hubId },
@@ -55,11 +66,42 @@ export class ZoneService {
     return await this.zoneRepository.createZone(createzoneDto, org, hub);
   }
 
-  async updatezone(id: number, createzoneDto: CreateZoneDto): Promise<ZoneEntity> {
+  async updatezone(
+    id: number,
+    createzoneDto: CreateZoneDto,
+  ): Promise<ZoneEntity> {
     const zone = await this.getzoneById(id);
-    zone.description = createzoneDto.description;
-    zone.name = createzoneDto.name;
+    const hub = await this.hubsRepository.findOne({
+      where: { id: createzoneDto.hubId },
+    });
+    zone.description = createzoneDto.description
+      ? createzoneDto.description
+      : zone.description;
+    zone.name = createzoneDto.name ? createzoneDto.name : zone.name;
+    zone.index = createzoneDto.index ? createzoneDto.index : zone.index;
     await zone.save();
     return zone;
+  }
+
+  async saveChanges(updateZoneDtos: [UpdateZoneDto]): Promise<void> {
+    try {
+      for (const zoneDto of updateZoneDtos) {
+        const zone = await this.getzoneById(zoneDto.id);
+        zone.index = zoneDto.index;
+        await zone.save();
+        for (const deviceDto of zoneDto.devices) {
+          const device = await this.deviceRepository.findOne({
+            where: { id: deviceDto.id },
+          });
+
+          device.zone = zone;
+          device.index = deviceDto.index;
+          await device.save();
+        }
+      }
+    } catch (error) {
+      console.log('error' + error);
+      throw new InternalServerErrorException();
+    }
   }
 }
