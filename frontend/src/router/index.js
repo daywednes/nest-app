@@ -119,18 +119,20 @@ export const constantRoutes = [{
             name: 'Devices',
             meta: { title: 'Devices', icon: 'guide'}
         }]
-    },{
-        path: '/automations',
-        component: Layout,
-        redirect: '/automations',
-        children: [{
-            path: '/automations',
-            component: () =>
-                import ('@/views/retes/index'),
-            name: 'Automations',
-            meta: { title: 'Automations', icon: 'chart'}
-        }]
-    },{
+    },
+    // {
+    //     path: '/automations',
+    //     component: Layout,
+    //     redirect: '/automations',
+    //     children: [{
+    //         path: '/automations',
+    //         component: () =>
+    //             import ('@/views/retes/index'),
+    //         name: 'Automations',
+    //         meta: { title: 'Automations', icon: 'chart'}
+    //     }]
+    // },
+    {
         path: '/mainAutomations',
         component: Layout,
         redirect: '/mainAutomations',
@@ -138,8 +140,8 @@ export const constantRoutes = [{
             path: '/mainAutomations',
             component: () =>
                 import ('@/views/Automation/index'),
-            name: 'Main Automations',
-            meta: { title: 'Main Automations', icon: 'dashboard'}
+            name: 'Automations',
+            meta: { title: 'Automations', icon: 'chart'}
         }]
     },
 

@@ -6,5 +6,10 @@ export class GetAutomationsFilterDto {
 
   @IsOptional()
   description: string;
-  
+
+  @IsOptional()
+  status: string;
+
+  @IsOptional()
+  data: string;
 }

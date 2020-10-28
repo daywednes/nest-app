@@ -728,7 +728,6 @@ export default {
           },
         )
           .then(() => {
-            console.log(oldList);
 
             saveChanges(oldList);
 

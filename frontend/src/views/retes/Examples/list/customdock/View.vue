@@ -53,4 +53,5 @@ export default {
   position: absolute
   right: 0
   top: 0
+  margin: 0
 </style>

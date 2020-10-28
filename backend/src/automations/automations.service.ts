@@ -15,7 +15,7 @@ export class AutomationsService {
     private automationsRepository: AutomationsRepository,
     @InjectRepository(OrgRepository)
     private orgRepository: OrgRepository,
-  ) { }
+  ) {}
 
   getautomationss(orgId: number): Promise<AutomationsEntity[]> {
     return this.automationsRepository.getAutomationss(orgId);
@@ -38,17 +38,39 @@ export class AutomationsService {
     }
   }
 
-  async createautomations(createautomationsDto: CreateAutomationsDto, user: User): Promise<AutomationsEntity> {
+  async createautomations(
+    createautomationsDto: CreateAutomationsDto,
+    user: User,
+  ): Promise<AutomationsEntity> {
     const org = await this.orgRepository.findOne({
       where: { id: createautomationsDto.orgId, userId: user.id },
     });
-    return await this.automationsRepository.createAutomations(createautomationsDto, org);
+    return await this.automationsRepository.createAutomations(
+      createautomationsDto,
+      org,
+    );
   }
 
-  async updateautomations(id: number, createautomationsDto: CreateAutomationsDto): Promise<AutomationsEntity> {
+  async updateautomations(
+    id: number,
+    createautomationsDto: CreateAutomationsDto,
+  ): Promise<AutomationsEntity> {
     const automations = await this.getautomationsById(id);
-    automations.data = createautomationsDto.data;
-    automations.status = createautomationsDto.status;
+
+    automations.name = createautomationsDto.name
+      ? createautomationsDto.name
+      : automations.name;
+    automations.description = createautomationsDto.description
+      ? createautomationsDto.description
+      : automations.description;
+    automations.status = createautomationsDto.status
+      ? createautomationsDto.status
+      : automations.status;
+    automations.data = createautomationsDto.data
+      ? createautomationsDto.data
+      : automations.data;
+
+    automations.lastTimeUpdate = new Date();
     await automations.save();
     return automations;
   }

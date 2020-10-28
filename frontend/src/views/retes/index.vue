@@ -2,7 +2,7 @@
 .example
   //- Info(:item="example")
   CommonFunction(
-    style='position: absolute;',
+    style='position: absolute;top:0%',
     :isShowDeploy='true',
     @functionDeploy='fn_deploy'
   )
@@ -16,12 +16,12 @@
   el-input.inline-input(
     placeholder='search...',
     autofocus,
-    style='position: absolute; width: 200px; left: 2%',
+    style='position: absolute; width: 200px; right: 0%; top:5%',
     prefix-icon='el-icon-search',
     v-model='searchText'
   )
   el-select( slot="prepend",
-    style='position: absolute; width: 200px; left: 2%; top:7%',
+    style='position: absolute; width: 200px; right: 0%; top:10%',
     v-model='filterText')
     el-option(value='ALL') ALL
     el-option(value='Devices') Devices
@@ -102,7 +102,7 @@ export default {
           response
             // .filter(x => x.zone == null)
             .map(item => {
-              item.name = item.name + ' Zones';
+              item.name = item.name + ' Zoness';
               item.type = 'Zones';
               item.color = '1';
               let tmpCom = new Components.DeviceComponent(item);
@@ -184,20 +184,20 @@ export default {
       } else if (txt && txt.length > 0) {
         this.devicesList = this.devicesListTmp.filter(
           device =>
-            (device.name
+            device.name
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-              (device.zone
-                ? device.zone.name
-                    .trim()
-                    .toUpperCase()
-                    .includes(txt.toUpperCase())
-                : false) ||
-              // device.description.toUpperCase().includes(txt.toUpperCase()) ||
-              device.tags
-                .map(tag => tag.trim().toUpperCase())
-                .includes(txt.toUpperCase())),
+            (device.zone
+              ? device.zone.name
+                  .trim()
+                  .toUpperCase()
+                  .includes(txt.toUpperCase())
+              : false) ||
+            // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+            device.tags
+              .map(tag => tag.trim().toUpperCase())
+              .includes(txt.toUpperCase()),
         );
       } else {
         this.devicesList = this.devicesListTmp;
@@ -237,8 +237,8 @@ export default {
 
 .example
   display: flex
-  max-width: 100%
-  padding: 2vh 0
+  width: 100%
+  padding: 3vh 0px
   flex-direction: row-reverse
   +phone
     flex-direction: column !important
@@ -251,9 +251,10 @@ export default {
     position: relative
     overflow: hidden
     float: left
+    width: 120%
     max-height: 140vh
     min-height: 80vh
-    margin: 20px
+    margin: 0px
     +phone
       max-height: 60vh
 </style>
