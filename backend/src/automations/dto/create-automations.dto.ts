@@ -1,11 +1,17 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateAutomationsDto {
   @IsNotEmpty()
   @ApiProperty()
+  name: string;
+  @IsNotEmpty()
+  @ApiProperty()
+  description: string;
+  @IsNotEmpty()
+  @ApiProperty()
   status: string;
   
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   data: string;
 

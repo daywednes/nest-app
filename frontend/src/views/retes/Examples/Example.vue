@@ -14,7 +14,7 @@
   )
 
   .view
-    div(style='margin-top: 20px;', ref='view')
+    div(style='margin-top: 20px 0px;', ref='view')
     div(ref='extra')
 </template>
 
@@ -52,7 +52,6 @@ export default {
 
       this.editor = editor;
       this.engine = engine;
-      console.log(vals);
       vals.map(item => {
         let tmpCom = new Components.DeviceComponent(item);
         this.editor.register(tmpCom);
@@ -212,7 +211,7 @@ export default {
     float: left
     max-height: 140vh
     min-height: 80vh
-    margin: 20px
+    margin: 0px
     +phone
       max-height: 60vh
 </style>

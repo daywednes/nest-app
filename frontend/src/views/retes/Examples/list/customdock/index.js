@@ -20,7 +20,6 @@ export default async function (container, extra) {
         searchBar: true,
         delay: 100,
         allocate(component) {
-            console.log(component);
             return [component.item.type];
         },
         rename(component) {
@@ -28,7 +27,7 @@ export default async function (container, extra) {
         }
     });
     
-    editor.use(MinimapPlugin);
+    // editor.use(MinimapPlugin);
     editor.use(DockPlugin, {
         container: extra,
         plugins: [VueRenderPlugin]

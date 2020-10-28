@@ -9,10 +9,7 @@ import { AutomationsEntity } from './automations.entity';
 @EntityRepository(AutomationsEntity)
 export class AutomationsRepository extends Repository<AutomationsEntity> {
   private logger = new Logger('AutomationsRepository');
-  async getAutomationss(
-    id: number,
-  ): Promise<AutomationsEntity[]> {
-    
+  async getAutomationss(id: number): Promise<AutomationsEntity[]> {
     const query = this.createQueryBuilder('automations_entity');
     query.where('automations_entity.orgId = :orgId', { orgId: id });
     try {
@@ -23,12 +20,18 @@ export class AutomationsRepository extends Repository<AutomationsEntity> {
     }
   }
 
-  async createAutomations(createAutomationsDto: CreateAutomationsDto, org: OrgEntity): Promise<AutomationsEntity> {
-    const { status, data } = createAutomationsDto;
+  async createAutomations(
+    createAutomationsDto: CreateAutomationsDto,
+    org: OrgEntity,
+  ): Promise<AutomationsEntity> {
+    const { status, data, name, description } = createAutomationsDto;
     const automations = new AutomationsEntity();
+    automations.name = name;
+    automations.description = description;
     automations.data = data;
     automations.status = status;
     automations.org = org;
+    automations.lastTimeUpdate = new Date();
     await automations.save();
     delete automations.org;
     return automations;

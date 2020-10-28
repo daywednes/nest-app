@@ -16,14 +16,20 @@ export class AutomationsEntity extends BaseEntity {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
+  description: string;
+
+  @Column()
   status: string;
 
   @Column()
   data: string;
-  @Column()
-  LastTimeUpdate: Date;
-  @Column()
-  LastTimeStartAutomation: Date;
+  @Column({ default: new Date() })
+  lastTimeUpdate: Date;
+  @Column({ default: new Date() })
+  lastTimeStartAutomation: Date;
 
   @ManyToOne(
     type => OrgEntity,
