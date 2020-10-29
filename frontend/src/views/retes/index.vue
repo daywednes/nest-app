@@ -23,7 +23,7 @@
   el-select( slot="prepend",
     style='position: absolute; width: 200px; right: 0%; top:5%',
     v-model='filterText')
-    el-option(value='ALL') ALL
+    el-option(value='ALL') ALL  
     el-option(value='Devices') Devices
     el-option(value='Zones') Zones
 </template>
@@ -39,6 +39,12 @@ import Components from '@/views/retes/rete/components/customdevice';
 import initViewer from './Examples/list/customdock';
 
 export default {
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+  },
   watch: {
     searchText(val) {
       this.searchDevice(val);
@@ -46,8 +52,8 @@ export default {
     filterText(val) {
       this.searchDevice(this.searchText);
     },
-    async devicesList(vals) {
-      this.devicesListTmp.map(item => {
+    async componentsList(vals) {
+      this.componentsListTmp.map(item => {
         let itemName = item.name.toLowerCase().replace(/\s/g, '-');
         let className = 'node ' + itemName.replace(/\s/g, '-');
 
@@ -80,7 +86,7 @@ export default {
 
       this.editor = editor;
       this.engine = engine;
-      if (this.devicesListTmp.length < 1) {
+      if (this.componentsListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
           this.$store.dispatch('user/updateDevices', response);
           response
@@ -94,24 +100,25 @@ export default {
               engine.register(tmpCom);
             });
 
-          this.devicesListTmp = response;
+          this.componentsListTmp = response;
         });
 
-        await getDevices(store.getters.orgId).then(response => {
-          this.$store.dispatch('user/updateDevices', response);
+        await getZones(store.getters.orgId).then(response => {
+          this.$store.dispatch('user/updateZones', response);
           response
             // .filter(x => x.zone == null)
             .map(item => {
-              item.name = item.name + ' Zoness';
+              // item.name = item.name +' - '+ this.item.name;
+              item.name = item.name;
               item.type = 'Zones';
               item.color = '1';
-              let tmpCom = new Components.DeviceComponent(item);
+              let tmpCom = new Components.ZoneComponent(item);
 
               editor.register(tmpCom);
               engine.register(tmpCom);
             });
 
-          this.devicesListTmp = [...this.devicesListTmp, ...response];
+          this.componentsListTmp = [...this.componentsListTmp, ...response];
         });
       }
     },
@@ -163,7 +170,7 @@ export default {
     },
     searchDevice(txt) {
       if (this.filterText != 'ALL') {
-        this.devicesList = this.devicesListTmp.filter(
+        this.componentsList = this.componentsListTmp.filter(
           device =>
             (this.filterText == 'ALL' || device.type == this.filterText) &&
             (device.name
@@ -182,7 +189,7 @@ export default {
                 .includes(txt.toUpperCase())),
         );
       } else if (txt && txt.length > 0) {
-        this.devicesList = this.devicesListTmp.filter(
+        this.componentsList = this.componentsListTmp.filter(
           device =>
             device.name
               .trim()
@@ -200,7 +207,7 @@ export default {
               .includes(txt.toUpperCase()),
         );
       } else {
-        this.devicesList = this.devicesListTmp;
+        this.componentsList = this.componentsListTmp;
       }
     },
   },
@@ -211,8 +218,8 @@ export default {
       counter: 1,
       searchText: '',
       filterText: 'ALL',
-      devicesListTmp: [],
-      devicesList: [],
+      componentsListTmp: [],
+      componentsList: [],
     };
   },
   mounted() {

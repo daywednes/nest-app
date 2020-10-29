@@ -27,7 +27,11 @@
         <keep-alive>
           <!-- <Zones /> -->
           <div style="width:100%">
-            <div style="margin-botom: 20px;">
+            
+          <h1> {{editableTabsValue}} - Devices and Zones</h1>
+          <hr/>
+          <br/>
+            <!-- <div style="margin-botom: 20px;">
               <el-checkbox v-model="autoSaveChecked"
                 >Auto Save After 5 Seconds</el-checkbox
               >
@@ -40,7 +44,7 @@
               >
                 Save Changes
               </el-button>
-            </div>
+            </div> -->
             <draggable
               :list="zonesList"
               v-bind="$attrs"
@@ -540,7 +544,7 @@ export default {
   data() {
     return {
       active: 0,
-      autoSaveChecked: false,
+      autoSaveChecked: true,
       showAddDialog: false,
       loadingDevice: false,
       showAddHUBDialog: false,

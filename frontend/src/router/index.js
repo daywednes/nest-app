@@ -133,11 +133,11 @@ export const constantRoutes = [{
     //     }]
     // },
     {
-        path: '/mainAutomations',
+        path: '/automations',
         component: Layout,
-        redirect: '/mainAutomations',
+        redirect: '/automations',
         children: [{
-            path: '/mainAutomations',
+            path: '/automations',
             component: () =>
                 import ('@/views/Automation/index'),
             name: 'Automations',
