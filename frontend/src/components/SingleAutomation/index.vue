@@ -9,8 +9,14 @@
         icon-class="example"
       />
       <span style="margin-left:10px;font-size: medium;">{{ item.name }} </span>
+      <el-button
+        style="float: right; padding: 3px 0"
+        type="text"
+        @click="editAutomation"
+        >Edit</el-button
+      >
     </div>
-    <div>
+    <div style="  white-space: break-spaces;">
       <span style="margin:0px 0px 10px 0px;display:block; font-size: medium;"
         >Description: {{ item.description }}</span
       >
@@ -18,6 +24,15 @@
         >Last Time Update: {{ item.lastTimeUpdate }}</span
       >
     </div>
+
+    <el-button
+      style=" width: 100%;vertical-align: text-bottom;"
+      type="success"
+      round
+      @click="runNow"
+    >
+      RUN NOW
+    </el-button>
   </el-card>
 </template>
 <style scoped>
@@ -64,6 +79,12 @@ export default {
         message: 'Switch Language Success',
         type: 'success',
       });
+    },
+    runNow() {
+      alert('Run Now');
+    },
+    editAutomation() {
+      this.$emit('showDetail', this.item);
     },
   },
 };

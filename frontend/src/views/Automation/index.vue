@@ -4,7 +4,7 @@
       v-if="!showAutomationDetail"
       style="postion: relative; margin-left: 5px; float:left; width: 100%;"
     >
-      <h1>Created Automation</h1>
+      <h1>Automations</h1>
       <el-input
         placeholder="Type something"
         prefix-icon="el-icon-search"
@@ -23,17 +23,19 @@
           >
             <el-card
               class="box-card"
-              style=" width: 250px; float:left; min-height: 200px; display: inline-block; text-align-last: center;"
+              style=" width: 250px; float:left; min-height: 250px; display: inline-block; text-align-last: center;"
             >
-              <div style="margin-top:50px;">
+              <div style="margin-top:40px;   white-space: break-spaces;">
+                <h1>New Automation</h1>
+                <br />
                 <span style="font-size: xxx-large;"
-                  ><i class="el-icon-plus" />ADD</span
-                >
+                  ><i class="el-icon-plus"
+                /></span>
               </div>
             </el-card>
           </el-button>
           <SingleAutomation
-            @click.native="fn_compoClick(automation)"
+            @showDetail="fn_compoClick(automation)"
             style="margin: 15px; display: inline-block;"
             v-for="automation in automationsList"
             :key="automation.id"
@@ -43,7 +45,7 @@
       </div>
       <br />
 
-      <h1>Deployed Automation</h1>
+      <h1>Alarm Modes</h1>
       <el-input
         placeholder="Type something"
         prefix-icon="el-icon-search"
@@ -52,6 +54,28 @@
       </el-input>
       <div class="one-row">
         <div class="one-row-wrap">
+          <el-button
+            style="margin:0px;padding:0px; background: transparent;border: transparent;margin: 7px;"
+            @click="
+              () => {
+                showDialogAutomations = true;
+              }
+            "
+          >
+            <el-card
+              class="box-card"
+              style=" width: 250px; float:left; min-height: 250px; display: inline-block; text-align-last: center;"
+            >
+              <div style="margin-top:40px;   white-space: break-spaces;">
+                <h1>New</h1>
+                <h1>Alarm Mode</h1>
+                <br />
+                <span style="font-size: xxx-large;"
+                  ><i class="el-icon-plus"
+                /></span>
+              </div>
+            </el-card>
+          </el-button>
           <SingleAutomation
             @click.native="fn_compoClick(automation)"
             style="margin: 15px; display: inline-block;"
@@ -100,6 +124,7 @@
     </div>
     <div v-if="showAutomationDetail">
       <el-button
+        style="float:left;  margin-right: 20px"
         type="info"
         @click="
           () => {
@@ -107,8 +132,13 @@
           }
         "
       >
-        Back
+        <i class="el-icon-back" />
       </el-button>
+      <div style="float:left; width:70%">
+        <h1>Automation Name</h1>
+        <hr />
+        <h2>Automation Description</h2>
+      </div>
       <AutomationDetail />
     </div>
   </div>

@@ -1,11 +1,11 @@
 <template lang="pug">
 .example
   //- Info(:item="example")
-  CommonFunction(
-    style='position: absolute;top:0%',
-    :isShowDeploy='true',
-    @functionDeploy='fn_deploy'
-  )
+  //- CommonFunction(
+  //-   style='position: absolute;top:0%',
+  //-   :isShowDeploy='true',
+  //-   @functionDeploy='fn_deploy'
+  //- )
 
   //- .components 
   //-   .viewer(ref="viewer")
@@ -16,12 +16,12 @@
   el-input.inline-input(
     placeholder='search...',
     autofocus,
-    style='position: absolute; width: 200px; right: 0%; top:5%',
+    style='position: absolute; width: 200px; right: 0%; top:0%',
     prefix-icon='el-icon-search',
     v-model='searchText'
   )
   el-select( slot="prepend",
-    style='position: absolute; width: 200px; right: 0%; top:10%',
+    style='position: absolute; width: 200px; right: 0%; top:5%',
     v-model='filterText')
     el-option(value='ALL') ALL
     el-option(value='Devices') Devices
