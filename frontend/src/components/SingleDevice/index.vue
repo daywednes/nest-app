@@ -14,7 +14,7 @@
         
       </el-checkbox> -->
     </div>
-    <div>
+    <div style="  white-space: break-spaces;">
       <!-- <el-checkbox  label="Test Zone" style="margin:10px 0px 30px 0px;display:block; font-size: x-large;">
         
       </el-checkbox> -->
