@@ -19,9 +19,7 @@
     //- a.shield-container(:href="'https://www.npmjs.com/package/'+node.data.name" target="_blank")
     //-   img.shield(:src="'https://img.shields.io/npm/v/'+node.data.name+'.svg'")
     
-    .name  {{'Organization: ' +node.data.org.name}}
-    .name  {{'Zone: ' +(node.data.zone ? node.data.zone.name : "")}}
-    .name  {{'Lable: ' +node.data.tags}}
+    .name  {{'Description: ' +node.data.description}}
 </template>
 
 <script>
@@ -56,11 +54,13 @@ $color2: #FF8837
   .inputs, .outputs
     margin-top: 1em
   .name
+    white-space: break-spaces
     text-align: left
     color: white
     font-size: 24px
     margin: 0.2em 0.7em
   .title
+    white-space: break-spaces
     text-align: center
     color: white
     font-size: 36px

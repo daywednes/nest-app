@@ -135,11 +135,11 @@
         <i class="el-icon-back" />
       </el-button>
       <div style="float:left; width:70%">
-        <h1>Automation Name</h1>
+        <h1>{{selectedAutomation.name}}</h1>
         <hr />
-        <h2>Automation Description</h2>
+        <h2>{{selectedAutomation.description}} </h2>
       </div>
-      <AutomationDetail />
+      <AutomationDetail :item="selectedAutomation"/>
     </div>
   </div>
 </template>
