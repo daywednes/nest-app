@@ -12,4 +12,6 @@ export class GetAutomationsFilterDto {
 
   @IsOptional()
   data: string;
+  @IsOptional()
+  type: number;
 }

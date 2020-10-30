@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'Nest App Admin',
+    title: 'Simple Things',
 
     /**
      * @type {boolean} true | false

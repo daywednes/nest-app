@@ -3,8 +3,8 @@
     <el-tabs
       v-model="editableTabsValue"
       style="width:95%; position: absolute;"
-      @tab-click="askForSave"
     >
+    <!-- @tab-click="askForSave" -->
       <el-tab-pane label="" name="-1" v-if="!hubs || hubs.length == 0">
         <!-- <el-tab-pane label="Default" name="-1" > -->
         <div
@@ -27,10 +27,9 @@
         <keep-alive>
           <!-- <Zones /> -->
           <div style="width:100%">
-            
-          <h1> {{editableTabsValue}} - Devices and Zones</h1>
-          <hr/>
-          <br/>
+            <h1>{{ editableTabsValue }} - Devices and Zones</h1>
+            <hr />
+            <br />
             <!-- <div style="margin-botom: 20px;">
               <el-checkbox v-model="autoSaveChecked"
                 >Auto Save After 5 Seconds</el-checkbox
@@ -593,6 +592,9 @@ export default {
     this.getHubsList();
     this.getTagsList();
   },
+  beforeDestroy: function() {
+    this.saveChangesHub(this.zonesList);
+  },
   watch: {
     orgId(val, old) {
       this.saveChangesHub();
@@ -627,6 +629,10 @@ export default {
     },
     editableTabsValue(val, old) {
       // this.askForSave();
+
+      if (this.zonesList && this.zonesList.length > 0) {
+        this.saveChangesHub(this.zonesList);
+      }
       this.ZoneForm.hubId = this.currentHubId;
       this.getZonesList();
     },
@@ -732,7 +738,6 @@ export default {
           },
         )
           .then(() => {
-
             saveChanges(oldList);
 
             this.$message({
