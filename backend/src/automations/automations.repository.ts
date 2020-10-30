@@ -24,11 +24,12 @@ export class AutomationsRepository extends Repository<AutomationsEntity> {
     createAutomationsDto: CreateAutomationsDto,
     org: OrgEntity,
   ): Promise<AutomationsEntity> {
-    const { status, data, name, description } = createAutomationsDto;
+    const { status, data, name, description, type } = createAutomationsDto;
     const automations = new AutomationsEntity();
     automations.name = name;
     automations.description = description;
     automations.data = data;
+    automations.type = type;
     automations.status = status;
     automations.org = org;
     automations.lastTimeUpdate = new Date();

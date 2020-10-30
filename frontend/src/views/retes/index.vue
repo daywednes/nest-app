@@ -13,19 +13,28 @@
     div(style='margin-top: 20px;', ref='view')
     div(ref='extra')
     
+  el-button(
+    type="primary"
+    style='position: absolute; width: 150px; right: 250px; top:0%',
+    prefix-icon='el-icon-search',
+    @click="saveChangesAutomation"
+  ) Save Changes
   el-input.inline-input(
     placeholder='search...',
     autofocus,
-    style='position: absolute; width: 200px; right: 0%; top:0%',
+    style='position: absolute; width: 200px; right: 30px; top:0%',
     prefix-icon='el-icon-search',
     v-model='searchText'
   )
   el-select( slot="prepend",
-    style='position: absolute; width: 200px; right: 0%; top:5%',
+    style='position: absolute; width: 200px; right: 30px; top:50px',
     v-model='filterText')
     el-option(value='ALL') ALL  
     el-option(value='Devices') Devices
     el-option(value='Zones') Zones
+    el-option(value='Events') Events
+    el-option(value='Actions') Actions
+    el-option(value='Logic') Logic
 </template>
 
 <script>
@@ -33,12 +42,16 @@ import Vue from 'vue';
 import CommonFunction from '@/components/CommonFunction';
 import { getDevices } from '@/api/device';
 import { getZones } from '@/api/zone';
+import { updateAutomation } from '@/api/automations';
 import store from '@/store';
 import Components from '@/views/retes/rete/components/customdevice';
 
 import initViewer from './Examples/list/customdock';
 
 export default {
+  beforeDestroy: function() {
+    this.saveChangesAutomation();
+  },
   props: {
     item: {
       type: Object,
@@ -51,6 +64,9 @@ export default {
     },
     filterText(val) {
       this.searchDevice(this.searchText);
+    },
+    editorData(val, old) {
+      this.resetInterval();
     },
     async componentsList(vals) {
       this.componentsListTmp.map(item => {
@@ -67,6 +83,14 @@ export default {
     },
   },
   methods: {
+    resetInterval() {
+      if (this.autoSaveChecked) {
+        if (this.runInterval) {
+          clearInterval(this.runInterval);
+        }
+        this.runInterval = setInterval(this.saveChangesAutomation, 5000);
+      }
+    },
     async init() {
       this.$refs.view.innerHTML = '';
       this.$refs.extra.innerHTML = '';
@@ -86,6 +110,7 @@ export default {
 
       this.editor = editor;
       this.engine = engine;
+
       if (this.componentsListTmp.length < 1) {
         await getDevices(store.getters.orgId).then(response => {
           this.$store.dispatch('user/updateDevices', response);
@@ -96,8 +121,8 @@ export default {
               item.color = null;
               let tmpCom = new Components.DeviceComponent(item);
 
-              editor.register(tmpCom);
-              engine.register(tmpCom);
+              this.editor.register(tmpCom);
+              this.engine.register(tmpCom);
             });
 
           this.componentsListTmp = response;
@@ -114,13 +139,14 @@ export default {
               item.color = '1';
               let tmpCom = new Components.ZoneComponent(item);
 
-              editor.register(tmpCom);
-              engine.register(tmpCom);
+              this.editor.register(tmpCom);
+              this.engine.register(tmpCom);
             });
 
           this.componentsListTmp = [...this.componentsListTmp, ...response];
         });
       }
+      this.editor.fromJSON(JSON.parse(this.item.data));
     },
     fn_deploy() {
       const modes = [
@@ -182,11 +208,12 @@ export default {
                     .trim()
                     .toUpperCase()
                     .includes(txt.toUpperCase())
-                : false) ||
-              // device.description.toUpperCase().includes(txt.toUpperCase()) ||
-              device.tags
-                .map(tag => tag.trim().toUpperCase())
-                .includes(txt.toUpperCase())),
+                : false)),
+          // ||
+          // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+          // device.tags
+          //   .map(tag => tag.trim().toUpperCase())
+          //   .includes(txt.toUpperCase())
         );
       } else if (txt && txt.length > 0) {
         this.componentsList = this.componentsListTmp.filter(
@@ -200,15 +227,31 @@ export default {
                   .trim()
                   .toUpperCase()
                   .includes(txt.toUpperCase())
-              : false) ||
-            // device.description.toUpperCase().includes(txt.toUpperCase()) ||
-            device.tags
-              .map(tag => tag.trim().toUpperCase())
-              .includes(txt.toUpperCase()),
+              : false),
+          // ||
+          // device.description.toUpperCase().includes(txt.toUpperCase()) ||
+          // device.tags
+          //   .map(tag => tag.trim().toUpperCase())
+          //   .includes(txt.toUpperCase())
         );
       } else {
         this.componentsList = this.componentsListTmp;
       }
+    },
+    saveChangesAutomation() {
+      this.item.data = JSON.stringify(this.editor.toJSON());
+      updateAutomation(this.item)
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: 'Save Automation changes completed',
+          });
+        })
+        .catch(() => {
+          this.$message.error('Oops, this is a error save changes.');
+        });
+
+      clearInterval(this.runInterval);
     },
   },
   data() {
@@ -220,7 +263,18 @@ export default {
       filterText: 'ALL',
       componentsListTmp: [],
       componentsList: [],
+      autoSaveChecked: true,
+      runInterval: null,
     };
+  },
+  computed: {
+    editorData() {
+      if (this.editor == null) {
+        return null;
+      }
+
+      return this.editor.toJSON();
+    },
   },
   mounted() {
     this.init();

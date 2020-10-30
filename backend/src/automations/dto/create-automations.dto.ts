@@ -9,6 +9,9 @@ export class CreateAutomationsDto {
   description: string;
   @IsNotEmpty()
   @ApiProperty()
+  type: number;
+  @IsOptional()
+  @ApiProperty()
   status: string;
   
   @IsOptional()

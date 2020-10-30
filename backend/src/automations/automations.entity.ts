@@ -20,6 +20,9 @@ export class AutomationsEntity extends BaseEntity {
 
   @Column()
   description: string;
+  
+  @Column({ default: 0 })
+  type: number;
 
   @Column()
   status: string;

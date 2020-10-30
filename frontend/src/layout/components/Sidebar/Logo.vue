@@ -1,34 +1,40 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+      <router-link
+        v-if="collapse"
+        key="collapse"
+        class="sidebar-logo-link"
+        to="/"
+      >
+        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <h1 v-else class="sidebar-title">{{ title }}</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <h1 class="sidebar-title">{{ title }}</h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
+import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 export default {
   name: 'SidebarLogo',
   props: {
     collapse: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      title: 'Nestapp Admin',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
-    }
-  }
-}
+      title: 'Simple Things',
+      logo: logoSimpleThings,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -46,8 +52,8 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
-  background: #2b2f3a;
-  text-align: center;
+  background: #a3a9bb;
+  text-align: left;
   overflow: hidden;
 
   & .sidebar-logo-link {
@@ -56,9 +62,9 @@ export default {
 
     & .sidebar-logo {
       width: 32px;
-      height: 32px;
+      height: 30px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin:0px 10px;
     }
 
     & .sidebar-title {

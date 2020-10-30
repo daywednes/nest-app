@@ -58,7 +58,7 @@
             style="margin:0px;padding:0px; background: transparent;border: transparent;margin: 7px;"
             @click="
               () => {
-                showDialogAutomations = true;
+                showDialogAlarm = true;
               }
             "
           >
@@ -79,7 +79,7 @@
           <SingleAutomation
             @click.native="fn_compoClick(automation)"
             style="margin: 15px; display: inline-block;"
-            v-for="automation in automationsListDeployed"
+            v-for="automation in alarmsList"
             :key="automation.id"
             :item="automation"
           />
@@ -121,6 +121,42 @@
           >
         </el-form>
       </el-dialog>
+      <el-dialog title="New Alarm Mode" :visible.sync="showDialogAlarm">
+        <el-form class="login-form-log" autocomplete="on" label-position="left">
+          <el-form-item prop="AlarmName">
+            <span style="margin-left:10px;font-size: large;"> Name</span>
+            <el-input
+              ref="AlarmnName"
+              v-model="AlarmForm.name"
+              style="color: black;"
+              placeholder="Alarm Mode Name"
+              name="AlarmName"
+              type="text"
+              tabindex="1"
+              autocomplete="on"
+            />
+          </el-form-item>
+          <el-form-item prop="description">
+            <span style="margin-left:10px;font-size: large;"> Description</span>
+            <el-input
+              ref="AutomationType"
+              v-model="AlarmForm.description"
+              style="color: black;"
+              placeholder="Alarm Mode Description"
+              name="AlarmDescription"
+              type="text"
+              tabindex="2"
+              autocomplete="on"
+            />
+          </el-form-item>
+          <el-button
+            type="primary"
+            style="width:100%;margin-bottom:10px;"
+            @click="createAlarmEntity"
+            >Create Alarm Mode</el-button
+          >
+        </el-form>
+      </el-dialog>
     </div>
     <div v-if="showAutomationDetail">
       <el-button
@@ -134,12 +170,12 @@
       >
         <i class="el-icon-back" />
       </el-button>
-      <div style="float:left; width:70%">
-        <h1>{{selectedAutomation.name}}</h1>
+      <div style="float:left; width:60%">
+        <h1>{{ selectedAutomation.name }}</h1>
         <hr />
-        <h2>{{selectedAutomation.description}} </h2>
+        <h2>{{ selectedAutomation.description }}</h2>
       </div>
-      <AutomationDetail :item="selectedAutomation"/>
+      <AutomationDetail :item="selectedAutomation" />
     </div>
   </div>
 </template>
@@ -167,6 +203,7 @@
 <script>
 import SingleAutomation from '@/components/SingleAutomation';
 import AutomationDetail from '@/views/retes/index';
+import nestutils from '@/utils/nest-utils';
 import { mapGetters } from 'vuex';
 import {
   getAutomations,
@@ -174,6 +211,7 @@ import {
   deleteAutomation,
 } from '@/api/automations';
 import { getTags } from '@/api/tags';
+import nestUtils from '@/utils/nest-utils';
 
 export default {
   name: 'Automations',
@@ -188,17 +226,27 @@ export default {
       AutomationForm: {
         name: '',
         description: '',
+        type: nestutils.AUTOMATION_TYPE.AUTOMATION,
+        orgId: '',
+        status: 'CreatedAutomation',
+        data: '',
+      },
+      AlarmForm: {
+        name: '',
+        description: '',
+        type: nestutils.AUTOMATION_TYPE.ALARM,
         orgId: '',
         status: 'CreatedAutomation',
         data: '',
       },
       showDialogAutomations: false,
+      showDialogAlarm: false,
       showAutomationDetail: false,
       editableTabsValue: '1',
       multipleSelection: [],
       optionsTag: [],
       automationsList: [],
-      automationsListDeployed: [],
+      alarmsList: [],
       automationsListTmp: [],
       queryCondition: { ...DEFAULT_SEARCH_QUERY },
       ds_master: [],
@@ -221,13 +269,15 @@ export default {
   watch: {
     orgId(val, old) {
       this.AutomationForm.orgId = val;
+      this.AlarmForm.orgId = val;
       this.getAutomationsList(val);
+      this.showAutomationDetail = false;
     },
     textSearch(val, old) {
       this.searchAutomation(val);
     },
     textSearchDeployed(val, old) {
-      this.searchAutomationDeployed(val);
+      this.searchAlarm(val);
     },
   },
   computed: {
@@ -237,6 +287,7 @@ export default {
       }
 
       this.AutomationForm.orgId = this.$store.getters.orgId;
+      this.AlarmForm.orgId = this.$store.getters.orgId;
       return this.$store.getters.orgId;
     },
   },
@@ -250,34 +301,40 @@ export default {
       if (txt && txt.length > 0) {
         this.automationsList = this.automationsListTmp.filter(
           automation =>
-            automation.name
+            automation.type == nestUtils.AUTOMATION_TYPE.AUTOMATION &&
+            (automation.name
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-            automation.description
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()),
+              automation.description
+                .trim()
+                .toUpperCase()
+                .includes(txt.toUpperCase())),
         );
       } else {
-        this.automationsList = this.automationsListTmp;
+        this.automationsList = this.automationsListTmp.filter(
+          automation => automation.type == nestUtils.AUTOMATION_TYPE.AUTOMATION,
+        );
       }
     },
-    searchAutomationDeployed(txt) {
+    searchAlarm(txt) {
       if (txt && txt.length > 0) {
-        this.automationsListDeployed = this.automationsListTmp.filter(
+        this.alarmsList = this.automationsListTmp.filter(
           automation =>
-            automation.name
+            automation.type == nestUtils.AUTOMATION_TYPE.ALARM &&
+            (automation.name
               .trim()
               .toUpperCase()
               .includes(txt.toUpperCase()) ||
-            automation.description
-              .trim()
-              .toUpperCase()
-              .includes(txt.toUpperCase()),
+              automation.description
+                .trim()
+                .toUpperCase()
+                .includes(txt.toUpperCase())),
         );
       } else {
-        this.automationsListDeployed = this.automationsListTmp;
+        this.alarmsList = this.automationsListTmp.filter(
+          automation => automation.type == nestUtils.AUTOMATION_TYPE.ALARM,
+        );
       }
     },
     fn_compoClick: function(item) {
@@ -315,6 +372,36 @@ export default {
           loadingAutomation.close();
         });
     },
+    createAlarmEntity() {
+      if (!this.AlarmForm.orgId && this.AlarmForm.orgId.length < 1) {
+        this.$alert('Please create Organization first');
+      }
+
+      if (!this.AlarmForm.name || this.AlarmForm.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      if (
+        !this.AlarmForm.description ||
+        this.AlarmForm.description.length < 1
+      ) {
+        this.$alert('Please input description');
+        return;
+      }
+      const loadingAlarm = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+      createAutomation(this.AlarmForm)
+        .then(response => {
+          this.refreshUI();
+        })
+        .finally(() => {
+          loadingAlarm.close();
+        });
+    },
     getAutomationsList(val) {
       getAutomations(val).then(response => {
         response.forEach(row => {
@@ -323,8 +410,12 @@ export default {
         });
 
         this.automationsListTmp = response;
-        this.automationsList = this.automationsListTmp;
-        this.automationsListDeployed = this.automationsListTmp;
+        this.automationsList = this.automationsListTmp.filter(
+          automation => automation.type == nestUtils.AUTOMATION_TYPE.AUTOMATION,
+        );
+        this.alarmsList = this.automationsListTmp.filter(
+          automation => automation.type == nestUtils.AUTOMATION_TYPE.ALARM,
+        );
 
         // this.$store.dispatch('user/updateAutomations', response);
       });
@@ -337,6 +428,8 @@ export default {
       this.getAutomationsList(this.orgId);
       this.isShowLeft = false;
       this.showDialogAutomations = false;
+      this.showDialogAlarm = false;
+      this.showAutomationDetail = false;
     },
   },
 };

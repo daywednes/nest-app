@@ -10,6 +10,10 @@ const ROWTYPE = {
     ROW_TYPE_DELETED: 3,
     ROW_TYPE_REMOVED: 4
 }
+const AUTOMATION_TYPE = {
+    AUTOMATION: 0,
+    ALARM: 1
+}
 const CenterStatus = {
     Normal: 1,
     Added: 2,
@@ -52,7 +56,7 @@ function loadCommonCode(commonCode, callback, config = { allSystem: false }) {
     }
     gds_codeCond.AUTHGRP = ''
     gds_codeCond.LAKEY = ds_loginInfo.LAKEY
-    searchBody.dataSetMap.gds_codeCond = [{...gds_codeCond }]
+    searchBody.dataSetMap.gds_codeCond = [{ ...gds_codeCond }]
 
     // var result = callApi(methods.POST, 'systems/selectMultiCodeList.do', searchBody, null, true, function() {
     //     var promise = loadCommonCode(commonCode)
@@ -118,7 +122,7 @@ function alertOnMissingProperty(propertyName) {
  */
 function dialog(vm, component, data) {
     const i18n = vm.$i18n
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
 
         // I'm combining a bunch of stuff to make this work.
         // First, create the vue component
@@ -137,7 +141,7 @@ function dialog(vm, component, data) {
         var oEl = parentEl.appendChild(oComponent.$el);
 
         // Add a listener so we can get the value and return it
-        oComponent.$watch('result', function(newVal, oldVal) {
+        oComponent.$watch('result', function (newVal, oldVal) {
             // this is triggered when they chose an option
             // Delete the component / element now that I'm done
             oEl.remove();
@@ -162,5 +166,6 @@ export default {
     GLOBAL_SETTING,
     POPUP_CODE,
     ROWTYPE,
+    AUTOMATION_TYPE,
     CenterStatus
 }
