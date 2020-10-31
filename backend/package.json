@@ -11,12 +11,16 @@
     "migration:run": "ts-node node_modules/.bin/typeorm migration:run",
     "migration:revert": "ts-node node_modules/.bin/typeorm migration:revert",
     "prebuild": "rimraf dist",
+    "postinstall": "npm run prestart:prod",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "npm run postinstall && npm run start:prod",
     "start:dev": "NODE_ENV=development nest start --watch",
+    "start:staging": "NODE_ENV=staging nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "NODE_ENV=production node dist/main",
+    "start_prod": "NODE_ENV=production node dist/main",
+    "prestart:prod": "NODE_ENV=production nest build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -39,7 +43,7 @@
     "config": "^3.3.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "pg": "^8.3.3",
+    "pg": "^7.12.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
@@ -81,6 +85,5 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "main": "index.js"
+  }
 }
