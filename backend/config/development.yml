@@ -4,8 +4,8 @@ db:
   port: 5432
   database: 'taskmanagement'
   synchronize: true
-  username: postgres
-  password: postgres
+  username: 'postgres'
+  password: 'postgres'
 
 jwt:
   expiresIn: 3600
