@@ -36,14 +36,14 @@ export class OrgEntity extends BaseEntity {
   @OneToMany(
     type => ZoneEntity,
     zone => zone.org,
-    { eager: true },
+    { eager: false },
   )
   zones: ZoneEntity[];
 
   @OneToMany(
     type => DeviceEntity,
     devices => devices.org,
-    { eager: true },
+    { eager: false },
   )
   devices: DeviceEntity[];
 
