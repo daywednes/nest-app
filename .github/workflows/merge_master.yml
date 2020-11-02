@@ -1,7 +1,7 @@
-name: Pull Request
+name: Merge Master
 
 on:
-  pull_request:
+  push:
     branches: [master]
 
 jobs:
@@ -21,13 +21,13 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: 'devsimplethings'
+          heroku_app_name: 'prodsimplethings'
           heroku_email: 'minh@thing.com'
           appdir: 'backend'
-          healthcheck: 'https://devsimplethings.herokuapp.com/api'
+          healthcheck: "https://prodsimplethings.herokuapp.com/api
           delay: 5
         env:
-          NODE_ENV: staging
+          NODE_ENV: production
 
   deploy_frontend:
     runs-on: ubuntu-latest
@@ -37,11 +37,11 @@ jobs:
       - name: install
         run: yarn --cwd frontend/
       - name: build
-        run: yarn --cwd frontend/ build:stage
-      - name: Deploy to thingdev.surge.sh
+        run: yarn --cwd frontend/ build:prod
+      - name: Deploy to thing.surge.sh
         uses: dswistowski/surge-sh-action@v1
         with:
-          domain: 'thingdev.surge.sh'
+          domain: 'thing.surge.sh'
           project: 'dist/'
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}
