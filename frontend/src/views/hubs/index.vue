@@ -1,10 +1,7 @@
 <template>
   <div class="app-container">
-    <el-tabs
-      v-model="editableTabsValue"
-      style="width:95%; position: absolute;"
-    >
-    <!-- @tab-click="askForSave" -->
+    <el-tabs v-model="editableTabsValue" style="width:95%; position: absolute;">
+      <!-- @tab-click="askForSave" -->
       <el-tab-pane label="" name="-1" v-if="!hubs || hubs.length == 0">
         <!-- <el-tab-pane label="Default" name="-1" > -->
         <div
@@ -740,10 +737,10 @@ export default {
           .then(() => {
             saveChanges(oldList);
 
-            this.$message({
-              type: 'success',
-              message: 'Save changes completed',
-            });
+            // this.$message({
+            //   type: 'success',
+            //   message: 'Save changes completed',
+            // });
             return true;
           })
           .catch(() => {
@@ -754,12 +751,12 @@ export default {
     },
     saveChangesHub() {
       if (this.zonesList && this.zonesList.length > 0) {
-        const loadingSaveChanges = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-        });
+        // const loadingSaveChanges = this.$loading({
+        //   lock: true,
+        //   text: 'Loading',
+        //   spinner: 'el-icon-loading',
+        //   background: 'rgba(0, 0, 0, 0.7)',
+        // });
 
         for (let index = 0; index < this.zonesList.length; index++) {
           const tmpZone = this.zonesList[index];
@@ -781,7 +778,7 @@ export default {
           type: 'success',
           message: 'Save changes completed',
         });
-        loadingSaveChanges.close();
+        // loadingSaveChanges.close();
       }
 
       clearInterval(this.runInterval);
@@ -805,7 +802,7 @@ export default {
       this.loadingDevice = true;
       createHub(this.hubForm)
         .then(response => {
-          this.getHubsList();
+          this.getZonesList();
         })
         .catch(() => {
           this.loadingDevice = false;
@@ -861,6 +858,7 @@ export default {
           this.$store.dispatch('user/updateZones', []);
         })
         .finally(() => {
+          clearInterval(this.runInterval);
           loading.close();
         });
     },
@@ -902,24 +900,36 @@ export default {
         this.loadingDevice = false;
         return;
       }
-      createDevice(this.addDevice).then(response => {
-        this.cancelPopup();
-        this.getZonesList();
+
+      const loadingCreateDevice = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
       });
 
-      getHubs(this.orgId)
+      createDevice(this.addDevice)
         .then(response => {
-          this.$store.dispatch('user/updateHubs', response);
-
           this.cancelPopup();
-        })
-        .catch(() => {
-          this.editableTabsValue = '-1';
-          this.$store.dispatch('user/updateHubs', []);
+          this.getZonesList();
         })
         .finally(() => {
-          loading.close();
+          loadingCreateDevice.close();
         });
+
+      // getHubs(this.orgId)
+      //   .then(response => {
+      //     this.$store.dispatch('user/updateHubs', response);
+
+      //     this.cancelPopup();
+      //   })
+      //   .catch(() => {
+      //     this.editableTabsValue = '-1';
+      //     this.$store.dispatch('user/updateHubs', []);
+      //   })
+      //   .finally(() => {
+      //     loadingDevice.close();
+      //   });
     },
     createZoneEntity() {
       this.ZoneForm.orgId = this.orgId;

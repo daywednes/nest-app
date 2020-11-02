@@ -26,7 +26,7 @@ export class TagsEntity extends BaseEntity {
   @OneToMany(
     type => TagsDevicesEntity,
     tagsdevice => tagsdevice.tag,
-    { eager: true },
+    { eager: false },
   )
   tagsdevice: TagsDevicesEntity[];
 }
