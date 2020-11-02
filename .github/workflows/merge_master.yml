@@ -24,7 +24,7 @@ jobs:
           heroku_app_name: 'prodsimplethings'
           heroku_email: 'minh@thing.com'
           appdir: 'backend'
-          healthcheck: "https://prodsimplethings.herokuapp.com/api
+          healthcheck: 'https://prodsimplethings.herokuapp.com/api'
           delay: 5
         env:
           NODE_ENV: production
