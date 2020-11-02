@@ -1,5 +1,5 @@
 server:
-  origin: https://thingdev.surge.sh
+  origin: https://thing.surge.sh
 db:
   host: 'simplethings-do-user-4182007-0.b.db.ondigitalocean.com'
   type: 'postgres'

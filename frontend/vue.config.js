@@ -41,7 +41,7 @@ module.exports = {
     devServer: {
         proxy: {
             '^/': {
-                target: 'http://localhost:3000',
+                target: 'https://devsimplethings.herokuapp.com',
                 ws: false,
                 changeOrigin: true,
 
