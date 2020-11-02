@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      title: 'Simple Things',
+      title: 'My Simple Things',
       logo: logoSimpleThings,
     };
   },
