@@ -1,39 +1,52 @@
 <template>
   <div class="dashboard-editor-container">
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
+    <el-row style="background:#fff;padding:16px 16px;margin-bottom:32px; width:100%; text-align:right;">
+      <!-- <line-chart :chart-data="lineChartData" /> --> Edit
     </el-row>
 
     <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
+      <el-col :xs="24" :sm="24" :lg="10">
+        <div class="chart-wrapper" style="height:260px;">
+          DISARMED
+        </div>
+        <div class="chart-wrapper" style="height:132px;">
+          SECURITY SENSOR
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
+      <el-col :xs="24" :sm="24" :lg="10">
+        <div class="chart-wrapper" style="height:120px;">
+          WEATHER
+        </div>
+        <div class="chart-wrapper" style="height:272px;">
+          LASTEST ACTIVITY
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
+      <el-col :xs="24" :sm="24" :lg="4">
+        <div class="chart-wrapper" style="height:120px;">
+          ZONES
+        </div>
+        <div class="chart-wrapper" style="height:120px;">
+          ADD DEVICE
+        </div>
+        <div class="chart-wrapper" style="height:120px;">
+          ADD AUTOMATION
         </div>
       </el-col>
     </el-row>
 
-    <el-row :gutter="8">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
-        <transaction-table />
+    <el-row :gutter="32">
+      <el-col :xs="24" :sm="24" :lg="10">
+        <div class="chart-wrapper"  style="height:200px;">
+          CITIZEN
+        </div>
       </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <todo-list />
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <box-card />
+      <el-col :xs="24" :sm="24" :lg="14">
+        <div class="chart-wrapper"  style="height:200px;">
+          LAST 12 HOURS
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -86,6 +99,9 @@ export default {
     background: #fff;
     padding: 16px 16px 0;
     margin-bottom: 32px;
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
   }
 }
 
