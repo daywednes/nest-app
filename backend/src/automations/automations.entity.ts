@@ -29,10 +29,14 @@ export class AutomationsEntity extends BaseEntity {
 
   @Column()
   data: string;
-  @Column({ default: new Date() })
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   lastTimeUpdate: Date;
-  @Column({ default: new Date() })
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   lastTimeStartAutomation: Date;
+
+
 
   @ManyToOne(
     type => OrgEntity,
