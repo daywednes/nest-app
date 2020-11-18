@@ -1,21 +1,19 @@
 <template>
   <div
     ref="leftPanel"
-    v-if="showLeft"
     :class="{ showLeft: showLeft }"
     class="leftPanel-container"
 
   >
     <div class="leftPanel-background" />
     <FontResizableContainer increment="2px" class="leftPanel">
-      <div
-        v-if="showLeft"
+      <!-- <div
         class="handle-button"
         :style="{ 'background-color': theme }"
         @click="showLeft = !showLeft"
       >
         <i :class="showLeft ? 'el-icon-close' : 'el-icon-search'" />
-      </div>
+      </div> -->
       <div class="leftPanel-items">
         <slot />
       </div>
@@ -74,22 +72,22 @@ export default {
 <style lang="scss" scoped>
 .leftPanel-background {
   position: relative;
-  transition: opacity 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: opacity 1.3s cubic-bezier(0.7, 0.3, 0.1, 1);
 }
 
 .leftPanel {
   float: right;
   width: 100%;
-  max-width: 660px;
+  max-width: 260px;
   height: 100%;
-  margin-right: -710px;
+  margin-right: -295px;
   position: relative;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.05);
-  transition: all 2.25s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: all 1.6s cubic-bezier(0.7, 0.3, 0.1, 1);
 }
 
 .showLeft {
-  transition: all 2.3s cubic-bezier(0.7, 0.3, 0.1, 1);
+  transition: all 1.8s cubic-bezier(0.7, 0.3, 0.1, 1);
 
   .leftPanel-background {
     z-index: 20000;

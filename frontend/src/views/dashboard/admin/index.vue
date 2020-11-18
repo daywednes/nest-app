@@ -6,17 +6,32 @@
       style="background:#fff;padding:10px 10px;margin:10px 10px 10px 10px; text-align:right;"
     >
       <!-- <line-chart :chart-data="lineChartData" /> -->
-      <el-button class="filter-item" type="primary" icon="el-icon-search"
+      <!-- <el-button class="filter-item" type="primary" icon="el-icon-search"
         >Edit</el-button
-      >
+      > -->
+
+      <el-checkbox v-model="isEdited">Edit</el-checkbox>
     </el-row>
 
+    <RightPanel
+      :showLeft="isEdited"
+      @leftPanelIsShow="leftPanelIsShow"
+      @leftPanelIsHide="leftPanelIsHide"
+    >
+      <div>
+        <WEATHER/>
+      </div>
+    </RightPanel>
     <grid-layout
+      :style="{
+        width: this.isEdited ? 'calc(100% - 300px)' : '100%',
+        transition: 'all 1s cubic-bezier(0.7, 0.3, 0.1, 1)',
+      }"
       :isResizable="false"
       :layout.sync="layout"
       :col-num="5"
       :row-height="160"
-      :is-draggable="true"
+      :is-draggable="isEdited"
       :is-resizable="true"
       :is-mirrored="false"
       :vertical-compact="true"
@@ -35,7 +50,6 @@
         :i="item.i"
         :key="item.i"
       >
-
         <component :is="item.component" />
       </grid-item>
     </grid-layout>
@@ -62,6 +76,7 @@ const lineChartData = {
   },
 };
 
+import RightPanel from '@/components/RightPanelExtra';
 import weatherBG from '@/assets/img_src/weather_bg.png';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import lasthourBG from '@/assets/img_src/lasthour_bg.png';
@@ -91,10 +106,13 @@ export default {
     DISARMED,
     CITYZEN,
     SECURITYSENSORS,
+    RightPanel,
   },
 
   data() {
     return {
+      isEdited: false,
+      isEdited: false,
       lineChartData: lineChartData.newVisitis,
       weatherimg: weatherBG,
       lasthourimg: lasthourBG,
@@ -126,19 +144,61 @@ export default {
         },
       ],
       layout: [
-        { x: 0, y: 0, w: 2, h: 2, i: 'DISARMED', component:'DISARMED' , isStatic: true },
-        { x: 0, y: 2, w: 2, h: 1, i: 'SECURITY SENSORS', component:'SECURITYSENSORS' },
-        { x: 0, y: 3, w: 2, h: 2, i: 'CITYZEN', component:'CITYZEN' },
-        { x: 2, y: 0, w: 2, h: 1, i: 'WEATHER', component:'WEATHER' },
-        { x: 2, y: 1, w: 2, h: 2, i: 'LASTEST ACTIVITY', component:'LASTESTACTIVITY' },
-        { x: 2, y: 3, w: 3, h: 2, i: 'LAST 12 HOURS', component:'LAST12HOURS' },
-        { x: 4, y: 0, w: 1, h: 1, i: 'ZONES', component:'ZONES' },
-        { x: 4, y: 1, w: 1, h: 1, i: 'ADD DEVICES', component:'ADDDEVICES' },
-        { x: 4, y: 2, w: 1, h: 1, i: 'ADD AUTOMATION', component:'ADDAUTOMATION' },
+        {
+          x: 0,
+          y: 0,
+          w: 2,
+          h: 2,
+          i: 'DISARMED',
+          component: 'DISARMED',
+          isStatic: true,
+        },
+        {
+          x: 0,
+          y: 2,
+          w: 2,
+          h: 1,
+          i: 'SECURITY SENSORS',
+          component: 'SECURITYSENSORS',
+        },
+        { x: 0, y: 3, w: 2, h: 2, i: 'CITYZEN', component: 'CITYZEN' },
+        { x: 2, y: 0, w: 2, h: 1, i: 'WEATHER', component: 'WEATHER' },
+        {
+          x: 2,
+          y: 1,
+          w: 2,
+          h: 2,
+          i: 'LASTEST ACTIVITY',
+          component: 'LASTESTACTIVITY',
+        },
+        {
+          x: 2,
+          y: 3,
+          w: 3,
+          h: 2,
+          i: 'LAST 12 HOURS',
+          component: 'LAST12HOURS',
+        },
+        { x: 4, y: 0, w: 1, h: 1, i: 'ZONES', component: 'ZONES' },
+        { x: 4, y: 1, w: 1, h: 1, i: 'ADD DEVICES', component: 'ADDDEVICES' },
+        {
+          x: 4,
+          y: 2,
+          w: 1,
+          h: 1,
+          i: 'ADD AUTOMATION',
+          component: 'ADDAUTOMATION',
+        },
       ],
     };
   },
   methods: {
+    leftPanelIsShow: function() {
+      this.isEdited = true;
+    },
+    leftPanelIsHide: function() {
+      this.isEdited = false;
+    },
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];
     },
