@@ -3,92 +3,42 @@
     <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
 
     <el-row
-      style="background:#fff;padding:16px 16px;margin-bottom:32px; width:100%; text-align:right;"
+      style="background:#fff;padding:10px 10px;margin:10px 10px 10px 10px; text-align:right;"
     >
       <!-- <line-chart :chart-data="lineChartData" /> -->
-      Edit
+      <el-button class="filter-item" type="primary" icon="el-icon-search"
+        >Edit</el-button
+      >
     </el-row>
 
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="10">
-        <div class="chart-wrapper" style="height:290px;">
-          DISARMED
-        </div>
-        <div class="chart-wrapper" style="height:162px;">
-          SECURITY SENSOR
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="10">
-        <div
-          class="chart-wrapper"
-          style="color:white; height:140px; background: #101f3e;"
-        >
-          WEATHER
-          <br />
-          <img v-if="weatherimg" :src="weatherimg" style="height:90px;" />
-        </div>
-        <div class="chart-wrapper" style="height:312px; overflow-x: auto;">
-          LASTEST ACTIVITY
-          <el-row
-            :gutter="32"
-            v-for="(item, index) of items"
-            :key="index"
-            style="width: 100%;
-            text-align: left; margin: 10px; padding: 5px;"
-          >
-            <el-col :xs="4" :sm="4" :lg="4">
-              <img v-if="logo" :src="logo" style="float: left; height: 50px;" />
-            </el-col>
-            <el-col :xs="8" :sm="16" :lg="16">
-              {{ item.name }}
-              <br />
-              {{ item.status }}
-            </el-col>
-            <el-col :xs="4" :sm="4" :lg="4">
-              {{ item.time }}
-            </el-col>
-            <hr
-              style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
-            />
-          </el-row>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="4">
-        <div class="chart-wrapper" style="height:140px;">
-          ZONES
-          <br />
-          <span style="font-size: xxx-large;"><i class="el-icon-plus"/></span>
-        </div>
-        <div class="chart-wrapper" style="height:140px;">
-          ADD DEVICE
-          <br />
-          <span style="font-size: xxx-large;"><i class="el-icon-plus"/></span>
-        </div>
-        <div class="chart-wrapper" style="height:140px;">
-          ADD AUTOMATION
-          <br />
-          <span style="font-size: xxx-large;"><i class="el-icon-plus"/></span>
-        </div>
-      </el-col>
-    </el-row>
+    <grid-layout
+      :isResizable="false"
+      :layout.sync="layout"
+      :col-num="5"
+      :row-height="160"
+      :is-draggable="true"
+      :is-resizable="true"
+      :is-mirrored="false"
+      :vertical-compact="true"
+      :margin="[10, 10]"
+      :use-css-transforms="true"
+    >
+      <grid-item
+        class="chart-wrapper"
+        style="background: white"
+        v-for="item in layout"
+        :static="item.isStatic"
+        :x="item.x"
+        :y="item.y"
+        :w="item.w"
+        :h="item.h"
+        :i="item.i"
+        :key="item.i"
+      >
 
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="10">
-        <div class="chart-wrapper" style="height:200px;">
-          CITIZEN
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="14">
-        <div
-          class="chart-wrapper"
-          style="color:white; height:200px; background: #333333;"
-        >
-          LAST 12 HOURS
-          <br />
-          <img v-if="lasthourimg" :src="lasthourimg" style="height:140px;" />
-        </div>
-      </el-col>
-    </el-row>
+        <component :is="item.component" />
+      </grid-item>
+    </grid-layout>
   </div>
 </template>
 
@@ -112,8 +62,36 @@ const lineChartData = {
   },
 };
 
+import weatherBG from '@/assets/img_src/weather_bg.png';
+import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
+import lasthourBG from '@/assets/img_src/lasthour_bg.png';
+import VueGridLayout from 'vue-grid-layout';
+import LAST12HOURS from './components/Widgets/LAST12HOURS';
+import WEATHER from './components/Widgets/WEATHER';
+import LASTESTACTIVITY from './components/Widgets/LASTESTACTIVITY';
+import ADDDEVICES from './components/Widgets/ADDDEVICES';
+import ADDAUTOMATION from './components/Widgets/ADDAUTOMATION';
+import ZONES from './components/Widgets/ZONES';
+import DISARMED from './components/Widgets/DISARMED';
+import SECURITYSENSORS from './components/Widgets/SECURITYSENSORS';
+import CITYZEN from './components/Widgets/CITYZEN';
+
 export default {
   name: 'DashboardAdmin',
+
+  components: {
+    GridLayout: VueGridLayout.GridLayout,
+    GridItem: VueGridLayout.GridItem,
+    LAST12HOURS,
+    WEATHER,
+    LASTESTACTIVITY,
+    ADDDEVICES,
+    ADDAUTOMATION,
+    ZONES,
+    DISARMED,
+    CITYZEN,
+    SECURITYSENSORS,
+  },
 
   data() {
     return {
@@ -147,6 +125,17 @@ export default {
           time: '5:22p',
         },
       ],
+      layout: [
+        { x: 0, y: 0, w: 2, h: 2, i: 'DISARMED', component:'DISARMED' , isStatic: true },
+        { x: 0, y: 2, w: 2, h: 1, i: 'SECURITY SENSORS', component:'SECURITYSENSORS' },
+        { x: 0, y: 3, w: 2, h: 2, i: 'CITYZEN', component:'CITYZEN' },
+        { x: 2, y: 0, w: 2, h: 1, i: 'WEATHER', component:'WEATHER' },
+        { x: 2, y: 1, w: 2, h: 2, i: 'LASTEST ACTIVITY', component:'LASTESTACTIVITY' },
+        { x: 2, y: 3, w: 3, h: 2, i: 'LAST 12 HOURS', component:'LAST12HOURS' },
+        { x: 4, y: 0, w: 1, h: 1, i: 'ZONES', component:'ZONES' },
+        { x: 4, y: 1, w: 1, h: 1, i: 'ADD DEVICES', component:'ADDDEVICES' },
+        { x: 4, y: 2, w: 1, h: 1, i: 'ADD AUTOMATION', component:'ADDAUTOMATION' },
+      ],
     };
   },
   methods: {
@@ -155,10 +144,6 @@ export default {
     },
   },
 };
-
-import weatherBG from '@/assets/img_src/weather_bg.png';
-import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
-import lasthourBG from '@/assets/img_src/lasthour_bg.png';
 </script>
 
 <style lang="scss" scoped>
