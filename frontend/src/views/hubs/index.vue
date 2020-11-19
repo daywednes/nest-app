@@ -85,7 +85,7 @@
     </div>
 
     <el-button
-      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 59px;"
+      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 45px;"
       type="primary"
       icon="el-icon-circle-plus"
       circle

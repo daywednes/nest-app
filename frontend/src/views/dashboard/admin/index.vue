@@ -26,7 +26,7 @@
           @dragend="dragend(item)"
           draggable="true"
           unselectable="on"
-          style="background: wheat;"
+          style="background: wheat; margin:20px;"
           class="chart-wrapper"
           v-for="item in layout"
           :key="item.i"
@@ -353,7 +353,6 @@ export default {
         mouseInGrid = true;
       }
       if (mouseInGrid === true) {
-        
         this.$refs.gridlayout.dragEvent(
           'dragend',
           'drop',
@@ -371,7 +370,7 @@ export default {
           w: item.w,
           h: item.h,
           i: DragPos.i,
-          component: item.component
+          component: item.component,
         });
         this.$refs.gridLayout.dragEvent(
           'dragend',
@@ -401,7 +400,6 @@ export default {
   .chart-wrapper {
     background: #fff;
     padding: 20px;
-    margin: 0px 20px 20px 20px;
     text-align: center;
     font-weight: bold;
     font-size: large;

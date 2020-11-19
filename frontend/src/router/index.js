@@ -109,6 +109,18 @@ export const constantRoutes = [{
     //     }]
     // },
     {
+        path: '/activity',
+        component: Layout,
+        redirect: '/activity',
+        children: [{
+            path: '/activity',
+            component: () =>
+                import ('@/views/Activity/index'),
+            name: 'Activity',
+            meta: { title: 'Activity', icon: 'icon' }
+        }]
+    }, 
+    {
         path: '/devices',
         component: Layout,
         redirect: '/devices',
