@@ -18,41 +18,58 @@
       @leftPanelIsShow="leftPanelIsShow"
       @leftPanelIsHide="leftPanelIsHide"
     >
-      <div>
-        <WEATHER/>
+      <div
+        style="background: white; height:80vh; margin-top:10px; padding:10px; overflow:auto;"
+      >
+        <div
+          @drag="drag(item)"
+          @dragend="dragend(item)"
+          draggable="true"
+          unselectable="on"
+          style="background: wheat;"
+          class="chart-wrapper"
+          v-for="item in layout"
+          :key="item.i"
+        >
+          <!-- <component :is="item.component" /> -->
+          {{ item.i }}
+        </div>
       </div>
     </RightPanel>
-    <grid-layout
-      :style="{
-        width: this.isEdited ? 'calc(100% - 300px)' : '100%',
-        transition: 'all 1s cubic-bezier(0.7, 0.3, 0.1, 1)',
-      }"
-      :isResizable="false"
-      :layout.sync="layout"
-      :col-num="5"
-      :row-height="160"
-      :is-draggable="isEdited"
-      :is-resizable="true"
-      :is-mirrored="false"
-      :vertical-compact="true"
-      :margin="[10, 10]"
-      :use-css-transforms="true"
-    >
-      <grid-item
-        class="chart-wrapper"
-        style="background: white"
-        v-for="item in layout"
-        :static="item.isStatic"
-        :x="item.x"
-        :y="item.y"
-        :w="item.w"
-        :h="item.h"
-        :i="item.i"
-        :key="item.i"
+    <div id="content">
+      <grid-layout
+        ref="gridlayout"
+        :style="{
+          width: this.isEdited ? 'calc(100% - 300px)' : '100%',
+          transition: 'all 1s cubic-bezier(0.7, 0.3, 0.1, 1)',
+        }"
+        :layout.sync="layout"
+        :col-num="5"
+        :row-height="160"
+        :is-draggable="isEdited"
+        :is-resizable="false"
+        :is-mirrored="false"
+        :vertical-compact="true"
+        :prevent-collision="false"
+        :margin="[10, 10]"
+        :use-css-transforms="true"
       >
-        <component :is="item.component" />
-      </grid-item>
-    </grid-layout>
+        <grid-item
+          class="chart-wrapper"
+          style="background: white"
+          v-for="item in layout"
+          :static="item.isStatic"
+          :x="item.x"
+          :y="item.y"
+          :w="item.w"
+          :h="item.h"
+          :i="item.i"
+          :key="item.i"
+        >
+          <component :is="item.component" />
+        </grid-item>
+      </grid-layout>
+    </div>
   </div>
 </template>
 
@@ -75,6 +92,9 @@ const lineChartData = {
     actualData: [120, 82, 91, 154, 162, 140, 130],
   },
 };
+
+let mouseXY = { x: null, y: null };
+let DragPos = { x: null, y: null, w: 2, h: 2, i: 'Drag' };
 
 import RightPanel from '@/components/RightPanelExtra';
 import weatherBG from '@/assets/img_src/weather_bg.png';
@@ -109,10 +129,22 @@ export default {
     RightPanel,
   },
 
+  mounted() {
+    document.addEventListener(
+      'dragover',
+      function(e) {
+        mouseXY.x = e.clientX;
+        mouseXY.y = e.clientY;
+      },
+      false,
+    );
+  },
+
   data() {
     return {
       isEdited: false,
       isEdited: false,
+      dragItem: {},
       lineChartData: lineChartData.newVisitis,
       weatherimg: weatherBG,
       lasthourimg: lasthourBG,
@@ -160,9 +192,26 @@ export default {
           h: 1,
           i: 'SECURITY SENSORS',
           component: 'SECURITYSENSORS',
+          isStatic: false,
         },
-        { x: 0, y: 3, w: 2, h: 2, i: 'CITYZEN', component: 'CITYZEN' },
-        { x: 2, y: 0, w: 2, h: 1, i: 'WEATHER', component: 'WEATHER' },
+        {
+          x: 0,
+          y: 3,
+          w: 2,
+          h: 2,
+          i: 'CITYZEN',
+          component: 'CITYZEN',
+          isStatic: false,
+        },
+        {
+          x: 2,
+          y: 0,
+          w: 2,
+          h: 1,
+          i: 'WEATHER',
+          component: 'WEATHER',
+          isStatic: false,
+        },
         {
           x: 2,
           y: 1,
@@ -179,8 +228,24 @@ export default {
           i: 'LAST 12 HOURS',
           component: 'LAST12HOURS',
         },
-        { x: 4, y: 0, w: 1, h: 1, i: 'ZONES', component: 'ZONES' },
-        { x: 4, y: 1, w: 1, h: 1, i: 'ADD DEVICES', component: 'ADDDEVICES' },
+        {
+          x: 4,
+          y: 0,
+          w: 1,
+          h: 1,
+          i: 'ZONES',
+          component: 'ZONES',
+          isStatic: false,
+        },
+        {
+          x: 4,
+          y: 1,
+          w: 1,
+          h: 1,
+          i: 'ADD DEVICES',
+          component: 'ADDDEVICES',
+          isStatic: false,
+        },
         {
           x: 4,
           y: 2,
@@ -188,6 +253,7 @@ export default {
           h: 1,
           i: 'ADD AUTOMATION',
           component: 'ADDAUTOMATION',
+          isStatic: false,
         },
       ],
     };
@@ -202,6 +268,126 @@ export default {
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type];
     },
+    drag: function(item) {
+      console.log(item);
+      let parentRect = document
+        .getElementById('content')
+        .getBoundingClientRect();
+      let mouseInGrid = false;
+      if (
+        mouseXY.x > parentRect.left &&
+        mouseXY.x < parentRect.right &&
+        mouseXY.y > parentRect.top &&
+        mouseXY.y < parentRect.bottom
+      ) {
+        mouseInGrid = true;
+      }
+      if (
+        mouseInGrid === true &&
+        this.layout.findIndex(item => item.i === 'drop') === -1
+      ) {
+        this.layout.push({
+          x: (this.layout.length * 2) % (this.colNum || 12),
+          y: this.layout.length + (this.colNum || 12), // puts it at the bottom
+          w: 1,
+          h: 1,
+          i: 'drop',
+        });
+      }
+      let index = this.layout.findIndex(item => item.i === 'drop');
+      if (index !== -1) {
+        try {
+          this.$refs.gridlayout.$children[
+            this.layout.length
+          ].$refs.item.style.display = 'none';
+        } catch {}
+        let el = this.$refs.gridlayout.$children[index];
+        el.dragging = {
+          top: mouseXY.y - parentRect.top,
+          left: mouseXY.x - parentRect.left,
+        };
+        let new_pos = el.calcXY(
+          mouseXY.y - parentRect.top,
+          mouseXY.x - parentRect.left,
+        );
+        if (mouseInGrid === true) {
+          this.$refs.gridlayout.dragEvent(
+            'dragstart',
+            'drop',
+            new_pos.x,
+            new_pos.y,
+            item.h,
+            item.w,
+          );
+          DragPos.i = String(index);
+          DragPos.x = this.layout[index].x;
+          DragPos.y = this.layout[index].y;
+          DragPos.w = item.w;
+          DragPos.h = item.h;
+        }
+        if (mouseInGrid === false) {
+          this.$refs.gridlayout.dragEvent(
+            'dragend',
+            'drop',
+            new_pos.x,
+            new_pos.y,
+            item.h,
+            item.w,
+          );
+          this.layout = this.layout.filter(obj => obj.i !== 'drop');
+        }
+      }
+    },
+    dragend: function(item) {
+      // console.log(this.dragItem)
+      let parentRect = document
+        .getElementById('content')
+        .getBoundingClientRect();
+      let mouseInGrid = false;
+      if (
+        mouseXY.x > parentRect.left &&
+        mouseXY.x < parentRect.right &&
+        mouseXY.y > parentRect.top &&
+        mouseXY.y < parentRect.bottom
+      ) {
+        mouseInGrid = true;
+      }
+      if (mouseInGrid === true) {
+        
+        this.$refs.gridlayout.dragEvent(
+          'dragend',
+          'drop',
+          DragPos.x,
+          DragPos.y,
+          item.h,
+          item.w,
+        );
+        this.layout = this.layout.filter(obj => obj.i !== 'drop');
+        // UNCOMMENT below if you want to add a grid-item
+
+        this.layout.push({
+          x: DragPos.x,
+          y: DragPos.y,
+          w: item.w,
+          h: item.h,
+          i: DragPos.i,
+          component: item.component
+        });
+        this.$refs.gridLayout.dragEvent(
+          'dragend',
+          DragPos.i,
+          DragPos.x,
+          DragPos.y,
+          item.h,
+          item.w,
+        );
+        try {
+          this.$refs.gridLayout.$children[
+            this.layout.length
+          ].$refs.item.style.display = 'block';
+        } catch {}
+      }
+    },
   },
 };
 </script>
@@ -214,8 +400,8 @@ export default {
 
   .chart-wrapper {
     background: #fff;
-    padding: 16px 16px 0;
-    margin-bottom: 32px;
+    padding: 20px;
+    margin: 0px 20px 20px 20px;
     text-align: center;
     font-weight: bold;
     font-size: large;
