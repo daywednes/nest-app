@@ -11,8 +11,8 @@
         v-model="textSearch"
       >
       </el-input>
-      <div class="one-row">
-        <div class="one-row-wrap">
+      <div >
+        <div >
           <el-button
             style="margin:0px;padding:0px; background: transparent;border: transparent;margin: 7px;"
             @click="
@@ -52,8 +52,8 @@
         v-model="textSearchDeployed"
       >
       </el-input>
-      <div class="one-row">
-        <div class="one-row-wrap">
+      <div >
+        <div >
           <el-button
             style="margin:0px;padding:0px; background: transparent;border: transparent;margin: 7px;"
             @click="
