@@ -1,7 +1,8 @@
 <template>
   <div
     class="chart-wrapper"
-    style="color:white; height:130px; background: #101f3e;"
+    style="color:white; 
+    overflow: auto; height:130px; background: #101f3e;"
   >
     WEATHER
     <br />

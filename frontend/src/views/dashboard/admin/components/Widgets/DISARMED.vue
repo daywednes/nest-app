@@ -1,12 +1,21 @@
 <template>
-  <div class="chart-wrapper">
+  <div
+    class="chart-wrapper"
+    style="overflow: auto;"
+  >
     DISARMED
     <br />
     <img class="img-circle" style="background: #13ce66;; " />
     <br />
     <p>Ready to Arm</p>
-    <br/>
-    <el-button style="font-size: large; padding: 5px 40px;" type="primary" round disabled>ARM</el-button>
+    <br />
+    <el-button
+      style="font-size: large; padding: 5px 40px;"
+      type="primary"
+      round
+      disabled
+      >ARM</el-button
+    >
   </div>
 </template>
 <style scoped>
