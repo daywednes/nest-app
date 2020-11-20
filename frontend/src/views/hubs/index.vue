@@ -97,6 +97,35 @@
       "
     ></el-button>
 
+    <el-button
+      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 150px; font-size: 45px;"
+      type="primary"
+      circle
+      @click="
+        () => {
+          showMenu = !showMenu;
+        }
+      "
+      ><i :class="showMenu ? 'el-icon-close' : 'el-icon-setting'"
+    /></el-button>
+
+    <div
+      v-if="showMenu"
+      style="position: fixed; bottom:120px; right: 50px;background: transparent; height:60vh; margin-top:10px; padding:10px; overflow:auto;"
+    >
+      <div
+        draggable="true"
+        unselectable="on"
+        style="background: wheat; margin:20px;"
+        class="chart-wrapper"
+        v-for="item in widgetsList"
+        :key="item.i"
+      >
+        <!-- <component :is="item.component" /> -->
+        {{ item.i }}
+      </div>
+    </div>
+
     <el-dialog title="" :visible.sync="showAddDialog">
       <!-- Step 1 -->
       <div
@@ -519,6 +548,19 @@
 .el-radio__label {
   font-size: 20px;
 }
+
+.dashboard-editor-container {
+  padding: 32px;
+  background-color: rgb(240, 242, 245);
+  position: relative;
+}
+.chart-wrapper {
+  background: #fff;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: large;
+}
 </style>
 <script>
 import draggable from 'vuedraggable';
@@ -542,6 +584,7 @@ export default {
       active: 0,
       autoSaveChecked: true,
       showAddDialog: false,
+      showMenu: false,
       loadingDevice: false,
       showAddHUBDialog: false,
       textSearch: '',
@@ -583,6 +626,87 @@ export default {
       },
       uploadProgress: { ...DEFAULT_PROGRESS },
       runInterval: null,
+      widgetsList: [
+        {
+          x: 0,
+          y: 0,
+          w: 2,
+          h: 2,
+          i: 'DISARMED',
+          component: 'DISARMED',
+          isStatic: true,
+        },
+        {
+          x: 0,
+          y: 2,
+          w: 2,
+          h: 1,
+          i: 'SECURITY SENSORS',
+          component: 'SECURITYSENSORS',
+          isStatic: false,
+        },
+        {
+          x: 0,
+          y: 3,
+          w: 2,
+          h: 2,
+          i: 'CITYZEN',
+          component: 'CITYZEN',
+          isStatic: false,
+        },
+        {
+          x: 2,
+          y: 0,
+          w: 2,
+          h: 1,
+          i: 'WEATHER',
+          component: 'WEATHER',
+          isStatic: false,
+        },
+        {
+          x: 2,
+          y: 1,
+          w: 2,
+          h: 2,
+          i: 'LASTEST ACTIVITY',
+          component: 'LASTESTACTIVITY',
+        },
+        {
+          x: 2,
+          y: 3,
+          w: 3,
+          h: 2,
+          i: 'LAST 12 HOURS',
+          component: 'LAST12HOURS',
+        },
+        {
+          x: 4,
+          y: 0,
+          w: 1,
+          h: 1,
+          i: 'ZONES',
+          component: 'ZONES',
+          isStatic: false,
+        },
+        {
+          x: 4,
+          y: 1,
+          w: 1,
+          h: 1,
+          i: 'ADD DEVICES',
+          component: 'ADDDEVICES',
+          isStatic: false,
+        },
+        {
+          x: 4,
+          y: 2,
+          w: 1,
+          h: 1,
+          i: 'ADD AUTOMATION',
+          component: 'ADDAUTOMATION',
+          isStatic: false,
+        },
+      ],
     };
   },
   mounted: function() {
