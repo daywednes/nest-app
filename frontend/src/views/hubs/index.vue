@@ -109,21 +109,44 @@
       ><i :class="showMenu ? 'el-icon-close' : 'el-icon-setting'"
     /></el-button>
 
-    <div
-      v-if="showMenu"
-      style="position: fixed; bottom:120px; right: 50px;background: transparent; height:60vh; margin-top:10px; padding:10px; overflow:auto;"
-    >
+    <div v-if="showMenu" class="rightMenu">
+      <h2>Simple things</h2>
+      <!-- <el-row
+                :gutter="32"
+                v-for="(item, index) of items"
+                :key="index"
+                style="width: 95%;
+            text-align: left; margin: 10px; "
+              > -->
       <div
-        draggable="true"
-        unselectable="on"
-        style="background: wheat; margin:20px;"
-        class="chart-wrapper"
-        v-for="item in widgetsList"
-        :key="item.i"
+        style="height: 50vh;
+  overflow: auto;"
       >
-        <!-- <component :is="item.component" /> -->
-        {{ item.i }}
+        <el-row
+          :gutter="32"
+          draggable="true"
+          unselectable="on"
+          style="background: transparent; width:100%;"
+          class="chart-wrapper"
+          v-for="item in widgetsList"
+          :key="item.i"
+        >
+          <!-- <component :is="item.component" /> -->
+          <el-col :xs="8" :sm="8" :lg="8">
+            <img v-if="logo" :src="logo" style="float: left; height: 50px;" />
+          </el-col>
+          <el-col :xs="16" :sm="16" :lg="16">
+            {{ item.i }}
+            <br />
+            {{ item.component }}
+          </el-col>
+          <hr
+            style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
+          />
+        </el-row>
       </div>
+
+      <h2>MORE</h2>
     </div>
 
     <el-dialog title="" :visible.sync="showAddDialog">
@@ -515,6 +538,18 @@
   flex-direction: row;
   align-items: flex-start;
 }
+.rightMenu {
+  position: fixed;
+  bottom: 120px;
+  right: 50px;
+  background: lightgray;
+  height: 60vh;
+  margin-top: 10px;
+  padding: 10px;
+  text-align-last: center;
+  border: 2px solid steelblue;
+  border-radius: 20px;
+}
 .kanban {
   &.todo {
     .board-column-header {
@@ -556,15 +591,16 @@
 }
 .chart-wrapper {
   background: #fff;
-  padding: 20px;
-  text-align: center;
+  padding: 20px 0px 20px 0px;
+  text-align-last: left;
   font-weight: bold;
-  font-size: large;
+  font-size: small;
 }
 </style>
 <script>
 import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
+import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import { saveChanges, createZone, getZonesHub } from '@/api/zone';
@@ -581,6 +617,7 @@ export default {
   },
   data() {
     return {
+      logo: logoSimpleThings,
       active: 0,
       autoSaveChecked: true,
       showAddDialog: false,
@@ -628,83 +665,34 @@ export default {
       runInterval: null,
       widgetsList: [
         {
-          x: 0,
-          y: 0,
-          w: 2,
-          h: 2,
-          i: 'DISARMED',
+          i: 'Zone Input',
           component: 'DISARMED',
           isStatic: true,
         },
         {
-          x: 0,
-          y: 2,
-          w: 2,
-          h: 1,
-          i: 'SECURITY SENSORS',
-          component: 'SECURITYSENSORS',
-          isStatic: false,
+          i: 'Zone Output',
+          component: 'DISARMED',
+          isStatic: true,
         },
         {
-          x: 0,
-          y: 3,
-          w: 2,
-          h: 2,
-          i: 'CITYZEN',
-          component: 'CITYZEN',
-          isStatic: false,
+          i: 'Contact Sensor',
+          component: 'DISARMED',
+          isStatic: true,
         },
         {
-          x: 2,
-          y: 0,
-          w: 2,
-          h: 1,
-          i: 'WEATHER',
-          component: 'WEATHER',
-          isStatic: false,
+          i: 'Motion Sensor',
+          component: 'DISARMED',
+          isStatic: true,
         },
         {
-          x: 2,
-          y: 1,
-          w: 2,
-          h: 2,
-          i: 'LASTEST ACTIVITY',
-          component: 'LASTESTACTIVITY',
+          i: 'Radar Sensor',
+          component: 'DISARMED',
+          isStatic: true,
         },
         {
-          x: 2,
-          y: 3,
-          w: 3,
-          h: 2,
-          i: 'LAST 12 HOURS',
-          component: 'LAST12HOURS',
-        },
-        {
-          x: 4,
-          y: 0,
-          w: 1,
-          h: 1,
-          i: 'ZONES',
-          component: 'ZONES',
-          isStatic: false,
-        },
-        {
-          x: 4,
-          y: 1,
-          w: 1,
-          h: 1,
-          i: 'ADD DEVICES',
-          component: 'ADDDEVICES',
-          isStatic: false,
-        },
-        {
-          x: 4,
-          y: 2,
-          w: 1,
-          h: 1,
-          i: 'ADD AUTOMATION',
-          component: 'ADDAUTOMATION',
-          isStatic: false,
+          i: 'Camera',
+          component: 'DISARMED',
+          isStatic: true,
         },
       ],
     };
