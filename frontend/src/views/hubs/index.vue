@@ -54,6 +54,7 @@
                 :group="group"
                 :class="item.name"
                 :header-text="item.name"
+                @click.native="showZoneInput = true"
                 @fn_resetInterval="resetInterval()"
               />
             </draggable>
@@ -527,6 +528,108 @@
         >
       </el-form>
     </el-dialog>
+    <!-- Zone Input -->
+
+    <el-dialog :visible.sync="showZoneInput">
+      <h1>ZONE INPUT</h1>
+      <hr />
+      <el-row>
+        <el-col :span="12" style="text-align: center; overflow:auto;">
+          <br />
+          <img v-if="zonesInputImg" :src="zonesInputImg" />
+          <br />
+          <h2>
+            Select an Input Zone to Configure
+          </h2>
+        </el-col>
+        <el-col :span="12">
+          <h3>#1: Zone Name</h3>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">Sensor Type </span>
+            <br />
+            <el-select
+              v-model="valueSensorType"
+              clearable
+              filterable
+              placeholder="All"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-row>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">Location Type </span>
+            <br />
+            <el-select
+              v-model="valueLocationType"
+              clearable
+              filterable
+              placeholder="All"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-row>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">Device Group </span>
+            <br />
+            <el-select
+              v-model="valueDeviceGroup"
+              clearable
+              filterable
+              placeholder="All"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-row>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">State to Trigger Alarm </span>
+            <br />
+            <el-button class="filter-item" type="primary" icon="el-icon-edit"
+              >Open</el-button
+            >
+            <el-button class="filter-item" type="primary" icon="el-icon-success"
+              >Closed</el-button
+            >
+          </el-row>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">Tags Of Device </span>
+            <br />
+            <el-select
+              v-model="itemTags"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+            >
+              <el-option
+                v-for="item in optionsTag"
+                :key="item"
+                :label="item"
+                :value="item"
+              >
+              </el-option>
+            </el-select>
+          </el-row>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -601,6 +704,7 @@
 import draggable from 'vuedraggable';
 import FontResizableContainer from '@/components/FontResizableContainer';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
+import zonesInput from '@/assets/img_src/zonesInput.png';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import { saveChanges, createZone, getZonesHub } from '@/api/zone';
@@ -617,7 +721,11 @@ export default {
   },
   data() {
     return {
+      valueDeviceGroup: null,
+      valueSensorType: null,
+      valueLocationType: null,
       logo: logoSimpleThings,
+      zonesInputImg: zonesInput,
       active: 0,
       autoSaveChecked: true,
       showAddDialog: false,
@@ -626,6 +734,7 @@ export default {
       showAddHUBDialog: false,
       textSearch: '',
       showDialogZones: false,
+      showZoneInput: false,
       editableTabsValue: '-1',
       isShowLeft: false,
       multipleSelection: [],
@@ -693,6 +802,29 @@ export default {
           i: 'Camera',
           component: 'DISARMED',
           isStatic: true,
+        },
+      ],
+
+      options: [
+        {
+          value: 'Option1',
+          label: 'Option1',
+        },
+        {
+          value: 'Option2',
+          label: 'Option2',
+        },
+        {
+          value: 'Option3',
+          label: 'Option3',
+        },
+        {
+          value: 'Option4',
+          label: 'Option4',
+        },
+        {
+          value: 'Option5',
+          label: 'Option5',
         },
       ],
     };

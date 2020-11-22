@@ -163,7 +163,7 @@
           append-to-body
           style="text-align:center"
         >
-          <div  v-if="!passVisible">
+          <div v-if="!passVisible">
             <div class="container">
               <img class="img-circle" style="background: red; " />
               <div class="centered">
