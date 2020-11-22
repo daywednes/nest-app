@@ -5,12 +5,16 @@
     <el-row
       style="background:#fff;padding:10px 10px;margin:10px 10px 10px 10px; text-align:right;"
     >
-      <!-- <line-chart :chart-data="lineChartData" /> -->
-      <!-- <el-button class="filter-item" type="primary" icon="el-icon-search"
+      <el-button v-if="!isEdited" class="filter-item" type="primary" icon="el-icon-edit"
+      @click="isEdited = true"
         >Edit</el-button
-      > -->
+      >
+      <el-button v-if="isEdited"  class="filter-item" type="primary" icon="el-icon-success"
+       @click="isEdited = false"
+        >Done</el-button
+      >
 
-      <el-checkbox v-model="isEdited">Edit</el-checkbox>
+      <!-- <el-checkbox v-model="isEdited">Edit</el-checkbox> -->
     </el-row>
 
     <RightPanel
@@ -108,6 +112,8 @@ import ADDDEVICES from './components/Widgets/ADDDEVICES';
 import ADDAUTOMATION from './components/Widgets/ADDAUTOMATION';
 import ZONES from './components/Widgets/ZONES';
 import DISARMED from './components/Widgets/DISARMED';
+import ARMBYPASS from './components/Widgets/ARMBYPASS';
+import ARM from './components/Widgets/ARM';
 import SECURITYSENSORS from './components/Widgets/SECURITYSENSORS';
 import CITYZEN from './components/Widgets/CITYZEN';
 
@@ -124,6 +130,8 @@ export default {
     ADDAUTOMATION,
     ZONES,
     DISARMED,
+    ARM,
+    ARMBYPASS,
     CITYZEN,
     SECURITYSENSORS,
     RightPanel,
@@ -264,6 +272,20 @@ export default {
           h: 2,
           i: 'DISARMED',
           component: 'DISARMED',
+          isStatic: true,
+        },
+        {
+          w: 2,
+          h: 2,
+          i: 'ARM',
+          component: 'ARM',
+          isStatic: true,
+        },
+        {
+          w: 2,
+          h: 2,
+          i: 'ARMBYPASS',
+          component: 'ARMBYPASS',
           isStatic: true,
         },
         {
