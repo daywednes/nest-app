@@ -1,21 +1,20 @@
 <template>
   <div class="chart-wrapper" style="overflow: auto;">
-    ARMED [ AWAY, STAY OR SLEEP ]
+    DISARMED
     <br />
-    <img class="img-circle" style="background: RED; margin:10px;" />
-    
-    <p>[ Date and Time Arrived ]</p>
+    <img class="img-circle" style="background: #13ce66;margin:10px;" />
+    <p>Ready to Arm</p>
     <el-button
       style="font-size: large; padding: 10px 0px; width:240px;"
       type="primary"
       round
       @click="
         () => {
-          activeScreen = 1;
+          activeScreen = 0;
           dialogVisible = true;
         }
       "
-      >DISSARM</el-button
+      >ARM</el-button
     >
     <el-dialog
       :visible.sync="dialogVisible"
@@ -25,7 +24,7 @@
       style="text-align: center"
     >
       <!-- Select mode -->
-      <!-- <div v-if="activeScreen == 0">
+      <div v-if="activeScreen == 0">
         <h1>CHOOSE AN ARMING MODE</h1>
         <br />
         <el-button
@@ -64,7 +63,7 @@
           >SLEEP</el-button
         >
         <p>sleep mode sensors trigger alarm with no entry delay</p>
-      </div> -->
+      </div>
 
       <!-- Enter Password -->
       <div v-if="activeScreen == 1">
@@ -79,7 +78,7 @@
           round
           @click="
             () => {
-              dialogVisible = false;
+              activeScreen = 2;
             }
           "
           >NEXT</el-button
@@ -90,109 +89,36 @@
       <div v-if="activeScreen == 2">
         <h3>ARM BLOCKING ZONES MUST BE CLEARED OR BYPASSED BEFORE ARMING</h3>
 
-        <el-row>
-          <el-col :span="12">
-            <br />
-            <div class="container">
-              <img class="img-circle" style="background: red; " />
-              <div class="centered">
-                <h3>Not Ready</h3>
-              </div>
-            </div>
-            <p>#Sensor(s) Open</p>
-            <el-button
-              style="font-size: large; padding: 10px 0px; width:300px;"
-              type="primary"
-              round
-              @click="() => {}"
-              >BYPASS ARM BLOCKING ZONES</el-button
-            >
-          </el-col>
-          <el-col :span="12">
-            <div style="height:280px; overflow-x: auto;">
-              <el-row
-                :gutter="32"
-                v-for="(item, index) of items"
-                :key="index"
-                style="width: 95%;
-            text-align: left; margin: 10px; "
-              >
-                <el-col :xs="4" :sm="4" :lg="4">
-                  <img
-                    v-if="logo"
-                    :src="logo"
-                    style="float: left; height: 50px;"
-                  />
-                </el-col>
-                <el-col :xs="10" :sm="10" :lg="10">
-                  {{ item.name }}
-                  <br />
-                  {{ item.status }}
-                </el-col>
-                <el-col :xs="10" :sm="10" :lg="10">
-                  <el-button
-                    style="font-size: medium; padding: 10px 0px; width:120px;border: 3px black solid;"
-                    type="warning"
-                    round
-                    @click="
-                      () => {
-                        innerVisible = true;
-                      }
-                    "
-                    >BYPASS</el-button
-                  >
-                </el-col>
-                <hr
-                  style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
-                />
-              </el-row>
-              more
-            </div>
-          </el-col>
-        </el-row>
-
-        <el-dialog
-          width="30%"
-          title="Inner Dialog"
-          :visible.sync="innerVisible"
-          append-to-body
-          style="text-align:center"
-        >
-          <div class="container">
-            <img class="img-circle" style="background: red; " />
-            <div class="centered">
-              <countTo
-                style="font-size: xx-large; color white"
-                ref="countDown"
-                :startVal="startVal"
-                :endVal="endVal"
-                :duration="20000"
-                :decimals="2"
-                :useEasing="false"
-                :autoplay="false"
-              ></countTo>
-            </div>
+        <div class="container">
+          <img class="img-circle" style="background: red; " />
+          <div class="centered">
+            <countTo
+              style="font-size: xx-large; color white"
+              ref="countDown"
+              :startVal="startVal"
+              :decimals="2"
+              :endVal="endVal"
+              :duration="20000"
+              :autoplay="false"
+              :useEasing="false"
+            ></countTo>
           </div>
-          <el-button
-            style="font-size: large; padding: 10px 0px; margin:10px; width:100px;"
-            type="warning"
-            round
-            @click="startCountDown"
-            >Start</el-button
-          >
-          <br />
-          <el-button
-            style="font-size: large; padding: 10px 0px; width:300px;"
-            type="primary"
-            round
-            @click="
-              () => {
-                innerVisible = false;
-              }
-            "
-            >Cancel</el-button
-          >
-        </el-dialog>
+        </div>
+        <el-button
+          style="font-size: large; padding: 10px 0px; margin:10px; width:100px;"
+          type="warning"
+          round
+          @click="startCountDown"
+          >Start</el-button
+        >
+        <br />
+        <el-button
+          style="font-size: large; padding: 10px 0px; width:300px;"
+          type="primary"
+          round
+          @click="pauseResume"
+          >Cancel</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -280,7 +206,7 @@ export default {
       this.$refs.countDown.start();
     },
     pauseResume() {
-      this.$refs.example3.pauseResume();
+      this.$refs.countDown.pauseResume();
     },
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')

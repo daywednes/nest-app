@@ -1,9 +1,14 @@
 <template>
   <div class="chart-wrapper" style="overflow: auto;">
-    ARMED [ AWAY, STAY OR SLEEP ]
+    DISARMED
     <br />
-    <img class="img-circle" style="background: RED; margin:10px;" />
-    
+
+    <div class="container">
+      <img class="img-circle" style="background: red; margin:10px;" />
+      <div class="centered">
+        <h3>Not Ready</h3>
+      </div>
+    </div>
     <p>[ Date and Time Arrived ]</p>
     <el-button
       style="font-size: large; padding: 10px 0px; width:240px;"
@@ -11,11 +16,11 @@
       round
       @click="
         () => {
-          activeScreen = 1;
+          activeScreen = 0;
           dialogVisible = true;
         }
       "
-      >DISSARM</el-button
+      >ARM BYPASS</el-button
     >
     <el-dialog
       :visible.sync="dialogVisible"
@@ -25,7 +30,7 @@
       style="text-align: center"
     >
       <!-- Select mode -->
-      <!-- <div v-if="activeScreen == 0">
+      <div v-if="activeScreen == 0">
         <h1>CHOOSE AN ARMING MODE</h1>
         <br />
         <el-button
@@ -64,7 +69,7 @@
           >SLEEP</el-button
         >
         <p>sleep mode sensors trigger alarm with no entry delay</p>
-      </div> -->
+      </div>
 
       <!-- Enter Password -->
       <div v-if="activeScreen == 1">
@@ -79,7 +84,7 @@
           round
           @click="
             () => {
-              dialogVisible = false;
+              activeScreen = 2;
             }
           "
           >NEXT</el-button
@@ -158,40 +163,62 @@
           append-to-body
           style="text-align:center"
         >
-          <div class="container">
-            <img class="img-circle" style="background: red; " />
-            <div class="centered">
-              <countTo
-                style="font-size: xx-large; color white"
-                ref="countDown"
-                :startVal="startVal"
-                :endVal="endVal"
-                :duration="20000"
-                :decimals="2"
-                :useEasing="false"
-                :autoplay="false"
-              ></countTo>
+          <div  v-if="!passVisible">
+            <div class="container">
+              <img class="img-circle" style="background: red; " />
+              <div class="centered">
+                <countTo
+                  style="font-size: xx-large; color white"
+                  ref="countDown"
+                  :startVal="startVal"
+                  :endVal="endVal"
+                  :duration="20000"
+                  :decimals="2"
+                  :useEasing="false"
+                  :autoplay="false"
+                ></countTo>
+              </div>
             </div>
+            <el-button
+              style="font-size: large; padding: 10px 0px; margin:10px; width:100px;"
+              type="warning"
+              round
+              @click="startCountDown"
+              >Start</el-button
+            >
+            <br />
+            <el-button
+              style="font-size: large; padding: 10px 0px; width:300px;"
+              type="primary"
+              round
+              @click="
+                () => {
+                  innerVisible = false;
+                  passVisible = true;
+                }
+              "
+              >Cancel</el-button
+            >
           </div>
-          <el-button
-            style="font-size: large; padding: 10px 0px; margin:10px; width:100px;"
-            type="warning"
-            round
-            @click="startCountDown"
-            >Start</el-button
-          >
-          <br />
-          <el-button
-            style="font-size: large; padding: 10px 0px; width:300px;"
-            type="primary"
-            round
-            @click="
-              () => {
-                innerVisible = false;
-              }
-            "
-            >Cancel</el-button
-          >
+          <div v-if="passVisible">
+            <h1>ENTER YOUR PIN</h1>
+            <div class="input-wrapper">
+              <PincodeInput :secure="true" v-model="code" />
+            </div>
+            <br />
+            <el-button
+              style="font-size: large; padding: 10px 0px; width:240px;"
+              type="primary"
+              round
+              @click="
+                () => {
+                  activeScreen = 2;
+                  passVisible = false;
+                }
+              "
+              >NEXT</el-button
+            >
+          </div>
         </el-dialog>
       </div>
     </el-dialog>
@@ -240,6 +267,7 @@ export default {
       activeScreen: 0,
       dialogVisible: false,
       innerVisible: false,
+      passVisible: false,
       logo: logoSimpleThings,
       items: [
         {
