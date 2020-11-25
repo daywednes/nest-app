@@ -5,12 +5,20 @@
     <el-row
       style="background:#fff;padding:10px 10px;margin:10px 10px 10px 10px; text-align:right;"
     >
-      <el-button v-if="!isEdited" class="filter-item" type="primary" icon="el-icon-edit"
-      @click="isEdited = true"
+      <el-button
+        v-if="!isEdited"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-edit"
+        @click="isEdited = true"
         >Edit</el-button
       >
-      <el-button v-if="isEdited"  class="filter-item" type="primary" icon="el-icon-success"
-       @click="isEdited = false"
+      <el-button
+        v-if="isEdited"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-success"
+        @click="isEdited = false"
         >Done</el-button
       >
 
@@ -48,29 +56,32 @@
           transition: 'all 1s cubic-bezier(0.7, 0.3, 0.1, 1)',
         }"
         :layout.sync="layout"
-        :col-num="5"
+        :col-num="colNum"
         :row-height="160"
         :is-draggable="isEdited"
         :is-resizable="false"
         :is-mirrored="false"
         :vertical-compact="true"
-        :prevent-collision="false"
+        :prevent-collision="true"
         :margin="[10, 10]"
         :use-css-transforms="true"
       >
         <grid-item
           class="chart-wrapper"
           style="background: white"
-          v-for="item in layout"
+          v-for="item of layout"
+          :key="item.i"
           :static="item.isStatic"
           :x="item.x"
           :y="item.y"
           :w="item.w"
           :h="item.h"
           :i="item.i"
-          :key="item.i"
         >
           <component :is="item.component" />
+          <span v-if="isEdited" class="remove" @click="removeItem(item.i)"
+            >x</span
+          >
         </grid-item>
       </grid-layout>
     </div>
@@ -150,6 +161,7 @@ export default {
 
   data() {
     return {
+      colNum: 5,
       isEdited: false,
       isEdited: false,
       dragItem: {},
@@ -362,6 +374,10 @@ export default {
     };
   },
   methods: {
+    removeItem: function(val) {
+      const index = this.layout.map(item => item.i).indexOf(val);
+      this.layout.splice(index, 1);
+    },
     leftPanelIsShow: function() {
       this.isEdited = true;
     },
@@ -372,7 +388,6 @@ export default {
       this.lineChartData = lineChartData[type];
     },
     drag: function(item) {
-      console.log(item);
       let parentRect = document
         .getElementById('content')
         .getBoundingClientRect();
@@ -390,8 +405,8 @@ export default {
         this.layout.findIndex(item => item.i === 'drop') === -1
       ) {
         this.layout.push({
-          x: (this.layout.length * 2) % (this.colNum || 12),
-          y: this.layout.length + (this.colNum || 12), // puts it at the bottom
+          x: (this.layout.length * 2) % (this.colNum || 5),
+          y: this.layout.length + (this.colNum || 5), // puts it at the bottom
           w: item.w,
           h: item.h,
           i: 'drop',
@@ -474,16 +489,16 @@ export default {
           h: item.h,
           i: DragPos.i,
           component: item.component,
-          isStatic: item.isStatic
+          isStatic: item.isStatic,
         });
-        this.$refs.gridLayout.dragEvent(
-          'dragend',
-          DragPos.i,
-          DragPos.x,
-          DragPos.y,
-          item.h,
-          item.w,
-        );
+        // this.$refs.gridLayout.dragEvent(
+        //   'dragend',
+        //   DragPos.i,
+        //   DragPos.x,
+        //   DragPos.y,
+        //   item.h,
+        //   item.w,
+        // );
         try {
           this.$refs.gridLayout.$children[
             this.layout.length
@@ -496,6 +511,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.remove {
+  position: absolute;
+  right: 2px;
+  top: 0;
+  cursor: pointer;
+}
 .dashboard-editor-container {
   padding: 32px;
   background-color: rgb(240, 242, 245);
