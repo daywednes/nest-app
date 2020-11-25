@@ -132,6 +132,18 @@ export const constantRoutes = [{
             meta: { title: 'Devices', icon: 'guide'}
         }]
     },
+    {
+        path: '/devicesUX3',
+        component: Layout,
+        redirect: '/devicesUX3',
+        children: [{
+            path: '/devicesUX3',
+            component: () =>
+                import ('@/views/devicesUX3/index'),
+            name: 'DevicesUX3',
+            meta: { title: 'DevicesUX3', icon: 'tab'}
+        }]
+    },
     // {
     //     path: '/automations',
     //     component: Layout,

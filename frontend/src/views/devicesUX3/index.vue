@@ -86,20 +86,7 @@
     </div>
 
     <el-button
-      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 50px; font-size: 45px;"
-      type="primary"
-      icon="el-icon-circle-plus"
-      circle
-      @click="
-        () => {
-          active = 0;
-          showAddDialog = true;
-        }
-      "
-    ></el-button>
-
-    <!-- <el-button
-      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 150px; font-size: 45px;"
+      style=" position: fixed; width:60px; height:60px; bottom:50px; right: 130px; font-size: 45px;"
       type="primary"
       circle
       @click="
@@ -108,31 +95,20 @@
         }
       "
       ><i :class="showMenu ? 'el-icon-close' : 'el-icon-setting'"
-    /></el-button> -->
+    /></el-button>
 
     <div v-if="showMenu" class="rightMenu">
       <h2>Simple things</h2>
-      <!-- <el-row
-                :gutter="32"
-                v-for="(item, index) of items"
-                :key="index"
-                style="width: 95%;
-            text-align: left; margin: 10px; "
-              > -->
-      <div
-        style="height: 50vh;
-  overflow: auto;"
-      >
-        <el-row
+      <div style=" width:100%;">
+        <!-- <el-row
           :gutter="32"
           draggable="true"
           unselectable="on"
-          style="background: transparent; width:100%;"
+          style="background: white; margin:10px 5px; width:95%; border-radius: 20px;"
           class="chart-wrapper"
           v-for="item in widgetsList"
           :key="item.i"
         >
-          <!-- <component :is="item.component" /> -->
           <el-col :xs="8" :sm="8" :lg="8">
             <img v-if="logo" :src="logo" style="float: left; height: 50px;" />
           </el-col>
@@ -141,226 +117,11 @@
             <br />
             {{ item.component }}
           </el-col>
-          <hr
-            style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
-          />
-        </el-row>
+        </el-row> -->
+        <KanbanMenu :list="widgetsList" group="device" />
       </div>
-
       <h2>MORE</h2>
     </div>
-
-    <el-dialog title="" :visible.sync="showAddDialog">
-      <!-- Step 1 -->
-      <div
-        v-if="active == 0"
-        style="height: 40vh; text-align: -webkit-center;white-space: pre-wrap; word-wrap: break-word; font-size: 20px;"
-      >
-        <h1>
-          HARDWARE
-        </h1>
-        <h1>
-          SCANNING &
-        </h1>
-        <h1>
-          PARING
-        </h1>
-        <h1>
-          INSTRUCTIONS TBD
-        </h1>
-      </div>
-
-      <!-- Step 2 -->
-      <div v-if="active == 1" style="height: 40vh;">
-        <div style=" width:100%; float: right;    display: inline-flex;">
-          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
-            <h1>
-              Alarm Zone
-            </h1>
-            <h2>
-              Alarm zones are groups of security devices that can be armed and
-              dissarmed. Select or create a new zone for your [Device Type]
-            </h2>
-          </div>
-          <div style="width: 50%">
-            <h2>
-              Choose zone of your devices:
-            </h2>
-            <el-select
-              v-model="addDeviceZoneId"
-              filterable
-              allow-create
-              default-first-option
-            >
-              <el-option
-                v-for="item in zonesList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-
-            <el-button
-              style="margin-top: 40px;"
-              type="primary"
-              icon="el-icon-plus"
-              @click="
-                () => {
-                  showDialogZones = true;
-                }
-              "
-            >
-              Create New Zone
-            </el-button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div v-if="active == 2" style="height: 40vh;">
-        <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
-            <h1>
-              Device Location
-            </h1>
-            <h2>Where in {{ zoneName }} is this device located ?</h2>
-            <h2>
-              Example: Front Door or East Window.
-            </h2>
-          </div>
-          <div style="width: 50%">
-            <h3>Device Name</h3>
-            <el-input
-              v-model="addDevice.name"
-              style="color: black;"
-              placeholder="Device Name"
-              name="DeviceName"
-              type="text"
-              tabindex="1"
-              autocomplete="on"
-            />
-
-            <h3>Device Description</h3>
-            <el-input
-              v-model="addDevice.description"
-              style="color: black;"
-              placeholder="Description"
-              name="DeviceDescription"
-              type="textarea"
-              tabindex="2"
-              :rows="3"
-              autocomplete="on"
-            />
-            <br />
-
-            <h3>Device Location</h3>
-            <el-input
-              v-model="addDevice.location"
-              style="color: black;"
-              placeholder="Device Location"
-              name="DeviceLocation"
-              type="text"
-              tabindex="3"
-              autocomplete="on"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div v-if="active == 3" style="height: 40vh;">
-        <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
-            <h1>
-              Location Type
-            </h1>
-            <h2>
-              Is this [Device Type] inside the home, outside or at a perimeter
-              entry point, like a door or window ?
-            </h2>
-          </div>
-          <div style="width: 50%">
-            <el-radio-group
-              v-model="addDevice.locationType"
-              style="margin-top: 20px; font-size: 24px; display: table-caption;"
-            >
-              <el-radio :label="3">Inside the Home</el-radio>
-              <el-radio :label="6">Outside the Home</el-radio>
-              <el-radio :label="9">Entry Point</el-radio>
-            </el-radio-group>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 5 -->
-      <div v-if="active == 4" style="height: 40vh;">
-        <div style=" width:100%; float: right; display: inline-flex;">
-          <div style="width: 50%; margin-right: 30px;word-break: break-word;">
-            <h1>
-              Tags
-            </h1>
-            <h2>
-              Adding Tags can help find this device using search and enable
-              actions on groups of devices in different zones.
-            </h2>
-          </div>
-          <div style="width: 50%">
-            <h2>
-              Add tags:
-            </h2>
-            <el-select
-              v-model="addDevice.tagsName"
-              multiple
-              filterable
-              allow-create
-              default-first-option
-            >
-              <el-option
-                v-for="item in optionsTag"
-                :key="item"
-                :label="item"
-                :value="item"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </div>
-      </div>
-      <br />
-      <el-steps :active="active" finish-status="success">
-        <el-step title="Scanning"></el-step>
-        <el-step title="Alarm Zone"></el-step>
-        <el-step title="Device Location"></el-step>
-        <el-step title="Location Type"></el-step>
-        <el-step title="Tags"></el-step>
-      </el-steps>
-
-      <div style=" width:100%; ">
-        <el-button
-          type="info"
-          style="margin-top: 12px;"
-          @click="previous"
-          v-if="active > 0"
-          >Previos step</el-button
-        >
-        <el-button
-          type="primary"
-          style="margin-top: 12px;"
-          @click="next"
-          v-if="active < 4"
-          >Next step</el-button
-        >
-        <el-button
-          :loading="loadingDevice"
-          type="success"
-          style="margin-top: 12px;float: right; "
-          @click="createDeviceEntity"
-          v-if="active == 4"
-          >Done
-        </el-button>
-      </div>
-    </el-dialog>
 
     <!-- Add Hub -->
     <el-dialog title="" :visible.sync="showAddHUBDialog">
@@ -644,11 +405,10 @@
 .rightMenu {
   position: fixed;
   bottom: 120px;
-  right: 50px;
+  right: 20px;
   background: lightgray;
   height: 60vh;
   margin-top: 10px;
-  padding: 10px;
   text-align-last: center;
   border: 2px solid steelblue;
   border-radius: 20px;
@@ -707,6 +467,7 @@ import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import zonesInput from '@/assets/img_src/zonesInput.png';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
+import KanbanMenu from '@/components/Kanban/KanbanMenu';
 import { saveChanges, createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
@@ -717,6 +478,7 @@ export default {
   components: {
     Zones,
     Kanban,
+    KanbanMenu,
     draggable,
   },
   data() {
@@ -778,31 +540,66 @@ export default {
           i: 'Zone Input',
           component: 'DISARMED',
           isStatic: true,
+          id: 11,
+          name: 'Zone Input',
+          description: 'Zone Input',
+          location: 'Zone Input',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
         {
           i: 'Zone Output',
           component: 'DISARMED',
           isStatic: true,
+          id: 12,
+          name: 'Zone Output',
+          description: 'Zone Output',
+          location: 'Zone Output',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
         {
           i: 'Contact Sensor',
           component: 'DISARMED',
-          isStatic: true,
+          id: 13,
+          name: 'Contact Sensor',
+          description: 'Contact Sensor',
+          location: 'Contact Sensor',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
         {
           i: 'Motion Sensor',
           component: 'DISARMED',
           isStatic: true,
+          id: 14,
+          name: 'Motion Sensor',
+          description: 'Motion Sensor',
+          location: 'Motion Sensor',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
         {
           i: 'Radar Sensor',
           component: 'DISARMED',
           isStatic: true,
+          id: 15,
+          name: 'Radar Sensor',
+          description: 'Radar Sensor',
+          location: 'Radar Sensor',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
         {
           i: 'Camera',
           component: 'DISARMED',
           isStatic: true,
+          id: 15,
+          name: 'Camera',
+          description: 'Camera',
+          location: 'Camera',
+          locationType: '3',
+          updated: '2020-11-19T15:07:39.271Z',
         },
       ],
 
@@ -835,11 +632,11 @@ export default {
     this.getTagsList();
   },
   beforeDestroy: function() {
-    this.saveChangesHub(this.zonesList);
+    // this.saveChangesHub(this.zonesList);
   },
   watch: {
     orgId(val, old) {
-      this.saveChangesHub();
+      // this.saveChangesHub();
       this.getHubsList();
     },
     hubs(val, old) {
@@ -873,7 +670,7 @@ export default {
       // this.askForSave();
 
       if (this.zonesList && this.zonesList.length > 0) {
-        this.saveChangesHub(this.zonesList);
+        // this.saveChangesHub(this.zonesList);
       }
       this.ZoneForm.hubId = this.currentHubId;
       this.getZonesList();
@@ -980,7 +777,7 @@ export default {
           },
         )
           .then(() => {
-            saveChanges(oldList);
+            // saveChanges(oldList);
 
             // this.$message({
             //   type: 'success',
@@ -1018,7 +815,7 @@ export default {
           }
         }
 
-        saveChanges(this.zonesList);
+        // saveChanges(this.zonesList);
         this.$message({
           type: 'success',
           message: 'Save changes completed',
@@ -1085,27 +882,29 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)',
       });
 
-      getZonesHub(this.currentHubId)
-        .then(response => {
-          this.zonesListTmp = response;
-          for (let index = 0; index < this.zonesListTmp.length; index++) {
-            const element = this.zonesListTmp[index];
-            if (element.devices) {
-              element.devices.sort((a, b) => (a.index > b.index ? 1 : -1));
-            }
-          }
-          this.zonesList = this.zonesListTmp.sort((a, b) =>
-            a.index > b.index ? 1 : -1,
-          );
-          this.$store.dispatch('user/updateZones', response);
-        })
-        .catch(() => {
-          this.$store.dispatch('user/updateZones', []);
-        })
-        .finally(() => {
-          clearInterval(this.runInterval);
-          loading.close();
-        });
+      this.zonesList = DEFAULT_ZONE_LIST;
+
+      // getZonesHub(this.currentHubId)
+      //   .then(response => {
+      //     this.zonesListTmp = response;
+      //     for (let index = 0; index < this.zonesListTmp.length; index++) {
+      //       const element = this.zonesListTmp[index];
+      //       if (element.devices) {
+      //         element.devices.sort((a, b) => (a.index > b.index ? 1 : -1));
+      //       }
+      //     }
+      //     this.zonesList = this.zonesListTmp.sort((a, b) =>
+      //       a.index > b.index ? 1 : -1,
+      //     );
+      //     this.$store.dispatch('user/updateZones', response);
+      //   })
+      //   .catch(() => {
+      //     this.$store.dispatch('user/updateZones', []);
+      //   })
+      //   .finally(() => {
+      //     clearInterval(this.runInterval);
+      //     loading.close();
+      //   });
     },
     createDeviceEntity() {
       this.loadingDevice = true;
@@ -1227,6 +1026,71 @@ const DEFAULT_SEARCH_QUERY = {
     orCondition: false,
   },
 };
+const DEFAULT_ZONE_LIST = [
+  {
+    id: 7,
+    name: 'Zone Hub 1',
+    description: 'Zone Hub 1',
+    orgId: 4,
+    hubId: 6,
+    index: 0,
+    name: 'Zone Hub 1',
+    orgId: 4,
+    devices: [
+      {
+        id: 9,
+        name: 'Test Org 1',
+        description: 'Test Org 1',
+        location: 'Test Org 1',
+        locationType: '3',
+        name: 'Test Org 1',
+        updated: '2020-11-19T15:07:39.271Z',
+      },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Zone Hub 2',
+    description: 'Zone Hub 2',
+    orgId: 4,
+    hubId: 6,
+    index: 0,
+    name: 'Zone Hub 2',
+    orgId: 4,
+    devices: [
+      {
+        id: 9,
+        name: 'Test Org 2',
+        description: 'Test Org 2',
+        location: 'Test Org 2',
+        locationType: '3',
+        name: 'Test Org 2',
+        updated: '2020-11-19T15:07:39.271Z',
+      },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Zone Hub 3',
+    description: 'Zone Hub 3',
+    orgId: 4,
+    hubId: 6,
+    index: 0,
+    name: 'Zone Hub 3',
+    orgId: 4,
+    devices: [
+      {
+        id: 9,
+        name: 'Test Org 3',
+        description: 'Test Org 3',
+        location: 'Test Org 3',
+        locationType: '3',
+        name: 'Test Org 3',
+        updated: '2020-11-19T15:07:39.271Z',
+      },
+    ],
+  },
+];
 const DEFAULT_ITEM = {
   _index: -1,
   _checked: false,
