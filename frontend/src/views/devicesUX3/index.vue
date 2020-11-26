@@ -5,7 +5,7 @@
       <el-tab-pane label="" name="-1" v-if="!hubs || hubs.length == 0">
         <!-- <el-tab-pane label="Default" name="-1" > -->
         <div
-          style="margin: 60px; text-align: -webkit-center;white-space: pre-wrap; word-wrap: break-word; font-size: 26px;"
+          style="margin: 60px;  text-align: -webkit-center;white-space: pre-wrap; word-wrap: break-word; font-size: 26px;"
         >
           <h1>Your new Hub is all set</h1>
           <br />
@@ -23,10 +23,18 @@
       >
         <keep-alive>
           <!-- <Zones /> -->
-          <div style="width:100%">
+          <div id="UX3" style="width:100%">
             <h1>{{ editableTabsValue }} - Devices and Zones</h1>
             <hr />
             <br />
+            <el-button
+              v-if="showMenu"
+              type="info"
+              @click="addGroup"
+              round
+              style="width: 100%; text-align:center;height: 40px;"
+              >ADD</el-button
+            >
             <!-- <div style="margin-botom: 20px;">
               <el-checkbox v-model="autoSaveChecked"
                 >Auto Save After 5 Seconds</el-checkbox
@@ -42,20 +50,25 @@
               </el-button>
             </div> -->
             <draggable
-              :list="zonesList"
+              :list.sync="zonesList"
               v-bind="$attrs"
-              class="board-column-content"
+              style="padding-bottom: 200px;"
               :set-data="setData"
             >
               <Kanban
-                v-for="(item, index) in zonesList"
-                :key="index"
+                v-for="(item) in zonesList"
+                :key="item.id"
                 :list="item.devices"
                 :group="group"
                 :class="item.name"
                 :header-text="item.name"
-                @click.native="showZoneInput = true"
+                @click="showZoneInput = true"
                 @fn_resetInterval="resetInterval()"
+                @changeName="
+                  val => {
+                    item.name = val;
+                  }
+                "
               />
             </draggable>
           </div>
@@ -535,73 +548,7 @@ export default {
       },
       uploadProgress: { ...DEFAULT_PROGRESS },
       runInterval: null,
-      widgetsList: [
-        {
-          i: 'Zone Input',
-          component: 'DISARMED',
-          isStatic: true,
-          id: 11,
-          name: 'Zone Input',
-          description: 'Zone Input',
-          location: 'Zone Input',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-        {
-          i: 'Zone Output',
-          component: 'DISARMED',
-          isStatic: true,
-          id: 12,
-          name: 'Zone Output',
-          description: 'Zone Output',
-          location: 'Zone Output',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-        {
-          i: 'Contact Sensor',
-          component: 'DISARMED',
-          id: 13,
-          name: 'Contact Sensor',
-          description: 'Contact Sensor',
-          location: 'Contact Sensor',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-        {
-          i: 'Motion Sensor',
-          component: 'DISARMED',
-          isStatic: true,
-          id: 14,
-          name: 'Motion Sensor',
-          description: 'Motion Sensor',
-          location: 'Motion Sensor',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-        {
-          i: 'Radar Sensor',
-          component: 'DISARMED',
-          isStatic: true,
-          id: 15,
-          name: 'Radar Sensor',
-          description: 'Radar Sensor',
-          location: 'Radar Sensor',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-        {
-          i: 'Camera',
-          component: 'DISARMED',
-          isStatic: true,
-          id: 15,
-          name: 'Camera',
-          description: 'Camera',
-          location: 'Camera',
-          locationType: '3',
-          updated: '2020-11-19T15:07:39.271Z',
-        },
-      ],
+      widgetsList: [...DEFAULT_WIDGETS_LIST],
 
       options: [
         {
@@ -708,13 +655,34 @@ export default {
     },
   },
   methods: {
-    resetInterval() {
-      if (this.autoSaveChecked) {
-        if (this.runInterval) {
-          clearInterval(this.runInterval);
-        }
-        this.runInterval = setInterval(this.saveChangesHub, 5000);
+    addGroup() {
+      if (this.zonesList.find(x => x.name == 'Untitled Group')) {
+        this.$alert('Please put name for new group');
+        return;
+      } else {
+        this.zonesList.unshift({
+          id: 'Untitled'+this.zonesList.length,
+          name: 'Untitled Group',
+          description: 'Untitled Group',
+          orgId: 4,
+          hubId: 6,
+          devices:[] 
+        });
+
+        // let element = document.getElementById('UX3');
+        // element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        // element.scrollIntoView(false);
       }
+    },
+    resetInterval() {
+      // if (this.autoSaveChecked) {
+      //   if (this.runInterval) {
+      //     clearInterval(this.runInterval);
+      //   }
+      //   this.runInterval = setInterval(this.saveChangesHub, 5000);
+      // }
+      this.widgetsList = [];
+      this.widgetsList = [...DEFAULT_WIDGETS_LIST];
     },
     getTagsList() {
       getTags().then(response => {
@@ -1026,9 +994,77 @@ const DEFAULT_SEARCH_QUERY = {
     orCondition: false,
   },
 };
+const DEFAULT_WIDGETS_LIST = [
+  {
+    i: 'Zone Input',
+    component: 'DISARMED',
+    status: false,
+    isStatic: true,
+    id: 31,
+    name: 'Zone Input',
+    description: 'Zone Input',
+    location: 'Zone Input',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+  {
+    i: 'Zone Output',
+    component: 'DISARMED',
+    isStatic: true,
+    id: 22,
+    name: 'Zone Output',
+    description: 'Zone Output',
+    location: 'Zone Output',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+  {
+    i: 'Contact Sensor',
+    component: 'DISARMED',
+    id: 53,
+    name: 'Contact Sensor',
+    description: 'Contact Sensor',
+    location: 'Contact Sensor',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+  {
+    i: 'Motion Sensor',
+    component: 'DISARMED',
+    isStatic: true,
+    id: 44,
+    name: 'Motion Sensor',
+    description: 'Motion Sensor',
+    location: 'Motion Sensor',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+  {
+    i: 'Radar Sensor',
+    component: 'DISARMED',
+    isStatic: true,
+    id: 35,
+    name: 'Radar Sensor',
+    description: 'Radar Sensor',
+    location: 'Radar Sensor',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+  {
+    i: 'Camera',
+    component: 'DISARMED',
+    isStatic: true,
+    id: 25,
+    name: 'Camera',
+    description: 'Camera',
+    location: 'Camera',
+    locationType: '3',
+    updated: '2020-11-19T15:07:39.271Z',
+  },
+];
 const DEFAULT_ZONE_LIST = [
   {
-    id: 7,
+    id: 37,
     name: 'Zone Hub 1',
     description: 'Zone Hub 1',
     orgId: 4,
@@ -1038,7 +1074,7 @@ const DEFAULT_ZONE_LIST = [
     orgId: 4,
     devices: [
       {
-        id: 9,
+        id: 29,
         name: 'Test Org 1',
         description: 'Test Org 1',
         location: 'Test Org 1',
@@ -1049,7 +1085,7 @@ const DEFAULT_ZONE_LIST = [
     ],
   },
   {
-    id: 8,
+    id: 18,
     name: 'Zone Hub 2',
     description: 'Zone Hub 2',
     orgId: 4,
@@ -1059,7 +1095,7 @@ const DEFAULT_ZONE_LIST = [
     orgId: 4,
     devices: [
       {
-        id: 9,
+        id: 19,
         name: 'Test Org 2',
         description: 'Test Org 2',
         location: 'Test Org 2',
@@ -1070,7 +1106,7 @@ const DEFAULT_ZONE_LIST = [
     ],
   },
   {
-    id: 9,
+    id: 29,
     name: 'Zone Hub 3',
     description: 'Zone Hub 3',
     orgId: 4,
@@ -1080,7 +1116,7 @@ const DEFAULT_ZONE_LIST = [
     orgId: 4,
     devices: [
       {
-        id: 9,
+        id: 39,
         name: 'Test Org 3',
         description: 'Test Org 3',
         location: 'Test Org 3',
