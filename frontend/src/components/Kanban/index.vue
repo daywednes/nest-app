@@ -146,7 +146,14 @@
       <h1>Contact Sensor</h1>
       <hr />
 
-      <img style="width:70px;" v-if="logo" :src="logo" />
+      <el-row>
+        <el-col :span="2"> <img style="width:70px;" v-if="logo" :src="logo"/></el-col>
+        <el-col :span="20">
+          <h3>Engine Status</h3>
+          <h3>Device Name</h3>
+          <h3>Connection status</h3></el-col
+        >
+      </el-row>
       <el-row>
         <el-col :span="12">
           <el-row style="margin :20px; font-size: medium;">
