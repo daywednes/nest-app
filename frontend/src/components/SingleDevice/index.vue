@@ -3,7 +3,7 @@
     class="box-card"
     style=" width: 250px; float:left; min-height: 150px;"
     :style="{
-      background: this.status ? 'white' : '#ffa9a9',
+      background: this.isDefine ? 'white' : '#ffa9a9',
     }"
   >
     <div slot="header" class="clearfix">
@@ -17,7 +17,7 @@
         
       </el-checkbox> -->
     </div>
-    <div v-if="status" style="  white-space: break-spaces;">
+    <div v-if="isDefine" style="  white-space: break-spaces;">
       <!-- <el-checkbox  label="Test Zone" style="margin:10px 0px 30px 0px;display:block; font-size: x-large;">
         
       </el-checkbox> -->
@@ -54,7 +54,7 @@
         </el-tag>
       </div>
     </div>
-    <div v-if="!status" style="font-size:x-large;  white-space: break-spaces;">
+    <div v-if="!isDefine" style="font-size:x-large;  white-space: break-spaces;">
       
       <svg-icon
         style="margin:0px 10px;font-size: xx-large;"
@@ -90,7 +90,7 @@ export default {
       type: Object,
       required: true,
     },
-    status: {
+    isDefine: {
       type: Boolean,
       required: false,
       default: true,

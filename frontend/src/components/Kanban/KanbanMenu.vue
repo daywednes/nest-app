@@ -9,6 +9,7 @@
       v-bind="$attrs"
       class="board-column-content"
       :set-data="setData"
+      :move="checkMove"
     >
       <!-- <div v-for="element in list" :key="element.id" class="board-item">
         {{ element.name }} {{ element.id }}
@@ -21,9 +22,10 @@
       /> -->
       <el-row
         :gutter="32"
-        draggable="true"
-        unselectable="on"
-        style="background: white; margin:10px 5px; width:95%; border-radius: 20px;"
+        style="margin:10px 5px; width:95%; border-radius: 20px;"
+        :style="{
+          background: item.isActive ? 'white' : '#ffa9a9',
+        }"
         class="chart-wrapper"
         v-for="item in list"
         :key="item.name"
@@ -85,6 +87,13 @@ export default {
     },
   },
   methods: {
+    checkMove: function(evt) {
+      if (!evt.draggedContext.element.isActive) {
+        // alert('This Device is not active.');
+        return false;
+      }
+      return true;
+    },
     resetInterval: function() {
       this.$emit('fn_resetInterval');
     },

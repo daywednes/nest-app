@@ -481,6 +481,7 @@ import zonesInput from '@/assets/img_src/zonesInput.png';
 import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import KanbanMenu from '@/components/Kanban/KanbanMenu';
+import MOCKDATA from '../../utils/mockdata';
 import { saveChanges, createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
@@ -548,7 +549,7 @@ export default {
       },
       uploadProgress: { ...DEFAULT_PROGRESS },
       runInterval: null,
-      widgetsList: [...DEFAULT_WIDGETS_LIST],
+      widgetsList: [...MOCKDATA.DEFAULT_WIDGETS_LIST],
 
       options: [
         {
@@ -682,7 +683,7 @@ export default {
       //   this.runInterval = setInterval(this.saveChangesHub, 5000);
       // }
       this.widgetsList = [];
-      this.widgetsList = [...DEFAULT_WIDGETS_LIST];
+      this.widgetsList = [...MOCKDATA.DEFAULT_WIDGETS_LIST];
     },
     getTagsList() {
       getTags().then(response => {
@@ -850,7 +851,7 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)',
       });
 
-      this.zonesList = DEFAULT_ZONE_LIST;
+      this.zonesList = MOCKDATA.DEFAULT_ZONE_LIST;
 
       // getZonesHub(this.currentHubId)
       //   .then(response => {
@@ -994,139 +995,6 @@ const DEFAULT_SEARCH_QUERY = {
     orCondition: false,
   },
 };
-const DEFAULT_WIDGETS_LIST = [
-  {
-    i: 'Zone Input',
-    component: 'DISARMED',
-    status: false,
-    isStatic: true,
-    id: 31,
-    name: 'Zone Input',
-    description: 'Zone Input',
-    location: 'Zone Input',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-  {
-    i: 'Zone Output',
-    component: 'DISARMED',
-    isStatic: true,
-    id: 22,
-    name: 'Zone Output',
-    description: 'Zone Output',
-    location: 'Zone Output',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-  {
-    i: 'Contact Sensor',
-    component: 'DISARMED',
-    id: 53,
-    name: 'Contact Sensor',
-    description: 'Contact Sensor',
-    location: 'Contact Sensor',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-  {
-    i: 'Motion Sensor',
-    component: 'DISARMED',
-    isStatic: true,
-    id: 44,
-    name: 'Motion Sensor',
-    description: 'Motion Sensor',
-    location: 'Motion Sensor',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-  {
-    i: 'Radar Sensor',
-    component: 'DISARMED',
-    isStatic: true,
-    id: 35,
-    name: 'Radar Sensor',
-    description: 'Radar Sensor',
-    location: 'Radar Sensor',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-  {
-    i: 'Camera',
-    component: 'DISARMED',
-    isStatic: true,
-    id: 25,
-    name: 'Camera',
-    description: 'Camera',
-    location: 'Camera',
-    locationType: '3',
-    updated: '2020-11-19T15:07:39.271Z',
-  },
-];
-const DEFAULT_ZONE_LIST = [
-  {
-    id: 37,
-    name: 'Zone Hub 1',
-    description: 'Zone Hub 1',
-    orgId: 4,
-    hubId: 6,
-    index: 0,
-    name: 'Zone Hub 1',
-    orgId: 4,
-    devices: [
-      {
-        id: 29,
-        name: 'Test Org 1',
-        description: 'Test Org 1',
-        location: 'Test Org 1',
-        locationType: '3',
-        name: 'Test Org 1',
-        updated: '2020-11-19T15:07:39.271Z',
-      },
-    ],
-  },
-  {
-    id: 18,
-    name: 'Zone Hub 2',
-    description: 'Zone Hub 2',
-    orgId: 4,
-    hubId: 6,
-    index: 0,
-    name: 'Zone Hub 2',
-    orgId: 4,
-    devices: [
-      {
-        id: 19,
-        name: 'Test Org 2',
-        description: 'Test Org 2',
-        location: 'Test Org 2',
-        locationType: '3',
-        name: 'Test Org 2',
-        updated: '2020-11-19T15:07:39.271Z',
-      },
-    ],
-  },
-  {
-    id: 29,
-    name: 'Zone Hub 3',
-    description: 'Zone Hub 3',
-    orgId: 4,
-    hubId: 6,
-    index: 0,
-    name: 'Zone Hub 3',
-    orgId: 4,
-    devices: [
-      {
-        id: 39,
-        name: 'Test Org 3',
-        description: 'Test Org 3',
-        location: 'Test Org 3',
-        locationType: '3',
-        name: 'Test Org 3',
-        updated: '2020-11-19T15:07:39.271Z',
-      },
-    ],
-  },
-];
 const DEFAULT_ITEM = {
   _index: -1,
   _checked: false,
