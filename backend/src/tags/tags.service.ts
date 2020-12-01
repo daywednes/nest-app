@@ -25,7 +25,7 @@ export class TagsService {
       where: { id, userId: user.id },
     });
     if (!found) {
-      throw new NotFoundException(`Oranization with id: ${id} not found`);
+      throw new NotFoundException(`Tag with id: ${id} not found`);
     }
     return found;
   }
@@ -38,7 +38,7 @@ export class TagsService {
   async deleteTags(id: number, user: User) {
     const result = await this.tagsRepository.delete({ id, userId: user.id });
     if (result.affected === 0) {
-      throw new NotFoundException(`Oranization with id: ${id} not found`);
+      throw new NotFoundException(`Tag with id: ${id} not found`);
     }
     // await this.zoneRepository.delete({tagsId: id })
   }

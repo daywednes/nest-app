@@ -9,6 +9,7 @@ import { AutomationsModule } from './automations/automations.module';
 import { AuthModule } from './auth/auth.module';
 import { DeviceModule } from './device/device.module';
 import { TagsModule } from './tags/tags.module';
+import { AvailableDevicesModule } from './availableDevice/availableDevice.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TagsModule } from './tags/tags.module';
     OrgModule,
     AuthModule,
     TagsModule,
+    AvailableDevicesModule,
     DeviceModule
   ],
 })
