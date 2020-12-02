@@ -48,9 +48,9 @@ export class AvailableDevicesController {
   @Get('/:id')
   @ApiOperation({ summary: 'Get AvailableDevices by Device Id' })
   getAvailableDevicesById(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: string,
     @GetUser() user: User,
-  ): Promise<AvailableDevicesEntity[]> {
+  ): Promise<AvailableDevicesEntity> {
     return this.AvailableDevicesService.getAvailableDevicesByDeviceId(id, user);
   }
 

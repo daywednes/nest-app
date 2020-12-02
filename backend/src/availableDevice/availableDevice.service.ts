@@ -11,9 +11,7 @@ import { ZoneRepository } from '../zone/zone.repository';
 export class AvailableDevicesService {
   constructor(
     @InjectRepository(AvailableDevicesRepository)
-    private availableDevicesRepository: AvailableDevicesRepository,
-    @InjectRepository(ZoneRepository)
-    private zoneRepository: ZoneRepository,
+    private availableDevicesRepository: AvailableDevicesRepository
   ) {}
 
   getAvailableDevices(availableDevicesFilterDto: GetAvailableDevicesFilterDto, user: User): Promise<AvailableDevicesEntity[]> {
@@ -29,8 +27,9 @@ export class AvailableDevicesService {
     }
     return found;
   }
+  
 
-  async getAvailableDevicesByDeviceId(deviceId: number, user: User): Promise<AvailableDevicesEntity[]> {
+  async getAvailableDevicesByDeviceId(deviceId: string, user: User): Promise<AvailableDevicesEntity> {
     return this.availableDevicesRepository.getAvailableDevicesByDeviceId(deviceId, user);
     
   }
@@ -49,15 +48,40 @@ export class AvailableDevicesService {
 
   async updateAvailableDevices(id: number,  user: User,  updateAvailableDevicesDto: CreateAvailableDevicesDto): Promise<AvailableDevicesEntity> {
     const availableDevices = await this.getAvailableDevicesById(id, user);
-    const { name,connectionStatus,description,deviceGroup,engineStatus,locationType,sensorType,tags } = updateAvailableDevicesDto;
-    availableDevices.name = name;
+    const { deviceName,connectionStatus,deviceId,deviceGroup,engineStatus,locationType,sensorType,tags, msg } = updateAvailableDevicesDto;
+    availableDevices.deviceName = deviceName;
+    availableDevices.deviceId = deviceId;
     availableDevices.connectionStatus = connectionStatus;
-    availableDevices.description = description;
+    availableDevices.msg = msg;
     availableDevices.deviceGroup = deviceGroup;
     availableDevices.locationType = locationType;
     availableDevices.engineStatus = engineStatus;
     availableDevices.sensorType = sensorType;
     availableDevices.tags = tags;
+    await availableDevices.save();
+    return availableDevices;
+  }
+
+  async scanAvailableDevices(updateAvailableDevicesDto: Map<string,string>): Promise<AvailableDevicesEntity> {
+    // const { deviceName,connectionStatus,deviceId,deviceGroup,engineStatus,locationType,sensorType,tags, msg } = updateAvailableDevicesDto;
+    
+    console.log(updateAvailableDevicesDto["deviceId"])
+    var availableDevices = await this.getAvailableDevicesByDeviceId(updateAvailableDevicesDto["deviceId"],null);
+    if(!availableDevices || availableDevices == null || availableDevices == undefined){
+      availableDevices = new AvailableDevicesEntity();
+    }
+
+
+    availableDevices.deviceName = updateAvailableDevicesDto["deviceName"];
+    availableDevices.deviceId = updateAvailableDevicesDto["deviceId"];
+    availableDevices.connectionStatus = updateAvailableDevicesDto["connectionStatus"];
+    availableDevices.msg = updateAvailableDevicesDto["msg"];
+    availableDevices.deviceGroup = updateAvailableDevicesDto["deviceGroup"];
+    availableDevices.locationType = updateAvailableDevicesDto["locationType"];
+    availableDevices.engineStatus = updateAvailableDevicesDto["engineStatus"];
+    availableDevices.sensorType = updateAvailableDevicesDto["sensorType"];
+    availableDevices.tags = updateAvailableDevicesDto["tags"];
+    console.log(availableDevices)
     await availableDevices.save();
     return availableDevices;
   }

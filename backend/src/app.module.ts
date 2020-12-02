@@ -24,5 +24,6 @@ import { AvailableDevicesModule } from './availableDevice/availableDevice.module
     AvailableDevicesModule,
     DeviceModule
   ],
+  exports:[AvailableDevicesModule]
 })
 export class AppModule {}

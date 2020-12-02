@@ -3,9 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateAvailableDevicesDto {
   @IsNotEmpty()
   @ApiProperty()
-  name: string;
+  deviceName: string;
+  @IsNotEmpty()
   @ApiProperty()
-  description: string;
+  deviceId: string;
+  @ApiProperty()
+  msg: string;
   @ApiProperty()
   deviceGroup: string;
   @ApiProperty()

@@ -11,9 +11,11 @@ export class AvailableDevicesEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  name: string;
+  deviceName: string;
   @Column()
-  description: string;
+  deviceId: string;
+  @Column()
+  msg: string;
   @Column()
   deviceGroup: string;
   @Column()

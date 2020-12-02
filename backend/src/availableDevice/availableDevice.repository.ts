@@ -34,16 +34,13 @@ export class AvailableDevicesRepository extends Repository<AvailableDevicesEntit
     }
   }
 
-  async getAvailableDevicesByDeviceId(deviceId: number, user: User): Promise<AvailableDevicesEntity[]> {
-    const query = this.createQueryBuilder('availableDevices_entity').leftJoinAndSelect(
-      'availableDevices_entity.availableDevicesdevice',
-      'availableDevicesdevice',
-    );
-    // query.where('availableDevicesdevice.device.id = :deviceId', { deviceId: deviceId });
+  async getAvailableDevicesByDeviceId(deviceId: string, user: User): Promise<AvailableDevicesEntity> {
+    const query = this.createQueryBuilder('availableDevices_entity');
+    query.where('availableDevices_entity.deviceId = :deviceId', { deviceId: deviceId });
 
     try {
       const availableDevices = await query.getMany();
-      return availableDevices;
+      return availableDevices[0];
     } catch (err) {
       this.logger.error(`Failed to get AvailableDevices for device ${deviceId}`, err.stack);
       throw new InternalServerErrorException();
@@ -54,11 +51,12 @@ export class AvailableDevicesRepository extends Repository<AvailableDevicesEntit
     createAvailableDevicesDto: CreateAvailableDevicesDto,
     user: User,
   ): Promise<AvailableDevicesEntity> {
-    const { name,connectionStatus,description,deviceGroup,engineStatus,locationType,sensorType,tags } = createAvailableDevicesDto;
+    const { deviceName,connectionStatus,deviceId,deviceGroup,engineStatus,locationType,sensorType,tags, msg } = createAvailableDevicesDto;
     const availableDevices = new AvailableDevicesEntity();
-    availableDevices.name = name;
+    availableDevices.deviceName = deviceName;
+    availableDevices.deviceId = deviceId;
     availableDevices.connectionStatus = connectionStatus;
-    availableDevices.description = description;
+    availableDevices.msg = msg;
     availableDevices.deviceGroup = deviceGroup;
     availableDevices.locationType = locationType;
     availableDevices.engineStatus = engineStatus;
