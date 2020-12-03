@@ -24,7 +24,7 @@
         :gutter="32"
         style="margin:10px 5px; width:95%; border-radius: 20px;"
         :style="{
-          background: item.isActive ? 'white' : '#ffa9a9',
+          background: item.availableDevices > 0 ? 'white' : '#ffa9a9',
         }"
         class="chart-wrapper"
         v-for="item in list"
@@ -38,6 +38,8 @@
           {{ item.name }}
           <br />
           {{ item.component }}
+          <br />
+          Available : {{ item.availableDevices }}
         </el-col>
         <!-- <hr
             style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
@@ -88,7 +90,7 @@ export default {
   },
   methods: {
     checkMove: function(evt) {
-      if (!evt.draggedContext.element.isActive) {
+      if (!evt.draggedContext.element.availableDevices && evt.draggedContext.element.availableDevices == 0) {
         // alert('This Device is not active.');
         return false;
       }

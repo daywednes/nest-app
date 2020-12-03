@@ -51,8 +51,9 @@ Vue.use(VueWamp, {
 });
 Vue.config.productionTip = false
 
-Vue.Wamp.subscribe('some-topic', function(args, kwArgs, details) {
-    // context is empty
+Vue.Wamp.subscribe('com.myapp.hello', function(args, kwArgs, details) {
+    var tmp =JSON.parse(args[0]) ; 
+    store.dispatch('user/addAvailableDevice', tmp["deviceGroup"]);
 }, {
     acknowledge: true // option needed for promise
 }).then(function(s) {

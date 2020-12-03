@@ -81,7 +81,6 @@ export class AvailableDevicesService {
     availableDevices.engineStatus = updateAvailableDevicesDto["engineStatus"];
     availableDevices.sensorType = updateAvailableDevicesDto["sensorType"];
     availableDevices.tags = updateAvailableDevicesDto["tags"];
-    console.log(availableDevices)
     await availableDevices.save();
     return availableDevices;
   }

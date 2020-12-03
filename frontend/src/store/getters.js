@@ -14,5 +14,6 @@ const getters = {
     orgId: state => state.user.orgId,
     orgs: state => state.user.orgs,
     hubs: state => state.user.hubs,
+    deviceGroups: state => state.user.deviceGroups,
 }
 export default getters

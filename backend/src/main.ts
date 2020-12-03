@@ -43,11 +43,13 @@ async function bootstrap() {
 
   connection.onopen = function(session) {
     // 1) subscribe to a topic
-    function onevent(args) {
+    async function onevent(args) {
       const service = app.get(AvailableDevicesService);
       // console.log('Event:', args[0]);
       let mess = JSON.parse(args[0]);
-      service.scanAvailableDevices(mess);
+      var res = await service.scanAvailableDevices(mess);
+      console.log(res);
+      session.publish('com.myapp.hello', [JSON.stringify(res)]);
     }
     session.subscribe('io.crossbar.demo.pubsub.404890', onevent);
 

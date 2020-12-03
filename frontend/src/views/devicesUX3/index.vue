@@ -56,7 +56,7 @@
               :set-data="setData"
             >
               <Kanban
-                v-for="(item) in zonesList"
+                v-for="item in zonesList"
                 :key="item.id"
                 :list="item.devices"
                 :group="group"
@@ -119,7 +119,7 @@
           unselectable="on"
           style="background: white; margin:10px 5px; width:95%; border-radius: 20px;"
           class="chart-wrapper"
-          v-for="item in widgetsList"
+          v-for="item in deviceGroupList"
           :key="item.i"
         >
           <el-col :xs="8" :sm="8" :lg="8">
@@ -131,7 +131,7 @@
             {{ item.component }}
           </el-col>
         </el-row> -->
-        <KanbanMenu :list="widgetsList" group="device" />
+        <KanbanMenu :list="deviceGroupList" group="device" />
       </div>
       <h2>MORE</h2>
     </div>
@@ -549,7 +549,7 @@ export default {
       },
       uploadProgress: { ...DEFAULT_PROGRESS },
       runInterval: null,
-      widgetsList: [...MOCKDATA.DEFAULT_WIDGETS_LIST],
+      deviceGroupList: [],
 
       options: [
         {
@@ -578,6 +578,11 @@ export default {
   mounted: function() {
     this.getHubsList();
     this.getTagsList();
+    if (!this.deviceGroups || this.deviceGroups.length == 0) {
+      this.$store.dispatch('user/updateDeviceGroups', [
+        ...MOCKDATA.DEFAULT_WIDGETS_LIST,
+      ]);
+    }
   },
   beforeDestroy: function() {
     // this.saveChangesHub(this.zonesList);
@@ -604,6 +609,16 @@ export default {
     },
     textSearch(val, old) {
       this.searchZone(val);
+    },
+    deviceGroups(val, old) {
+      if (!val || val.length == 0) {
+        this.$store.dispatch('user/updateDeviceGroups', [
+          ...MOCKDATA.DEFAULT_WIDGETS_LIST,
+        ]);
+      } else {
+        this.deviceGroupList = [];
+        this.deviceGroupList = [...val];
+      }
     },
     autoSaveChecked(val, old) {
       if (val) {
@@ -635,6 +650,9 @@ export default {
     hubs() {
       return this.$store.getters.hubs;
     },
+    deviceGroups() {
+      return this.$store.getters.deviceGroups;
+    },
     currentHubId() {
       let tmpId = this.$store.getters.hubs.find(
         x => x.name == this.editableTabsValue,
@@ -662,12 +680,12 @@ export default {
         return;
       } else {
         this.zonesList.unshift({
-          id: 'Untitled'+this.zonesList.length,
+          id: 'Untitled' + this.zonesList.length,
           name: 'Untitled Group',
           description: 'Untitled Group',
           orgId: 4,
           hubId: 6,
-          devices:[] 
+          devices: [],
         });
 
         // let element = document.getElementById('UX3');
@@ -682,8 +700,8 @@ export default {
       //   }
       //   this.runInterval = setInterval(this.saveChangesHub, 5000);
       // }
-      this.widgetsList = [];
-      this.widgetsList = [...MOCKDATA.DEFAULT_WIDGETS_LIST];
+      this.deviceGroupList = [];
+      this.deviceGroupList = [...this.deviceGroups];
     },
     getTagsList() {
       getTags().then(response => {

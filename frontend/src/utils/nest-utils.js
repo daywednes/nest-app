@@ -14,11 +14,13 @@ const AUTOMATION_TYPE = {
     AUTOMATION: 0,
     ALARM: 1
 }
-const CenterStatus = {
-    Normal: 1,
-    Added: 2,
-    Removed: 3,
-    Modified: 4
+const DeviceGroup = {
+    Zone_Input: "Zone Input",
+    Zone_Output: "Zone Output",
+    Contact_Sensor: "Contact Sensor",
+    Motion_Sensor: "Motion Sensor",
+    Radar_Sensor: "Radar Sensor",
+    Camera: "Camera",
 }
 
 const POPUP_CODE = {
@@ -167,5 +169,5 @@ export default {
     POPUP_CODE,
     ROWTYPE,
     AUTOMATION_TYPE,
-    CenterStatus
+    DeviceGroup
 }

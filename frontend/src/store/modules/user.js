@@ -12,6 +12,7 @@ const state = {
     orgs: [],
     hubs: [],
     devices: [],
+    deviceGroups: [],
     zones: []
 }
 
@@ -45,6 +46,13 @@ const mutations = {
     },
     SET_DEVICES: (state, devices) => {
         state.devices = devices
+    },
+    SET_DEVICE_GROUPS: (state, deviceGroups) => {
+        state.deviceGroups = deviceGroups
+    },
+    ADD_DEVICE_AVAILABLE: (state, deviceGroupName) => {
+        let tmp = state.deviceGroups.find(x=> x.deviceGroup == deviceGroupName);
+        tmp.availableDevices++;
     }
 }
 
@@ -79,6 +87,12 @@ const actions = {
     },
     updateDevices({ commit }, data) {
         commit('SET_DEVICES', data)
+    },
+    updateDeviceGroups({ commit }, data) {
+        commit('SET_DEVICE_GROUPS', data)
+    },
+    addAvailableDevice({ commit }, data) {
+        commit('ADD_DEVICE_AVAILABLE', data)
     },
     updateZones({ commit }, data) {
         commit('SET_ZONES', data)
