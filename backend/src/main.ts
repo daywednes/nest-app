@@ -37,7 +37,7 @@ async function bootstrap() {
 
   var autobahn = require('autobahn');
   var connection = new autobahn.Connection({
-    url: 'ws://localhost:8080/ws',
+    url: 'ws://localhost:8090/ws',
     realm: 'realm1',
   });
 

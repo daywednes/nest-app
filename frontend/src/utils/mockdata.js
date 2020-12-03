@@ -41,7 +41,7 @@ const DEFAULT_WIDGETS_LIST = [
     isActive: true,
     isDefine: false,
     name: 'Contact Sensor',
-    deviceGroup: nestutils.DeviceGroup.Contact_Sensors,
+    deviceGroup: nestutils.DeviceGroup.Contact_Sensor,
     description: 'Contact Sensor',
     location: 'Contact Sensor',
     locationType: '3',
