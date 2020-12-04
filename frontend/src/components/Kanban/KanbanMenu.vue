@@ -70,6 +70,11 @@ export default {
       this.resetInterval();
     },
   },
+  computed: {
+    isSetup() {
+      return this.$store.getters.isSetup;
+    },
+  },
   props: {
     headerText: {
       type: String,
@@ -90,7 +95,11 @@ export default {
   },
   methods: {
     checkMove: function(evt) {
-      if (!evt.draggedContext.element.availableDevices && evt.draggedContext.element.availableDevices == 0) {
+      if (
+        !evt.draggedContext.element.availableDevices &&
+        evt.draggedContext.element.availableDevices == 0
+        || this.isSetup
+      ) {
         // alert('This Device is not active.');
         return false;
       }

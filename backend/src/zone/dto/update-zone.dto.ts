@@ -10,5 +10,8 @@ export class UpdateZoneDto {
   index: number;
   @IsOptional()
   @ApiProperty()
+  name: string;
+  @IsOptional()
+  @ApiProperty()
   devices: [UpdateDeviceDto];
 }

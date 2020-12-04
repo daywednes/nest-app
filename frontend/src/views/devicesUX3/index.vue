@@ -58,6 +58,7 @@
               <Kanban
                 v-for="item in zonesList"
                 :key="item.id"
+                :groupId="item.id"
                 :list="item.devices"
                 :group="group"
                 :class="item.name"
@@ -486,6 +487,7 @@ import { saveChanges, createZone, getZonesHub } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
 import { createDevice } from '@/api/device';
+import { getAvailableDevices } from '@/api/availableDevice';
 
 export default {
   name: 'Hubs',
@@ -576,13 +578,17 @@ export default {
     };
   },
   mounted: function() {
-    this.getHubsList();
-    this.getTagsList();
     if (!this.deviceGroups || this.deviceGroups.length == 0) {
       this.$store.dispatch('user/updateDeviceGroups', [
         ...MOCKDATA.DEFAULT_WIDGETS_LIST,
       ]);
     }
+
+    this.$store.dispatch('user/setIsSetup', false);
+
+    this.getHubsList();
+    this.getTagsList();
+    this.getAvailableDevicesList();
   },
   beforeDestroy: function() {
     // this.saveChangesHub(this.zonesList);
@@ -650,6 +656,9 @@ export default {
     hubs() {
       return this.$store.getters.hubs;
     },
+    isSetup() {
+      return this.$store.getters.isSetup;
+    },
     deviceGroups() {
       return this.$store.getters.deviceGroups;
     },
@@ -679,18 +688,16 @@ export default {
         this.$alert('Please put name for new group');
         return;
       } else {
-        this.zonesList.unshift({
-          id: 'Untitled' + this.zonesList.length,
-          name: 'Untitled Group',
-          description: 'Untitled Group',
-          orgId: 4,
-          hubId: 6,
-          devices: [],
-        });
+        // this.zonesList.unshift({
+        //   id: 'Untitled' + this.zonesList.length,
+        //   name: 'Untitled Group',
+        //   description: 'Untitled Group',
+        //   orgId: 4,
+        //   hubId: 6,
+        //   devices: [],
+        // });
 
-        // let element = document.getElementById('UX3');
-        // element.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        // element.scrollIntoView(false);
+        this.showDialogZones = true;
       }
     },
     resetInterval() {
@@ -700,6 +707,17 @@ export default {
       //   }
       //   this.runInterval = setInterval(this.saveChangesHub, 5000);
       // }
+
+      this.$store.dispatch('user/setIsSetup', false);
+      for (var i = 0; i < this.zonesList.length; ++i) {
+        var element = this.zonesList[i];
+        let tmp = element.devices.find(x => x.isDefine == false);
+        // console.log(element)
+        if (tmp) {
+          this.$store.dispatch('user/setIsSetup', true);
+          break;
+        }
+      }
       this.deviceGroupList = [];
       this.deviceGroupList = [...this.deviceGroups];
     },
@@ -708,6 +726,16 @@ export default {
         this.optionsTag = response.map(x => x.name)
           ? response.map(x => x.name)
           : [];
+      });
+    },
+    getAvailableDevicesList() {
+      getAvailableDevices().then(response => {
+        response.forEach(element => {
+          this.$store.dispatch(
+            'user/addAvailableDevice',
+            element['deviceGroup'],
+          );
+        });
       });
     },
     next() {
@@ -869,29 +897,29 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)',
       });
 
-      this.zonesList = MOCKDATA.DEFAULT_ZONE_LIST;
+      // this.zonesList = MOCKDATA.DEFAULT_ZONE_LIST;
 
-      // getZonesHub(this.currentHubId)
-      //   .then(response => {
-      //     this.zonesListTmp = response;
-      //     for (let index = 0; index < this.zonesListTmp.length; index++) {
-      //       const element = this.zonesListTmp[index];
-      //       if (element.devices) {
-      //         element.devices.sort((a, b) => (a.index > b.index ? 1 : -1));
-      //       }
-      //     }
-      //     this.zonesList = this.zonesListTmp.sort((a, b) =>
-      //       a.index > b.index ? 1 : -1,
-      //     );
-      //     this.$store.dispatch('user/updateZones', response);
-      //   })
-      //   .catch(() => {
-      //     this.$store.dispatch('user/updateZones', []);
-      //   })
-      //   .finally(() => {
-      //     clearInterval(this.runInterval);
-      //     loading.close();
-      //   });
+      getZonesHub(this.currentHubId)
+        .then(response => {
+          this.zonesListTmp = response;
+          for (let index = 0; index < this.zonesListTmp.length; index++) {
+            const element = this.zonesListTmp[index];
+            if (element.devices) {
+              element.devices.sort((a, b) => (a.index > b.index ? 1 : -1));
+            }
+          }
+          this.zonesList = this.zonesListTmp.sort((a, b) =>
+            a.index > b.index ? 1 : -1,
+          );
+          this.$store.dispatch('user/updateZones', response);
+        })
+        .catch(() => {
+          this.$store.dispatch('user/updateZones', []);
+        })
+        .finally(() => {
+          clearInterval(this.runInterval);
+          loading.close();
+        });
     },
     createDeviceEntity() {
       this.loadingDevice = true;

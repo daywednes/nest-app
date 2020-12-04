@@ -67,8 +67,12 @@ export class AvailableDevicesService {
     
     console.log(updateAvailableDevicesDto["deviceId"])
     var availableDevices = await this.getAvailableDevicesByDeviceId(updateAvailableDevicesDto["deviceId"],null);
+    
     if(!availableDevices || availableDevices == null || availableDevices == undefined){
       availableDevices = new AvailableDevicesEntity();
+      availableDevices.isAddNew = true;
+    }else{
+      availableDevices.isAddNew = false;
     }
 
 

@@ -28,5 +28,7 @@ export class AvailableDevicesEntity extends BaseEntity {
   engineStatus: string;
   @Column()
   connectionStatus: string;
+  
+  isAddNew: boolean;
 
 }

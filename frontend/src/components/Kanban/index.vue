@@ -3,16 +3,12 @@
     <div class="board-column-header">
       <el-button
         style="background: transparent; color: white; border: 0px;"
-        @click="
-          () => {
-            editHeader = !editHeader;
-          }
-        "
-        ><i :class="editHeader ? 'el-icon-check' : 'el-icon-edit'"
+        @click="EditHeader"
+        ><i :class="isEditHeader ? 'el-icon-check' : 'el-icon-edit'"
       /></el-button>
       <el-input
         class="inputKaban"
-        :disabled="!editHeader"
+        :disabled="!isEditHeader"
         style="min-width: 400px; font-size: x-large;"
         placeholder="Please input"
         v-model="groupName"
@@ -147,7 +143,9 @@
       <hr />
 
       <el-row>
-        <el-col :span="2"> <img style="width:70px;" v-if="logo" :src="logo"/></el-col>
+        <el-col :span="2">
+          <img style="width:70px;" v-if="logo" :src="logo"
+        /></el-col>
         <el-col :span="20">
           <h3>Engine Status</h3>
           <h3>Device Name</h3>
@@ -295,6 +293,7 @@ import draggable from 'vuedraggable';
 import SingleDevice from '@/components/SingleDevice';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import zonesInput from '@/assets/img_src/zonesInput.png';
+import { updateZoneName } from '@/api/zone';
 
 export default {
   name: 'DragKanbanDemo',
@@ -308,7 +307,7 @@ export default {
   data() {
     return {
       groupName: '',
-      editHeader: false,
+      isEditHeader: false,
       showZoneInput: false,
       showContactSensor: false,
       showAuthenSensor: false,
@@ -334,6 +333,10 @@ export default {
       type: String,
       default: 'Header',
     },
+    groupId: {
+      type: Number,
+      default: -1,
+    },
     options: {
       type: Object,
       default() {
@@ -348,6 +351,15 @@ export default {
     },
   },
   methods: {
+    EditHeader() {
+      if (this.isEditHeader) {
+        updateZoneName({id: this.groupId, name: this.groupName}).then(response => {
+          this.$emit('refreshUI');
+        });
+      }
+
+      this.isEditHeader = !this.isEditHeader;
+    },
     deviceClick(item) {
       if (!item.isDefine && item.isActive) {
         var that = this;

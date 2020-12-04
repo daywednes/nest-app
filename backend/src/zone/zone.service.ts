@@ -104,4 +104,14 @@ export class ZoneService {
       throw new InternalServerErrorException();
     }
   }
+  async updateZoneName(updateZoneDtos: UpdateZoneDto): Promise<void> {
+    try {
+        const zone = await this.getzoneById(updateZoneDtos.id);
+        zone.name = updateZoneDtos.name;
+        await zone.save();
+    } catch (error) {
+      console.log('error' + error);
+      throw new InternalServerErrorException();
+    }
+  }
 }

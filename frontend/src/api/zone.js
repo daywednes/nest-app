@@ -41,6 +41,13 @@ export function updateZone(data) {
         data
     })
 }
+export function updateZoneName(data) {
+    return request({
+        url: '/zone/updateZoneName',
+        method: 'post',
+        data
+    })
+}
 export function saveChanges(data) {
     return request({
         url: '/zone/saveChanges',

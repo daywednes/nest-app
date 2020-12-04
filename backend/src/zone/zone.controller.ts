@@ -98,4 +98,14 @@ export class ZoneController {
     //Get Org from here
     return this.zonesService.saveChanges(updateZoneDtos);
   }
+
+  @Post('/updateZoneName')
+  @ApiOperation({ summary: 'Update Zone Name' })
+  updateZoneName(
+    @Body() updateZoneDtos: UpdateZoneDto,
+    @GetUser() user: User,
+  ): Promise<void> {
+    //Get Org from here
+    return this.zonesService.updateZoneName(updateZoneDtos);
+  }
 }
