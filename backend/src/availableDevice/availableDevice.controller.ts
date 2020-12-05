@@ -32,13 +32,13 @@ export class AvailableDevicesController {
 
   @Get()
   
-  @ApiOperation({ summary: 'Get All AvailableDevices' })
+  @ApiOperation({ summary: 'Get All Available Devices' })
   getAllAvailableDevices(
     @Query(ValidationPipe) getAvailableDevicesFilterDto: GetAvailableDevicesFilterDto,
     @GetUser() user: User,
   ): Promise<AvailableDevicesEntity[]> {
     this.logger.verbose(
-      `User ${user.username} retriveing all AvailableDevices with filter ${JSON.stringify(
+      `User ${user.username} retriveing all Available Devices with filter ${JSON.stringify(
         getAvailableDevicesFilterDto,
       )}`,
     );
@@ -46,7 +46,7 @@ export class AvailableDevicesController {
   }
 
   @Get('/:id')
-  @ApiOperation({ summary: 'Get AvailableDevices by Device Id' })
+  @ApiOperation({ summary: 'Get Available Devices by Device Id' })
   getAvailableDevicesById(
     @Param('id', ParseIntPipe) id: string,
     @GetUser() user: User,
@@ -55,7 +55,7 @@ export class AvailableDevicesController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create AvailableDevice' })
+  @ApiOperation({ summary: 'Create Available Device' })
   @UsePipes(ValidationPipe)
   createAvailableDevices(
     @Body() createAvailableDevicesDto: CreateAvailableDevicesDto,
@@ -65,7 +65,7 @@ export class AvailableDevicesController {
   }
 
   @Delete('/:id')
-  @ApiOperation({ summary: 'Delete AvailableDevice' })
+  @ApiOperation({ summary: 'Delete Available Device' })
   deleteAvailableDevices(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -74,7 +74,7 @@ export class AvailableDevicesController {
   }
 
   @Patch('/:id')
-  @ApiOperation({ summary: 'Update AvailableDevice' })
+  @ApiOperation({ summary: 'Update Available Device' })
   updateAvailableDevices(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAvailableDevicesDto: CreateAvailableDevicesDto,

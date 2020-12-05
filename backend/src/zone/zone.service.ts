@@ -106,9 +106,11 @@ export class ZoneService {
   }
   async updateZoneName(updateZoneDtos: UpdateZoneDto): Promise<void> {
     try {
+      if (updateZoneDtos.id > -1) {
         const zone = await this.getzoneById(updateZoneDtos.id);
         zone.name = updateZoneDtos.name;
         await zone.save();
+      }
     } catch (error) {
       console.log('error' + error);
       throw new InternalServerErrorException();

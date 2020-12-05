@@ -27,14 +27,14 @@
             <h1>{{ editableTabsValue }} - Devices and Zones</h1>
             <hr />
             <br />
-            <el-button
+            <!-- <el-button
               v-if="showMenu"
               type="info"
               @click="addGroup"
               round
               style="width: 100%; text-align:center;height: 40px;"
               >ADD</el-button
-            >
+            > -->
             <!-- <div style="margin-botom: 20px;">
               <el-checkbox v-model="autoSaveChecked"
                 >Auto Save After 5 Seconds</el-checkbox
@@ -59,12 +59,15 @@
                 v-for="item in zonesList"
                 :key="item.id"
                 :groupId="item.id"
+                :hubId="currentHubId"
+                :orgId="orgId"
                 :list="item.devices"
                 :group="group"
                 :class="item.name"
                 :header-text="item.name"
                 @click="showZoneInput = true"
                 @fn_resetInterval="resetInterval()"
+                @refreshUI="getZonesList"
                 @changeName="
                   val => {
                     item.name = val;
@@ -911,6 +914,17 @@ export default {
           this.zonesList = this.zonesListTmp.sort((a, b) =>
             a.index > b.index ? 1 : -1,
           );
+          if (this.zonesList.find(x => x.name == 'Untitled Group')) {
+            this.$alert('Please put name for new group');
+          } else {
+            this.zonesList.unshift({
+              id: -1,
+              name: 'Untitled Group',
+              description: 'Untitled Group',
+              devices: [],
+            });
+          }
+
           this.$store.dispatch('user/updateZones', response);
         })
         .catch(() => {

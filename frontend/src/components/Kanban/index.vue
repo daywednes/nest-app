@@ -1,38 +1,51 @@
 <template>
   <div class="board-column">
-    <div class="board-column-header">
-      <el-button
-        style="background: transparent; color: white; border: 0px;"
-        @click="EditHeader"
-        ><i :class="isEditHeader ? 'el-icon-check' : 'el-icon-edit'"
-      /></el-button>
-      <el-input
-        class="inputKaban"
-        :disabled="!isEditHeader"
-        style="min-width: 400px; font-size: x-large;"
-        placeholder="Please input"
-        v-model="groupName"
-      ></el-input>
-    </div>
-    <draggable
-      :list="list"
-      v-bind="$attrs"
-      class="board-column-content"
-      :set-data="setData"
-    >
-      <!-- <div v-for="element in list" :key="element.id" class="board-item">
+    <div>
+      <div
+        v-if="groupId !== -1 || list.length > 0"
+        class="board-column-header"
+      >
+        <el-button
+          style="background: transparent; color: white; border: 0px;"
+          @click="EditHeader"
+          ><i :class="isEditHeader ? 'el-icon-check' : 'el-icon-edit'"
+        /></el-button>
+        <el-input
+          class="inputKaban"
+          :disabled="!isEditHeader"
+          style="min-width: 400px; font-size: x-large;"
+          placeholder="Please input"
+          v-model="groupName"
+        ></el-input>
+      </div>
+      <div v-if="groupId == -1 && list.length == 0">
+        <el-button
+          type="info"
+          round
+          style="width: 100%; text-align:center;height: 40px;"
+          disable
+          >ADD</el-button
+        >
+      </div>
+      <draggable
+        :list="list"
+        v-bind="$attrs"
+        class="board-column-content"
+        :set-data="setData"
+      >
+        <!-- <div v-for="element in list" :key="element.id" class="board-item">
         {{ element.name }} {{ element.id }}
       </div> -->
-      <SingleDevice
-        @click.native="deviceClick(device)"
-        style="margin: 15px;"
-        v-for="device in list"
-        :key="device.id"
-        :item="device"
-        :isDefine="device.isDefine"
-      />
-    </draggable>
-
+        <SingleDevice
+          @click.native="deviceClick(device)"
+          style="margin: 15px;"
+          v-for="device in list"
+          :key="device.id"
+          :item="device"
+          :isDefine="device.isDefine"
+        />
+      </draggable>
+    </div>
     <!-- Zone Input -->
 
     <el-dialog :visible.sync="showZoneInput" width="70%">
@@ -293,7 +306,7 @@ import draggable from 'vuedraggable';
 import SingleDevice from '@/components/SingleDevice';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import zonesInput from '@/assets/img_src/zonesInput.png';
-import { updateZoneName } from '@/api/zone';
+import { updateZoneName, createZone } from '@/api/zone';
 
 export default {
   name: 'DragKanbanDemo',
@@ -337,6 +350,14 @@ export default {
       type: Number,
       default: -1,
     },
+    hubId: {
+      type: Number,
+      default: -1,
+    },
+    orgId: {
+      type: Number,
+      default: -1,
+    },
     options: {
       type: Object,
       default() {
@@ -353,9 +374,22 @@ export default {
   methods: {
     EditHeader() {
       if (this.isEditHeader) {
-        updateZoneName({id: this.groupId, name: this.groupName}).then(response => {
-          this.$emit('refreshUI');
-        });
+        if (this.groupId > -1) {
+          updateZoneName({ id: this.groupId, name: this.groupName }).then(
+            response => {
+              this.$emit('refreshUI');
+            },
+          );
+        } else {
+          createZone({
+            name: this.groupName,
+            orgId: this.orgId,
+            description: this.groupName,
+            hubId: this.hubId,
+          }).then(response => {
+              this.$emit('refreshUI');
+          });
+        }
       }
 
       this.isEditHeader = !this.isEditHeader;
@@ -422,7 +456,6 @@ export default {
 .board-column {
   margin: 10px 0px;
   min-width: 300px;
-  min-height: 100px;
   height: auto;
   overflow: hidden;
   background: #f0f0f0;
@@ -447,7 +480,7 @@ export default {
     height: auto;
     overflow: hidden;
     border: 10px solid transparent;
-    min-height: 60px;
+    // min-height: 60px;
     display: block;
     justify-content: flex-start;
     flex-direction: column;
