@@ -1,11 +1,11 @@
 <template lang="pug">
 .example
   //- Info(:item="example")
-  //- CommonFunction(
-  //-   style='position: absolute;top:0%',
-  //-   :isShowDeploy='true',
-  //-   @functionDeploy='fn_deploy'
-  //- )
+  CommonFunction(
+    style='position: absolute;bottom:0%',
+    :isShowDeploy='true',
+    @functionDeploy='fn_deploy'
+  )
 
   //- .components 
   //-   .viewer(ref="viewer")

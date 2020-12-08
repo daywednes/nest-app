@@ -714,16 +714,32 @@ export default {
       //   this.runInterval = setInterval(this.saveChangesHub, 5000);
       // }
 
-      this.$store.dispatch('user/setIsSetup', false);
-      for (var i = 0; i < this.zonesList.length; ++i) {
-        var element = this.zonesList[i];
-        let tmp = element.devices.find(x => x.isDefine == false);
-        // console.log(element)
-        if (tmp) {
-          this.$store.dispatch('user/setIsSetup', true);
-          break;
-        }
+      // this.$store.dispatch('user/setIsSetup', false);
+      // for (var i = 0; i < this.zonesList.length; ++i) {
+      //   var element = this.zonesList[i];
+      //   let tmp = element.devices.find(x => x.isDefine == false);
+      //   if (tmp) {
+      //     this.$store.dispatch('user/setIsSetup', true);
+      //     break;
+      //   }
+      // }
+
+      let tmp = this.zonesList.find(x => x.id == -1 && x.devices.length > 0);
+      if (tmp) {
+        tmp.id = this.zonesList.length;
       }
+      let tmps2 = this.zonesList.filter(
+        x => x.id == -1 && x.devices.length == 0,
+      );
+      if (tmps2.length == 0) {
+        this.zonesList.unshift({
+          id: -1,
+          name: 'Untitled Group',
+          description: 'Untitled Group',
+          devices: [],
+        });
+      }
+
       this.deviceGroupList = [];
       this.deviceGroupList = [...this.deviceGroups];
     },
@@ -917,16 +933,6 @@ export default {
           this.zonesList = this.zonesListTmp.sort((a, b) =>
             a.index > b.index ? 1 : -1,
           );
-          if (this.zonesList.find(x => x.name == 'Untitled Group')) {
-            this.$alert('Please put name for new group');
-          } else {
-            this.zonesList.unshift({
-              id: -1,
-              name: 'Untitled Group',
-              description: 'Untitled Group',
-              devices: [],
-            });
-          }
 
           this.$store.dispatch('user/updateZones', response);
         })
