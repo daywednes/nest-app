@@ -54,7 +54,6 @@ Vue.Wamp.subscribe(
   'com.myapp.hello',
   function(args, kwArgs, details) {
     var tmp = JSON.parse(args[0]);
-    console.log(tmp['isAddNew'])
     if (tmp && tmp['deviceGroup'] && tmp['isAddNew']) {
       store.dispatch('user/addAvailableDevice', tmp['deviceGroup']);
     }

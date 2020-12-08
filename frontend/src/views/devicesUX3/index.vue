@@ -659,6 +659,9 @@ export default {
     hubs() {
       return this.$store.getters.hubs;
     },
+    isDrag() {
+      return this.$store.getters.isDrag;
+    },
     isSetup() {
       return this.$store.getters.isSetup;
     },

@@ -15,6 +15,7 @@ const getters = {
     orgs: state => state.user.orgs,
     hubs: state => state.user.hubs,
     deviceGroups: state => state.user.deviceGroups,
+    isDrag: state => state.user.isDrag,
     isSetup: state => state.user.isSetup,
 }
 export default getters

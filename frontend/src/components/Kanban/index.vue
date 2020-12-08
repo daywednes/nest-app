@@ -1,10 +1,45 @@
 <template>
   <div class="board-column">
-    <div>
-      <div
-        v-if="groupId !== -1 || list.length > 0"
-        class="board-column-header"
+    <div v-if="groupId == -1 && list.length == 0">
+      <div>
+        <el-button
+          v-if="isDrag"
+          type="info"
+          round
+          style="width: 30%; text-align:center;height: 40px;"
+          disable
+          >TRASH</el-button
+        >
+        <el-button
+          v-if="isDrag"
+          type="info"
+          round
+          style="width: 69%; text-align:center;height: 40px;"
+          disable
+          >ADD</el-button
+        >
+      </div>
+
+      <draggable
+        v-if="groupId !== -1 || list.length > 0 || isDrag"
+        v-bind="$attrs"
+        class="board-column-content"
+        style="width: 30%;float: left;"
+        :set-data="setData"
       >
+      </draggable>
+      <draggable
+        v-if="groupId !== -1 || list.length > 0 || isDrag"
+        :list="list"
+        v-bind="$attrs"
+        class="board-column-content"
+        style="width: 50%;float: left;"
+        :set-data="setData"
+      >
+      </draggable>
+    </div>
+    <div>
+      <div v-if="groupId !== -1 || list.length > 0" class="board-column-header">
         <el-button
           style="background: transparent; color: white; border: 0px;"
           @click="EditHeader"
@@ -18,20 +53,15 @@
           v-model="groupName"
         ></el-input>
       </div>
-      <div v-if="groupId == -1 && list.length == 0">
-        <el-button
-          type="info"
-          round
-          style="width: 100%; text-align:center;height: 40px;"
-          disable
-          >ADD</el-button
-        >
-      </div>
       <draggable
+        v-if="groupId !== -1 || list.length > 0"
         :list="list"
         v-bind="$attrs"
         class="board-column-content"
+        style="width: 100%;float: left;"
         :set-data="setData"
+        @start="dragEvent(true)"
+        @end="dragEvent(false)"
       >
         <!-- <div v-for="element in list" :key="element.id" class="board-item">
         {{ element.name }} {{ element.id }}
@@ -372,6 +402,9 @@ export default {
     },
   },
   methods: {
+    dragEvent(value) {
+      this.$store.dispatch('user/setIsDrag', value);
+    },
     EditHeader() {
       if (this.isEditHeader) {
         if (this.groupId > -1) {
@@ -387,7 +420,7 @@ export default {
             description: this.groupName,
             hubId: this.hubId,
           }).then(response => {
-              this.$emit('refreshUI');
+            this.$emit('refreshUI');
           });
         }
       }
@@ -423,6 +456,11 @@ export default {
       // to avoid Firefox bug
       // Detail see : https://github.com/RubaXa/Sortable/issues/1012
       dataTransfer.setData('Text', '');
+    },
+  },
+  computed: {
+    isDrag() {
+      return this.$store.getters.isDrag;
     },
   },
 };

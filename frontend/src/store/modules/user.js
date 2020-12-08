@@ -15,6 +15,7 @@ const state = {
   deviceGroups: [],
   zones: [],
   isSetup: false,
+  isDrag: false,
 };
 
 const mutations = {
@@ -54,10 +55,19 @@ const mutations = {
   SET_IS_SETUP: (state, isSetup) => {
     state.isSetup = isSetup;
   },
+  SET_IS_DRAG: (state, isDrag) => {
+    state.isDrag = isDrag;
+  },
   ADD_DEVICE_AVAILABLE: (state, deviceGroupName) => {
     let tmp = state.deviceGroups.find(x => x.deviceGroup == deviceGroupName);
     if (tmp) {
       tmp.availableDevices++;
+    }
+  },
+  SUB_DEVICE_AVAILABLE: (state, deviceGroupName) => {
+    let tmp = state.deviceGroups.find(x => x.deviceGroup == deviceGroupName);
+    if (tmp) {
+      tmp.availableDevices--;
     }
   },
 };
@@ -102,11 +112,17 @@ const actions = {
   addAvailableDevice({ commit }, data) {
     commit('ADD_DEVICE_AVAILABLE', data);
   },
+  subAvailableDevice({ commit }, data) {
+    commit('SUB_DEVICE_AVAILABLE', data);
+  },
   updateZones({ commit }, data) {
     commit('SET_ZONES', data);
   },
   setIsSetup({ commit }, data) {
     commit('SET_IS_SETUP', data);
+  },
+  setIsDrag({ commit }, data) {
+    commit('SET_IS_DRAG', data);
   },
 
   signup({ commit }, userInfo) {

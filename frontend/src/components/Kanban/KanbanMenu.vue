@@ -10,6 +10,8 @@
       class="board-column-content"
       :set-data="setData"
       :move="checkMove"
+      @start="dragEvent(true)"
+      @end="dragEvent(false)"
     >
       <!-- <div v-for="element in list" :key="element.id" class="board-item">
         {{ element.name }} {{ element.id }}
@@ -71,6 +73,9 @@ export default {
     },
   },
   computed: {
+    isDrag() {
+      return this.$store.getters.isDrag;
+    },
     isSetup() {
       return this.$store.getters.isSetup;
     },
@@ -94,11 +99,13 @@ export default {
     },
   },
   methods: {
+    dragEvent(value) {
+      this.$store.dispatch('user/setIsDrag', value);
+    },
     checkMove: function(evt) {
       if (
-        !evt.draggedContext.element.availableDevices &&
-        evt.draggedContext.element.availableDevices == 0
-        || this.isSetup
+        (!evt.draggedContext.element.availableDevices &&
+          evt.draggedContext.element.availableDevices == 0)
       ) {
         // alert('This Device is not active.');
         return false;
