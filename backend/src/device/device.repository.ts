@@ -63,7 +63,7 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity,zone: ZoneEntity, user: User): Promise<DeviceEntity> {
-    const { name, description,location,locationType } = createDeviceDto;
+    const { name, description,location,locationType,deviceGroup,sensorType,isDefine } = createDeviceDto;
     const device = new DeviceEntity();
     device.description = description;
     device.location = location;
@@ -71,6 +71,9 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     device.name = name;
     device.org = org;
     device.zone = zone;
+    device.deviceGroup = deviceGroup ;
+    device.sensorType = sensorType ;
+    device.isDefine = isDefine ;
     device.user = user ;
 
     await device.save();

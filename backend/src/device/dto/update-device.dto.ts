@@ -28,4 +28,13 @@ export class UpdateDeviceDto {
   @IsOptional()
   @ApiProperty()
   index: number;
+  @IsOptional()
+  @ApiProperty()
+  deviceGroup: string;
+  @IsOptional()
+  @ApiProperty()
+  sensorType: string;
+  @IsOptional()
+  @ApiProperty()
+  isDefine: boolean;
 }

@@ -69,7 +69,7 @@ export default {
   },
   watch: {
     list(val, old) {
-      this.resetInterval();
+      // this.resetInterval();
     },
   },
   computed: {
@@ -103,17 +103,21 @@ export default {
       this.$store.dispatch('user/setIsDrag', value);
     },
     checkMove: function(evt) {
+      if(this.isSetup){
+         this.$alert('Please finish setup device.');
+        return false;
+      }
+
       if (
         (!evt.draggedContext.element.availableDevices &&
           evt.draggedContext.element.availableDevices == 0)
       ) {
-        // alert('This Device is not active.');
         return false;
       }
       return true;
     },
     resetInterval: function() {
-      this.$emit('fn_resetInterval');
+      // this.$emit('fn_resetInterval');
     },
     setData(dataTransfer) {
       // to avoid Firefox bug

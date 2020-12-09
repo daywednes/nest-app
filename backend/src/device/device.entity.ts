@@ -28,6 +28,12 @@ export class DeviceEntity extends BaseEntity {
   location: string;
   @Column({ default: '' })
   locationType: string;
+  @Column({ default: '' })
+  deviceGroup: string;
+  @Column({ default: '' })
+  sensorType: string;
+  @Column({ default: false })
+  isDefine: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created: Date;

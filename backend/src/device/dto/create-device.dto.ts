@@ -14,6 +14,15 @@ export class CreateDeviceDto {
   @IsOptional()
   @ApiProperty()
   locationType: string;
+  @IsOptional()
+  @ApiProperty()
+  deviceGroup: string;
+  @IsOptional()
+  @ApiProperty()
+  sensorType: string;
+  @IsOptional()
+  @ApiProperty()
+  isDefine: boolean;
   @IsNotEmpty()
   @ApiProperty()
   orgId: number;

@@ -27,14 +27,6 @@
             <h1>{{ editableTabsValue }} - Devices and Zones</h1>
             <hr />
             <br />
-            <!-- <el-button
-              v-if="showMenu"
-              type="info"
-              @click="addGroup"
-              round
-              style="width: 100%; text-align:center;height: 40px;"
-              >ADD</el-button
-            > -->
             <!-- <div style="margin-botom: 20px;">
               <el-checkbox v-model="autoSaveChecked"
                 >Auto Save After 5 Seconds</el-checkbox
@@ -486,7 +478,7 @@ import Zones from '@/views/zones/index';
 import Kanban from '@/components/Kanban';
 import KanbanMenu from '@/components/Kanban/KanbanMenu';
 import MOCKDATA from '../../utils/mockdata';
-import { saveChanges, createZone, getZonesHub } from '@/api/zone';
+import { saveChanges, createZone, getZonesHub, deleteZone } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
 import { createDevice } from '@/api/device';
@@ -594,11 +586,11 @@ export default {
     this.getAvailableDevicesList();
   },
   beforeDestroy: function() {
-    // this.saveChangesHub(this.zonesList);
+    this.saveChangesHub(this.zonesList);
   },
   watch: {
     orgId(val, old) {
-      // this.saveChangesHub();
+      this.saveChangesHub();
       this.getHubsList();
     },
     hubs(val, old) {
@@ -609,7 +601,7 @@ export default {
       }
     },
     zonesList(val, old) {
-      this.resetInterval();
+      this.checkList();
       if (val && val.length > 0) {
         this.addDeviceZoneId = val[val.length - 1].id;
       } else {
@@ -629,20 +621,20 @@ export default {
         this.deviceGroupList = [...val];
       }
     },
-    autoSaveChecked(val, old) {
-      if (val) {
-        this.resetInterval();
-      } else {
-        if (this.runInterval) {
-          clearInterval(this.runInterval);
-        }
-      }
-    },
+    // autoSaveChecked(val, old) {
+    //   if (val) {
+    //     this.resetInterval();
+    //   } else {
+    //     if (this.runInterval) {
+    //       clearInterval(this.runInterval);
+    //     }
+    //   }
+    // },
     editableTabsValue(val, old) {
       // this.askForSave();
 
       if (this.zonesList && this.zonesList.length > 0) {
-        // this.saveChangesHub(this.zonesList);
+        this.saveChangesHub(this.zonesList);
       }
       this.ZoneForm.hubId = this.currentHubId;
       this.getZonesList();
@@ -689,21 +681,19 @@ export default {
     },
   },
   methods: {
-    addGroup() {
-      if (this.zonesList.find(x => x.name == 'Untitled Group')) {
-        this.$alert('Please put name for new group');
-        return;
-      } else {
-        // this.zonesList.unshift({
-        //   id: 'Untitled' + this.zonesList.length,
-        //   name: 'Untitled Group',
-        //   description: 'Untitled Group',
-        //   orgId: 4,
-        //   hubId: 6,
-        //   devices: [],
-        // });
+    checkList() {
+      let tmp = this.zonesList.find(x => x.id == 9999 && x.devices.length > 0);
 
-        this.showDialogZones = true;
+      if (tmp && tmp.id == 9999) {
+        createZone({
+          name: tmp.name,
+          orgId: this.orgId,
+          description: tmp.name,
+          hubId: this.currentHubId,
+        }).then(response => {
+          tmp.id = response.id;
+          console.log(tmp.id);
+        });
       }
     },
     resetInterval() {
@@ -714,32 +704,40 @@ export default {
       //   this.runInterval = setInterval(this.saveChangesHub, 5000);
       // }
 
-      // this.$store.dispatch('user/setIsSetup', false);
-      // for (var i = 0; i < this.zonesList.length; ++i) {
-      //   var element = this.zonesList[i];
-      //   let tmp = element.devices.find(x => x.isDefine == false);
-      //   if (tmp) {
-      //     this.$store.dispatch('user/setIsSetup', true);
-      //     break;
-      //   }
-      // }
+      this.$store.dispatch('user/setIsSetup', false);
+      for (var i = 0; i < this.zonesList.length; ++i) {
+        var element = this.zonesList[i];
+        let tmp = element.devices.find(x => x.isDefine == false);
+        if (tmp) {
+          this.$store.dispatch('user/setIsSetup', true);
+          break;
+        }
+      }
 
       let tmp = this.zonesList.find(x => x.id == -1 && x.devices.length > 0);
       if (tmp) {
-        tmp.id = this.zonesList.length;
+        tmp.id = 9999;
       }
       let tmps2 = this.zonesList.filter(
         x => x.id == -1 && x.devices.length == 0,
       );
       if (tmps2.length == 0) {
+        let name = 'Untitled Group';
+        let count = 0;
+
+        while (this.zonesList.filter(x => x.name == name).length > 0) {
+          count++;
+          name = 'Untitled Group' + ' ( ' + count + ' )';
+        }
+        console.log(name);
+
         this.zonesList.unshift({
           id: -1,
-          name: 'Untitled Group',
-          description: 'Untitled Group',
+          name: name,
+          description: name,
           devices: [],
         });
       }
-
       this.deviceGroupList = [];
       this.deviceGroupList = [...this.deviceGroups];
     },
@@ -836,9 +834,9 @@ export default {
         //   spinner: 'el-icon-loading',
         //   background: 'rgba(0, 0, 0, 0.7)',
         // });
-
-        for (let index = 0; index < this.zonesList.length; index++) {
-          const tmpZone = this.zonesList[index];
+        let i = 0;
+        for (let index = this.zonesList.length -1 ; index >= 0; index--) {
+          const tmpZone = this.zonesList[i];
           tmpZone.index = index;
           if (tmpZone.devices) {
             for (
@@ -850,9 +848,10 @@ export default {
               tmpDevice.index = indexDevice;
             }
           }
+          i++;
         }
 
-        // saveChanges(this.zonesList);
+        saveChanges(this.zonesList.filter(x=>x.id != -1));
         this.$message({
           type: 'success',
           message: 'Save changes completed',
@@ -931,8 +930,23 @@ export default {
             }
           }
           this.zonesList = this.zonesListTmp.sort((a, b) =>
-            a.index > b.index ? 1 : -1,
+            a.index < b.index ? 1 : -1,
           );
+
+          let name = 'Untitled Group';
+          let count = 0;
+
+          while (this.zonesList.filter(x => x.name == name).length > 0) {
+            count++;
+            name = 'Untitled Group' + ' ( ' + count + ' )';
+          }
+
+          this.zonesList.unshift({
+            id: -1,
+            name: name,
+            description: name,
+            devices: [],
+          });
 
           this.$store.dispatch('user/updateZones', response);
         })

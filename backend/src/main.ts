@@ -37,7 +37,7 @@ async function bootstrap() {
 
   var autobahn = require('autobahn');
   var connection = new autobahn.Connection({
-    url: 'ws://localhost:8090/ws',
+    url: serverConfig.autobahnConnection,
     realm: 'realm1',
   });
 
@@ -49,9 +49,9 @@ async function bootstrap() {
       let mess = JSON.parse(args[0]);
       var res = await service.scanAvailableDevices(mess);
       console.log(res);
-      session.publish('com.myapp.hello', [JSON.stringify(res)]);
+      session.publish(serverConfig.publishTopic, [JSON.stringify(res)]);
     }
-    session.subscribe('io.crossbar.demo.pubsub.404890', onevent);
+    session.subscribe(serverConfig.subscribeTopic, onevent);
 
     // 2) publish an event
     //  session.publish('com.myapp.hello', ['Hello, world!']);

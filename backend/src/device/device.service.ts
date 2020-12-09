@@ -188,6 +188,9 @@ export class DeviceService {
     device.zone = zone;
     device.org = org ? org : device.org;
     device.index = dto.index ? dto.index : device.index;
+    device.deviceGroup = dto.deviceGroup ? dto.deviceGroup : device.deviceGroup;
+    device.sensorType = dto.sensorType ? dto.sensorType : device.sensorType;
+    device.isDefine = dto.isDefine != null ? dto.isDefine : device.isDefine;
     await device.save();
 
     return device;

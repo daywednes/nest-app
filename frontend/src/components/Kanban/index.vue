@@ -42,7 +42,7 @@
       <div v-if="groupId !== -1 || list.length > 0" class="board-column-header">
         <el-button
           style="background: transparent; color: white; border: 0px;"
-          @click="EditHeader"
+          @click="editHeader"
           ><i :class="isEditHeader ? 'el-icon-check' : 'el-icon-edit'"
         /></el-button>
         <el-input
@@ -52,6 +52,11 @@
           placeholder="Please input"
           v-model="groupName"
         ></el-input>
+        <el-button
+          style="background: transparent; color: white; border: 0px;"
+          @click="removeGroup"
+          ><i class="el-icon-delete"
+        /></el-button>
       </div>
       <draggable
         v-if="groupId !== -1 || list.length > 0"
@@ -91,12 +96,20 @@
           </h2>
         </el-col>
         <el-col :span="8">
-          <h3>#1: Zone Name</h3>
+          <h3>#1: {{ groupName }}</h3>
+          <el-row style="margin :20px; font-size: medium;">
+            <span class="demonstration">Device Name </span>
+            <br />
+            <el-input
+              placeholder="Please input device name"
+              v-model="selectedItem.name"
+            ></el-input>
+          </el-row>
           <el-row style="margin :20px; font-size: medium;">
             <span class="demonstration">Sensor Type </span>
             <br />
             <el-select
-              v-model="valueSensorType"
+              v-model="selectedItem.sensorType"
               clearable
               filterable
               placeholder="All"
@@ -114,7 +127,7 @@
             <span class="demonstration">Location Type </span>
             <br />
             <el-select
-              v-model="valueLocationType"
+              v-model="selectedItem.locationType"
               clearable
               filterable
               placeholder="All"
@@ -131,20 +144,7 @@
           <el-row style="margin :20px; font-size: medium;">
             <span class="demonstration">Device Group </span>
             <br />
-            <el-select
-              v-model="valueDeviceGroup"
-              clearable
-              filterable
-              placeholder="All"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+            <el-input v-model="selectedItem.deviceGroup" disabled> </el-input>
           </el-row>
           <el-row style="margin :20px; font-size: medium;">
             <span class="demonstration">State to Trigger Alarm </span>
@@ -160,7 +160,7 @@
             <span class="demonstration">Tags Of Device </span>
             <br />
             <el-select
-              v-model="itemTags"
+              v-model="selectedItem.itemTags"
               multiple
               filterable
               allow-create
@@ -174,6 +174,24 @@
               >
               </el-option>
             </el-select>
+          </el-row>
+          <el-row style="margin :20px; font-size: medium;">
+            <el-button
+              v-if="!selectedItem.isDefine"
+              class="filter-item"
+              type="success"
+              icon="el-icon-edit"
+              @click="addDevice"
+              >Save Setting</el-button
+            >
+            <el-button
+              v-if="selectedItem.isDefine"
+              class="filter-item"
+              type="success"
+              icon="el-icon-edit"
+              @click="updateSetupDevice"
+              >Update Setting</el-button
+            >
           </el-row>
         </el-col>
       </el-row>
@@ -190,8 +208,8 @@
           <img style="width:70px;" v-if="logo" :src="logo"
         /></el-col>
         <el-col :span="20">
+          <h3>{{ selectedItem.name }}</h3>
           <h3>Engine Status</h3>
-          <h3>Device Name</h3>
           <h3>Connection status</h3></el-col
         >
       </el-row>
@@ -200,20 +218,12 @@
           <el-row style="margin :20px; font-size: medium;">
             <span class="demonstration">Device Group </span>
             <br />
-            <el-select
-              v-model="valueSensorType"
-              clearable
-              filterable
-              placeholder="All"
+            <el-input
+              style="width: 250px;"
+              v-model="selectedItem.deviceGroup"
+              disabled
             >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+            </el-input>
             <el-tooltip content="Global Size" effect="dark" placement="right">
               <div slot="content">
                 Is this [Device Type] inside the home, <br />
@@ -228,20 +238,12 @@
           <el-row style="margin :20px; font-size: medium;">
             <span class="demonstration">Device Name</span>
             <br />
-            <el-select
-              v-model="valueLocationType"
-              clearable
-              filterable
-              placeholder="All"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+
+            <el-input
+              placeholder="Please input device name"
+              v-model="selectedItem.name"
+              style="width: 250px;"
+            ></el-input>
 
             <el-tooltip effect="dark" placement="right">
               <div slot="content">
@@ -258,7 +260,7 @@
             <span class="demonstration"> Location type </span>
             <br />
             <el-select
-              v-model="valueDeviceGroup"
+              v-model="selectedItem.locationType"
               clearable
               filterable
               placeholder="All"
@@ -288,7 +290,7 @@
             <span class="demonstration">Tags Of Device </span>
             <br />
             <el-select
-              v-model="itemTags"
+              v-model="selectedItem.itemTags"
               multiple
               filterable
               allow-create
@@ -302,6 +304,25 @@
               >
               </el-option>
             </el-select>
+          </el-row>
+
+          <el-row style="margin :20px; font-size: medium;">
+            <el-button
+              v-if="!selectedItem.isDefine"
+              class="filter-item"
+              type="success"
+              icon="el-icon-edit"
+              @click="addDevice"
+              >Save Setting</el-button
+            >
+            <el-button
+              v-if="selectedItem.isDefine"
+              class="filter-item"
+              type="success"
+              icon="el-icon-edit"
+              @click="updateSetupDevice"
+              >Update Setting</el-button
+            >
           </el-row>
         </el-col>
       </el-row>
@@ -336,7 +357,9 @@ import draggable from 'vuedraggable';
 import SingleDevice from '@/components/SingleDevice';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import zonesInput from '@/assets/img_src/zonesInput.png';
-import { updateZoneName, createZone } from '@/api/zone';
+import { updateZoneName, createZone, deleteZone } from '@/api/zone';
+import { createDevice, deleteDevice, updateDevice } from '@/api/device';
+import { getTags } from '@/api/tags';
 
 export default {
   name: 'DragKanbanDemo',
@@ -349,7 +372,31 @@ export default {
   },
   data() {
     return {
+      options: [
+        {
+          value: '1',
+          label: 'Option1',
+        },
+        {
+          value: '2',
+          label: 'Option2',
+        },
+        {
+          value: '3',
+          label: 'Option3',
+        },
+        {
+          value: '4',
+          label: 'Option4',
+        },
+        {
+          value: '5',
+          label: 'Option5',
+        },
+      ],
       groupName: '',
+      deviceName: '',
+      selectedItem: { isDefine: false },
       isEditHeader: false,
       showZoneInput: false,
       showContactSensor: false,
@@ -388,12 +435,6 @@ export default {
       type: Number,
       default: -1,
     },
-    options: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
     list: {
       type: Array,
       default() {
@@ -402,14 +443,25 @@ export default {
     },
   },
   methods: {
+    getTagsList() {
+      getTags().then(response => {
+        this.optionsTag = response;
+      });
+    },
     dragEvent(value) {
       this.$store.dispatch('user/setIsDrag', value);
     },
-    EditHeader() {
+    resetDialog() {
+      this.showZoneInput = false;
+      this.showContactSensor = false;
+      this.showAuthenSensor = false;
+    },
+    editHeader() {
       if (this.isEditHeader) {
         if (this.groupId > -1) {
           updateZoneName({ id: this.groupId, name: this.groupName }).then(
             response => {
+              this.resetDialog();
               this.$emit('refreshUI');
             },
           );
@@ -420,6 +472,7 @@ export default {
             description: this.groupName,
             hubId: this.hubId,
           }).then(response => {
+            this.resetDialog();
             this.$emit('refreshUI');
           });
         }
@@ -427,21 +480,92 @@ export default {
 
       this.isEditHeader = !this.isEditHeader;
     },
-    deviceClick(item) {
-      if (!item.isDefine && item.isActive) {
-        var that = this;
-        switch (item.name) {
-          case 'Zone Input':
-            this.showZoneInput = true;
-            break;
-          case 'Contact Sensor':
-            this.showContactSensor = true;
-            setTimeout(function() {
-              that.showAuthen();
-            }, 500);
-            break;
-        }
+    addDevice() {
+      this.selectedItem.isDefine = true;
+      this.selectedItem.orgId = this.orgId;
+      this.selectedItem.zoneId = this.groupId;
+      if (!this.selectedItem.orgId && this.selectedItem.orgId.length < 1) {
+        this.$alert('Please create Organization first');
+        return;
       }
+      if (!this.selectedItem.zoneId && this.selectedItem.orgId.zoneId < 1) {
+        this.$alert('Please create Organization first');
+        return;
+      }
+
+      if (!this.selectedItem.name || this.selectedItem.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      createDevice(this.selectedItem).then(response => {
+        this.resetDialog();
+        this.$emit('refreshUI');
+      });
+    },
+    updateSetupDevice() {
+      this.selectedItem.isDefine = true;
+      this.selectedItem.orgId = this.orgId;
+      this.selectedItem.zoneId = this.groupId;
+      if (!this.selectedItem.orgId && this.selectedItem.orgId.length < 1) {
+        this.$alert('Please create Organization first');
+        return;
+      }
+      if (!this.selectedItem.zoneId && this.selectedItem.orgId.zoneId < 1) {
+        this.$alert('Please create Organization first');
+        return;
+      }
+
+      if (!this.selectedItem.name || this.selectedItem.name.length < 1) {
+        this.$alert('Please input name');
+        return;
+      }
+      updateDevice(this.selectedItem).then(response => {
+        this.resetDialog();
+        this.$emit('refreshUI');
+      });
+    },
+    deviceClick(item) {
+      var that = this;
+
+      this.selectedItem = { ...item };
+      this.getTagsList();
+      switch (item.deviceGroup) {
+        case 'Zone Input':
+          this.showZoneInput = true;
+          break;
+        case 'Contact Sensor':
+          this.showContactSensor = true;
+          setTimeout(function() {
+            that.showAuthen();
+          }, 500);
+          break;
+      }
+    },
+    removeGroup() {
+      if (this.list.length > 0) {
+        this.$alert('Can not remove, still have device in this group !!!');
+        return;
+      }
+
+      this.$confirm(
+        'Would you like to Remove' + this.groupName + ' ?',
+        'Warning',
+        {
+          confirmButtonText: 'YES',
+          cancelButtonText: 'NO',
+          type: 'warning',
+        },
+      )
+        .then(() => {
+          deleteZone(this.groupId).then(response => {
+            this.resetDialog();
+            this.$emit('refreshUI');
+          });
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
     },
     showAuthen() {
       this.showAuthenSensor = true;
@@ -511,6 +635,10 @@ export default {
     font-size: 24px;
     text-align: start;
     display: inline-flex;
+    width: 100%;
+  }
+
+  .el-select {
     width: 100%;
   }
 
