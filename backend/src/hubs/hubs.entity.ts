@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { OrgEntity } from '../org/org.entity';
 import { ZoneEntity } from '../zone/zone.entity';
+import { ActivityEntity } from '../activity/activity.entity';
 
 @Entity()
 export class HubsEntity extends BaseEntity {
@@ -36,4 +37,11 @@ export class HubsEntity extends BaseEntity {
     { eager: true },
   )
   zones: ZoneEntity[];
+
+  @OneToMany(
+    type => ActivityEntity,
+    activity => activity.hub,
+    { eager: false },
+  )
+  activities: ActivityEntity[];
 }

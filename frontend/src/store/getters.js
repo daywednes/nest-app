@@ -17,5 +17,6 @@ const getters = {
     deviceGroups: state => state.user.deviceGroups,
     isDrag: state => state.user.isDrag,
     isSetup: state => state.user.isSetup,
+    timeline: state => state.user.timeline,
 }
 export default getters

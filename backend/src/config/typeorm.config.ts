@@ -15,10 +15,10 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
   synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
   extra: {
-    ssl: true
+    ssl: false
   },
   ssl: {
-    rejectUnauthorized: true,
+    rejectUnauthorized: false,
     //ca: fs.readFileSync(process.env.CA_CERT).toString(),
   },
 

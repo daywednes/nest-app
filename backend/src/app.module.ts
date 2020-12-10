@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { DeviceModule } from './device/device.module';
 import { TagsModule } from './tags/tags.module';
 import { AvailableDevicesModule } from './availableDevice/availableDevice.module';
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { AvailableDevicesModule } from './availableDevice/availableDevice.module
     AuthModule,
     TagsModule,
     AvailableDevicesModule,
+    ActivityModule,
     DeviceModule
   ],
-  exports:[AvailableDevicesModule]
+  exports:[AvailableDevicesModule, ActivityModule]
 })
 export class AppModule {}

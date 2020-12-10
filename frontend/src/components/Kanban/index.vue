@@ -22,6 +22,7 @@
 
       <draggable
         v-if="groupId !== -1 || list.length > 0 || isDrag"
+        :list="list2"
         v-bind="$attrs"
         class="board-column-content"
         style="width: 30%;float: left;"
@@ -394,6 +395,7 @@ export default {
           label: 'Option5',
         },
       ],
+      list2: [],
       groupName: '',
       deviceName: '',
       selectedItem: { isDefine: false },
@@ -413,6 +415,11 @@ export default {
   watch: {
     list(val, old) {
       this.resetInterval();
+    },
+    list2(val, old) {
+      if(val.length > 0){
+        this.deleteDeviceEntity(val[0]);
+      }
     },
     groupName(val, old) {
       this.changeName(val);
@@ -566,6 +573,15 @@ export default {
         .catch(() => {
           return false;
         });
+    },
+    deleteDeviceEntity(item) {
+      console.log(item)
+      if (item.id >= 0) {
+        deleteDevice(item.id).then(response => {
+          this.$emit('refreshUI');
+        });
+      }
+      this.list2 = [];
     },
     showAuthen() {
       this.showAuthenSensor = true;

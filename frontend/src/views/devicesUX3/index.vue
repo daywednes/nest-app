@@ -617,6 +617,13 @@ export default {
           ...MOCKDATA.DEFAULT_WIDGETS_LIST,
         ]);
       } else {
+        if (val[0].id > 0) {
+          this.$store.dispatch(
+            'user/updateDeviceGroups',
+            ...MOCKDATA.DEFAULT_WIDGETS_LIST,
+          );
+          return;
+        }
         this.deviceGroupList = [];
         this.deviceGroupList = [...val];
       }
@@ -835,7 +842,7 @@ export default {
         //   background: 'rgba(0, 0, 0, 0.7)',
         // });
         let i = 0;
-        for (let index = this.zonesList.length -1 ; index >= 0; index--) {
+        for (let index = this.zonesList.length - 1; index >= 0; index--) {
           const tmpZone = this.zonesList[i];
           tmpZone.index = index;
           if (tmpZone.devices) {
@@ -851,7 +858,7 @@ export default {
           i++;
         }
 
-        saveChanges(this.zonesList.filter(x=>x.id != -1));
+        saveChanges(this.zonesList.filter(x => x.id != -1));
         this.$message({
           type: 'success',
           message: 'Save changes completed',
@@ -906,7 +913,7 @@ export default {
         });
     },
     getZonesList() {
-      // this.saveChangesHub();
+      this.saveChangesHub();
       if (!this.currentHubId) {
         this.$store.dispatch('user/updateZones', []);
         return;
@@ -917,8 +924,6 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)',
       });
-
-      // this.zonesList = MOCKDATA.DEFAULT_ZONE_LIST;
 
       getZonesHub(this.currentHubId)
         .then(response => {

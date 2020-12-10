@@ -19,7 +19,7 @@
           <el-timeline-item
             v-for="(item, index) of timeline"
             :key="index"
-            :timestamp="item.timestamp"
+            :lastTimeUpdate="item.lastTimeUpdate"
             placement="top"
           >
             <el-card>
@@ -31,13 +31,13 @@
                     style="float: left; height: 50px;"
                   />
                 </el-col>
-                <el-col :xs="8" :sm="16" :lg="16">
-                  {{ item.title }}
+                <el-col :xs="12" :sm="12" :lg="12">
+                  {{ item.name }}
                   <br />
-                  {{ item.content }}
+                  {{ item.description }}
                 </el-col>
-                <el-col :xs="4" :sm="4" :lg="4">
-                  {{ item.timestamp }}
+                <el-col :xs="8" :sm="8" :lg="8">
+                  {{ item.lastTimeUpdate }}
                 </el-col>
               </el-row>
             </el-card>
@@ -70,12 +70,13 @@
             clearable
             filterable
             placeholder="All Hubs"
+            @change="change"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in hubs"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -105,6 +106,8 @@
 
 <script>
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
+import { getActivityById, getActivity } from '@/api/activity';
+import { getZonesHub } from '@/api/zone';
 export default {
   name: 'Activity',
   computed: {
@@ -114,35 +117,29 @@ export default {
       }
       let orgId = this.$store.getters.orgId;
       let orgs = this.$store.getters.orgs;
-      return orgs.find(x => x.id == orgId).name;
+      return orgs && orgs.length > 0
+        ? orgs.find(x => x.id == orgId).name
+        : null;
     },
+    hubs() {
+      return this.$store.getters.hubs;
+    },
+    timeline() {
+      return this.$store.getters.timeline;
+    },
+  },
+  watch: {
+    timeline(val, old) {
+      console.log(val);
+    },
+  },
+  mounted: function() {
+    this.getActivityList();
   },
   data() {
     return {
       logo: logoSimpleThings,
       daterange: null,
-      timeline: [
-        {
-          timestamp: '2019/4/20',
-          title: 'Update Github template',
-          content: 'PanJiaChen committed 2019/4/20 20:46',
-        },
-        {
-          timestamp: '2019/4/21',
-          title: 'Update Github template',
-          content: 'PanJiaChen committed 2019/4/21 20:46',
-        },
-        {
-          timestamp: '2019/4/22',
-          title: 'Build Template',
-          content: 'PanJiaChen committed 2019/4/22 20:46',
-        },
-        {
-          timestamp: '2019/4/23',
-          title: 'Release New Version',
-          content: 'PanJiaChen committed 2019/4/23 20:46',
-        },
-      ],
       pickerOptions: {
         shortcuts: [
           {
@@ -196,10 +193,21 @@ export default {
           label: 'Option5',
         },
       ],
-      valueHub: '',
-      valueZone: '',
+      valueHub: null,
+      valueZone: null,
       textSearch: '',
     };
+  },
+  methods: {
+    getActivityList() {
+      this.$store.dispatch('user/updateActivity');
+    },
+    change(val) {
+      this.valueZone = null;
+      getZonesHub(this.currentHubId).then(response => {
+        this.valueZone = response;
+      });
+    },
   },
 };
 </script>

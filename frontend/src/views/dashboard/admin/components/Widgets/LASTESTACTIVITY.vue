@@ -6,7 +6,7 @@
       <div style="height:280px; overflow-x: auto;">
         <el-row
           :gutter="32"
-          v-for="(item, index) of items"
+          v-for="(item, index) of timeline"
           :key="index"
           style="width: 95%;
             text-align: left; margin: 10px; "
@@ -17,10 +17,10 @@
           <el-col :xs="8" :sm="16" :lg="16">
             {{ item.name }}
             <br />
-            {{ item.status }}
+            {{ item.description }}
           </el-col>
           <el-col :xs="4" :sm="4" :lg="4">
-            {{ item.time }}
+            {{ item.lastTimeUpdate }}
           </el-col>
           <hr
             style=" position: absolute;left: 0;bottom: 0;width: 100%;margin: 0;"
@@ -34,7 +34,17 @@
 
 <script>
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
+import { getActivityById, getActivity } from '@/api/activity';
 export default {
+  name: 'LASTESTACTIVITY',
+  computed: {
+    timeline() {
+      return this.$store.getters.timeline;
+    },
+  },
+  mounted: function() {
+    this.getActivityList();
+  },
   data() {
     return {
       logo: logoSimpleThings,
@@ -71,6 +81,17 @@ export default {
         },
       ],
     };
+  },
+  watch: {
+    timeline(val, old) {
+    },
+  },
+  methods: {
+    getActivityList() {
+      if (!this.timeline || this.timeline.length == 0) {
+        this.$store.dispatch('user/updateActivity');
+      }
+    },
   },
 };
 </script>

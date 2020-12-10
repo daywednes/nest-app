@@ -1,6 +1,7 @@
 import { login, logout, getInfo, signup } from '@/api/user';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 import router, { resetRouter } from '@/router';
+import { getActivityById, getActivity } from '@/api/activity';
 
 const state = {
   token: getToken(),
@@ -16,6 +17,7 @@ const state = {
   zones: [],
   isSetup: false,
   isDrag: false,
+  timeline: [],
 };
 
 const mutations = {
@@ -57,6 +59,9 @@ const mutations = {
   },
   SET_IS_DRAG: (state, isDrag) => {
     state.isDrag = isDrag;
+  },
+  SET_ACTIVITY: (state, activities) => {
+    state.timeline = activities;
   },
   ADD_DEVICE_AVAILABLE: (state, deviceGroupName) => {
     let tmp = state.deviceGroups.find(x => x.deviceGroup == deviceGroupName);
@@ -114,6 +119,22 @@ const actions = {
   },
   subAvailableDevice({ commit }, data) {
     commit('SUB_DEVICE_AVAILABLE', data);
+  },
+  updateActivity({ commit }) {
+    return new Promise(resolve => {
+      getActivity().then(response => {
+        commit(
+          'SET_ACTIVITY',
+          response.sort((a, b) =>
+            a.lastTimeUpdate < b.lastTimeUpdate ? 1 : -1,
+          ),
+        );
+      });
+      resolve();
+    });
+  },
+  setActivity({ commit }, data) {
+    commit('SET_ACTIVITY', data);
   },
   updateZones({ commit }, data) {
     commit('SET_ZONES', data);
