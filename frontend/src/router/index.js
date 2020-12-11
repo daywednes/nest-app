@@ -120,18 +120,18 @@ export const constantRoutes = [{
             meta: { title: 'Activity', icon: 'icon' }
         }]
     }, 
-    {
-        path: '/devices',
-        component: Layout,
-        redirect: '/devices',
-        children: [{
-            path: '/devices',
-            component: () =>
-                import ('@/views/hubs/index'),
-            name: 'Devices',
-            meta: { title: 'Devices', icon: 'guide'}
-        }]
-    },
+    // {
+    //     path: '/devices',
+    //     component: Layout,
+    //     redirect: '/devices',
+    //     children: [{
+    //         path: '/devices',
+    //         component: () =>
+    //             import ('@/views/hubs/index'),
+    //         name: 'Devices',
+    //         meta: { title: 'Devices', icon: 'guide'}
+    //     }]
+    // },
     {
         path: '/devicesUX3',
         component: Layout,

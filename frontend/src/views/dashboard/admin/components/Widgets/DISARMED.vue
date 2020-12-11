@@ -1,6 +1,7 @@
 <template>
   <div class="chart-wrapper" style="overflow: auto;">
-    ARMED [ AWAY, STAY OR SLEEP ]
+    ARMED 
+    <!-- [ AWAY, STAY OR SLEEP ] -->
     <br />
     <img class="img-circle" style="background: RED; margin:10px;" />
     

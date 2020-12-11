@@ -19,7 +19,8 @@
       >
     </div>
     <div v-if="isDISARMED">
-      ARMED [ AWAY, STAY OR SLEEP ]
+      ARMED
+      <!-- [ AWAY, STAY OR SLEEP ] -->
       <br />
       <img class="img-circle" style="background: RED; margin:10px;" />
 
@@ -55,6 +56,7 @@
           @click="
             () => {
               activeScreen = 1;
+              publishMode='away';
             }
           "
           >AWAY</el-button
@@ -67,6 +69,7 @@
           @click="
             () => {
               activeScreen = 1;
+              publishMode='stay';
             }
           "
           >STAY</el-button
@@ -79,6 +82,7 @@
           @click="
             () => {
               activeScreen = 1;
+              publishMode='sleep';
             }
           "
           >SLEEP</el-button
@@ -204,6 +208,7 @@ import countTo from 'vue-count-to';
 import PincodeInput from 'vue-pincode-input';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
 import { updateautomationsByName } from '@/api/automations';
+import Vue from 'vue';
 export default {
   components: { countTo, PincodeInput },
   data() {
@@ -215,6 +220,7 @@ export default {
       activeScreenDISARMED: 0,
       dialogVisibleDISARMED: false,
       code: '',
+      publishMode: '',
       dialogVisible: false,
       isARM: true,
       isDISARMED: false,
@@ -268,19 +274,67 @@ export default {
     startCountDown() {
       this.$refs.countDown.start();
     },
-    finishARM() {
-      if (this.updateStatus(false)) {
-        this.isARM = false;
-        this.isDISARMED = true;
-      }
-      this.dialogVisible = false;
+    async finishARM() {
+      const loadingAutomation = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+
+      updateautomationsByName({
+        name: this.publishMode,
+        description: this.publishMode,
+        activated: false,
+        orgId: this.orgId,
+      })
+        .then(response => {
+          this.isARM = false;
+          this.isDISARMED = true;
+          this.dialogVisible = false;
+          response.event = 'update';
+          console.log(response);
+          Vue.$wamp.publish('io.crossbar.demo.pubsub.404893', [
+            JSON.stringify(response),
+          ]);
+        })
+        .catch(mess => {
+          this.$alert('This organization did not set up this alarm mode');
+        })
+        .finally(() => {
+          loadingAutomation.close();
+        });
     },
-    finishDISARM() {
-      if (this.updateStatus(true)) {
-        this.isARM = true;
-        this.isDISARMED = false;
-      }
-      this.dialogVisibleDISARMED = false;
+    async finishDISARM() {
+      const loadingAutomation = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+
+      updateautomationsByName({
+        name: this.publishMode,
+        description: this.publishMode,
+        activated: true,
+        orgId: this.orgId,
+      })
+        .then(response => {
+          this.isARM = true;
+          this.isDISARMED = false;
+          this.dialogVisibleDISARMED = false;
+          response.event = 'update';
+          console.log(response);
+          Vue.$wamp.publish('io.crossbar.demo.pubsub.404893', [
+            JSON.stringify(response),
+          ]);
+        })
+        .catch(mess => {
+          this.$alert('This organization did not set up this alarm mode');
+        })
+        .finally(() => {
+          loadingAutomation.close();
+        });
     },
     pauseResume() {
       this.dialogVisible = false;

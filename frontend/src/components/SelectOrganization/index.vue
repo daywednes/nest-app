@@ -512,7 +512,7 @@ export default {
         .catch((mess) => {
           this.organizationForm.name = '';
           this.organizationForm.description = '';
-          this.$alert('Try another name');
+          this.$alert('This organization name is exist');
         });
     },
     editOrganization() {

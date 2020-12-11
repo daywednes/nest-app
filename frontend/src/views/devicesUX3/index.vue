@@ -584,6 +584,8 @@ export default {
     this.getHubsList();
     this.getTagsList();
     this.getAvailableDevicesList();
+    this.deviceGroupList = this.deviceGroups;
+    console.log(this.deviceGroups)
   },
   beforeDestroy: function() {
     this.saveChangesHub(this.zonesList);
@@ -885,9 +887,12 @@ export default {
       this.loadingDevice = true;
       createHub(this.hubForm)
         .then(response => {
-          this.getZonesList();
+          this.getHubsList();
+          this.showAddHUBDialog = false;
+        }).catch(()=>{
+          this.$alert('Create fail')
         })
-        .catch(() => {
+        .finally(() => {
           this.loadingDevice = false;
         });
     },
