@@ -15,9 +15,9 @@
       <hr />
       <br />
       <el-col :span="12">
-        <el-timeline>
+        <el-timeline  style="max-height: 65vh;overflow: auto; padding:10px;">
           <el-timeline-item
-            v-for="(item, index) of timeline"
+            v-for="(item, index) of timelineFilter"
             :key="index"
             :lastTimeUpdate="item.lastTimeUpdate"
             placement="top"
@@ -44,7 +44,7 @@
           </el-timeline-item>
         </el-timeline>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="12" style="float:right">
         <el-row style="margin :20px; font-size: medium;">
           <span class="demonstration"
             >Select a date to view or click and drag for a date range
@@ -59,6 +59,7 @@
             start-placeholder="Start date"
             end-placeholder="End date"
             :picker-options="pickerOptions"
+            @change="searchActivity"
           >
           </el-date-picker>
         </el-row>
@@ -91,10 +92,10 @@
             placeholder="All Zone Interface"
           >
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in zones"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -129,12 +130,17 @@ export default {
     },
   },
   watch: {
-    timeline(val, old) {
-      console.log(val);
+    textSearch(val) {
+      this.searchActivity(this.daterange);
+    },
+    timeline(val) {
+      this.getFullActitivy();
+      this.searchActivity(this.daterange);
     },
   },
   mounted: function() {
     this.getActivityList();
+    this.getFullActitivy();
   },
   data() {
     return {
@@ -195,7 +201,9 @@ export default {
       ],
       valueHub: null,
       valueZone: null,
-      textSearch: '',
+      textSearch: null,
+      zones: [],
+      timelineFilter: [],
     };
   },
   methods: {
@@ -204,9 +212,54 @@ export default {
     },
     change(val) {
       this.valueZone = null;
-      getZonesHub(this.currentHubId).then(response => {
-        this.valueZone = response;
+      this.zones = null;
+      this.textSearch = null;
+      this.daterange = null;
+      this.filterByHub(val);
+      getZonesHub(val).then(response => {
+        this.zones = response;
       });
+    },
+    searchActivity(val) {
+      this.filterByHub(this.valueHub);
+      if (val) {
+        let fromDate = Date.parse(val[0]);
+        let toDate = Date.parse(val[1]);
+        this.timelineFilter = this.timelineFilter.filter(
+          x =>
+            Date.parse(x.lastTimeUpdate) >= fromDate &&
+            Date.parse(x.lastTimeUpdate) <= toDate,
+        );
+      }
+      console.log(this.valueHub)
+      if (this.textSearch) {
+        this.timelineFilter = this.timelineFilter.filter(
+          x =>
+            x.name
+              .trim()
+              .toUpperCase()
+              .includes(this.textSearch.toUpperCase()) ||
+            x.description
+              .trim()
+              .toUpperCase()
+              .includes(this.textSearch.toUpperCase()),
+        );
+      }
+    },
+    filterByHub(val) {
+      if (val) {
+        this.timelineFilter = this.timeline.filter(x => x.hubId == val);
+      } else {
+        this.getFullActitivy();
+      }
+    },
+    filterByZone(val) {
+      if (val) {
+      }
+    },
+    getFullActitivy() {
+      this.timelineFilter = [];
+      this.timelineFilter = [...this.timeline];
     },
   },
 };
