@@ -23,6 +23,7 @@ export class ActivityEntity extends BaseEntity {
     { eager: false },
   )
   hub: HubsEntity;
+  
   @Column()
   hubId: number;
 }

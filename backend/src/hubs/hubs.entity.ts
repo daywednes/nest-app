@@ -40,7 +40,7 @@ export class HubsEntity extends BaseEntity {
 
   @OneToMany(
     type => ActivityEntity,
-    activity => activity.hubId,
+    activity => activity.hub,
     { eager: false },
   )
   activities: ActivityEntity[];
