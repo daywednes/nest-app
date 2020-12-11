@@ -1,6 +1,6 @@
 <template>
   <div class="chart-wrapper" style="overflow: auto;">
-    <div v-if="isARM">
+    <div v-if="isBeARM">
       DISARMED
       <br />
       <img class="img-circle" style="background: #13ce66;margin:10px;" />
@@ -18,7 +18,7 @@
         >ARM</el-button
       >
     </div>
-    <div v-if="isDISARMED">
+    <div v-if="isBeDISARMED">
       ARMED
       <!-- [ AWAY, STAY OR SLEEP ] -->
       <br />
@@ -56,7 +56,7 @@
           @click="
             () => {
               activeScreen = 1;
-              publishMode='away';
+              publishMode = 'away';
             }
           "
           >AWAY</el-button
@@ -69,7 +69,7 @@
           @click="
             () => {
               activeScreen = 1;
-              publishMode='stay';
+              publishMode = 'stay';
             }
           "
           >STAY</el-button
@@ -82,7 +82,7 @@
           @click="
             () => {
               activeScreen = 1;
-              publishMode='sleep';
+              publishMode = 'sleep';
             }
           "
           >SLEEP</el-button
@@ -207,7 +207,7 @@ p {
 import countTo from 'vue-count-to';
 import PincodeInput from 'vue-pincode-input';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
-import { updateautomationsByName } from '@/api/automations';
+import { updateautomationsByName, getAutomations } from '@/api/automations';
 import Vue from 'vue';
 export default {
   components: { countTo, PincodeInput },
@@ -222,8 +222,8 @@ export default {
       code: '',
       publishMode: '',
       dialogVisible: false,
-      isARM: true,
-      isDISARMED: false,
+      isBeARM: true,
+      isBeDISARMED: false,
       innerVisible: false,
       logo: logoSimpleThings,
       items: [
@@ -260,6 +260,14 @@ export default {
       ],
     };
   },
+  watch: {
+    orgId(val, old) {
+      this.checkStatus();
+    },
+  },
+  mounted() {
+    this.checkStatus();
+  },
   computed: {
     orgId() {
       if (this.$store.getters.orgId == null) {
@@ -271,6 +279,33 @@ export default {
   },
 
   methods: {
+    checkStatus() {
+      getAutomations(this.orgId).then(response => {
+        response.forEach(row => {
+          console.log(row);
+          if (row.name == 'stay' && row.activated == true) {
+            this.isBeARM = false;
+            this.isBeDISARMED = true;
+            this.publishMode = 'stay';
+            return;
+          }
+
+          if (row.name == 'away' && row.activated == true) {
+            this.isBeARM = false;
+            this.isBeDISARMED = true;
+            this.publishMode = 'away';
+            return;
+          }
+
+          if (row.name == 'sleep' && row.activated == true) {
+            this.isBeARM = false;
+            this.isBeDISARMED = true;
+            this.publishMode = 'sleep';
+            return;
+          }
+        });
+      });
+    },
     startCountDown() {
       this.$refs.countDown.start();
     },
@@ -285,12 +320,12 @@ export default {
       updateautomationsByName({
         name: this.publishMode,
         description: this.publishMode,
-        activated: false,
+        activated: true,
         orgId: this.orgId,
       })
         .then(response => {
-          this.isARM = false;
-          this.isDISARMED = true;
+          this.isBeARM = false;
+          this.isBeDISARMED = true;
           this.dialogVisible = false;
           response.event = 'update';
           console.log(response);
@@ -316,12 +351,12 @@ export default {
       updateautomationsByName({
         name: this.publishMode,
         description: this.publishMode,
-        activated: true,
+        activated: false,
         orgId: this.orgId,
       })
         .then(response => {
-          this.isARM = true;
-          this.isDISARMED = false;
+          this.isBeARM = true;
+          this.isBeDISARMED = false;
           this.dialogVisibleDISARMED = false;
           response.event = 'update';
           console.log(response);

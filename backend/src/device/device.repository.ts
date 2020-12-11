@@ -62,6 +62,17 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     }
   }
 
+  async getAlldevices(): Promise<DeviceEntity[]> {
+    const query = this.createQueryBuilder('device')
+    try {
+      const devices = await query.getMany();
+      return devices;
+    } catch (err) {
+      console.log('err'+err)
+      throw new InternalServerErrorException();
+    }
+  }
+
   async createDevice(createDeviceDto: CreateDeviceDto, org: OrgEntity,zone: ZoneEntity, user: User): Promise<DeviceEntity> {
     const { name, description,location,locationType,deviceGroup,sensorType,isDefine } = createDeviceDto;
     const device = new DeviceEntity();

@@ -1,5 +1,11 @@
 import request from '@/utils/request'
 
+export function getAlldevices() {
+    return request({
+        url: '/device/',
+        method: 'get'
+    })
+}
 export function getDevices(orgId) {
     return request({
         url: '/device/' + orgId,

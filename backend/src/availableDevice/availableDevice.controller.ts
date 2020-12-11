@@ -31,7 +31,6 @@ export class AvailableDevicesController {
   constructor(private AvailableDevicesService: AvailableDevicesService) {}
 
   @Get()
-  
   @ApiOperation({ summary: 'Get All Available Devices' })
   getAllAvailableDevices(
     @Query(ValidationPipe) getAvailableDevicesFilterDto: GetAvailableDevicesFilterDto,

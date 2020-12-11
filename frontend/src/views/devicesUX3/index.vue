@@ -481,7 +481,7 @@ import MOCKDATA from '../../utils/mockdata';
 import { saveChanges, createZone, getZonesHub, deleteZone } from '@/api/zone';
 import { getHubs, createHub, deleteHub } from '@/api/hubs';
 import { getTags, getTagsById } from '@/api/tags';
-import { createDevice } from '@/api/device';
+import { createDevice, getAlldevices } from '@/api/device';
 import { getAvailableDevices } from '@/api/availableDevice';
 
 export default {
@@ -573,19 +573,10 @@ export default {
     };
   },
   mounted: function() {
-    if (!this.deviceGroups || this.deviceGroups.length == 0) {
-      this.$store.dispatch('user/updateDeviceGroups', [
-        ...MOCKDATA.DEFAULT_WIDGETS_LIST,
-      ]);
-    }
-
     this.$store.dispatch('user/setIsSetup', false);
-
     this.getHubsList();
     this.getTagsList();
     this.getAvailableDevicesList();
-    this.deviceGroupList = this.deviceGroups;
-    console.log(this.deviceGroups)
   },
   beforeDestroy: function() {
     this.saveChangesHub(this.zonesList);
@@ -614,18 +605,15 @@ export default {
       this.searchZone(val);
     },
     deviceGroups(val, old) {
+      let tmp = JSON.parse(JSON.stringify(MOCKDATA.DEFAULT_WIDGETS_LIST));
       if (!val || val.length == 0) {
-        this.$store.dispatch('user/updateDeviceGroups', [
-          ...MOCKDATA.DEFAULT_WIDGETS_LIST,
-        ]);
+        this.$store.dispatch('user/updateDeviceGroups', tmp);
       } else {
         if (val[0].id > 0) {
-          this.$store.dispatch(
-            'user/updateDeviceGroups',
-            ...MOCKDATA.DEFAULT_WIDGETS_LIST,
-          );
+          this.$store.dispatch('user/updateDeviceGroups', tmp);
           return;
         }
+
         this.deviceGroupList = [];
         this.deviceGroupList = [...val];
       }
@@ -756,10 +744,22 @@ export default {
       });
     },
     getAvailableDevicesList() {
+      let tmp = JSON.parse(JSON.stringify(MOCKDATA.DEFAULT_WIDGETS_LIST));
+      this.$store.dispatch('user/updateDeviceGroups', []);
+      this.$store.dispatch('user/updateDeviceGroups', tmp);
+
       getAvailableDevices().then(response => {
         response.forEach(element => {
           this.$store.dispatch(
             'user/addAvailableDevice',
+            element['deviceGroup'],
+          );
+        });
+      });
+      getAlldevices().then(response => {
+        response.forEach(element => {
+          this.$store.dispatch(
+            'user/subAvailableDevice',
             element['deviceGroup'],
           );
         });
@@ -889,8 +889,9 @@ export default {
         .then(response => {
           this.getHubsList();
           this.showAddHUBDialog = false;
-        }).catch(()=>{
-          this.$alert('Create fail')
+        })
+        .catch(() => {
+          this.$alert('Create fail');
         })
         .finally(() => {
           this.loadingDevice = false;
@@ -927,7 +928,7 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)',
       });
-
+      this.getAvailableDevicesList();
       getZonesHub(this.currentHubId)
         .then(response => {
           this.zonesListTmp = response;

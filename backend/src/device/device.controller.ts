@@ -21,7 +21,6 @@ import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
-
 @ApiTags('device')
 @ApiBearerAuth()
 @Controller('device')
@@ -32,7 +31,7 @@ export class DeviceController {
 
   @Get('/:orgId')
   @ApiOperation({ summary: 'Get Devices by Organization Id' })
-  getAlldevices(
+  getAlldevicesByOrgID(
     @Param('orgId', ParseIntPipe) orgId: number,
     @GetUser() user: User,
   ): Promise<DeviceEntity[]> {
@@ -119,5 +118,11 @@ export class DeviceController {
   ): Promise<DeviceEntity> {
     //Get Org from here
     return this.devicesService.updatedevice(id, updateDeviceDto, user);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get All Device' })
+  getAlldevices(): Promise<DeviceEntity[]> {
+    return this.devicesService.getAlldevices();
   }
 }

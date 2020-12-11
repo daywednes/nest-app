@@ -45,6 +45,10 @@ export class DeviceService {
     }
     return devices;
   }
+  async getAlldevices(): Promise<DeviceEntity[]> {
+    var devices = await this.deviceRepository.getAlldevices();
+    return devices;
+  }
   getDevicesAvail(orgId: number): Promise<DeviceEntity[]> {
     return this.deviceRepository.getDevicesAvail(orgId);
   }

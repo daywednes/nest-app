@@ -104,7 +104,7 @@ export default {
     },
     checkMove: function(evt) {
       if(this.isSetup){
-         this.$alert('Please finish setup device.');
+        //  this.$alert('Please finish setup device.');
         return false;
       }
 
