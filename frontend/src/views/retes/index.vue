@@ -185,7 +185,7 @@ export default {
         ],
       ];
 
-      Vue.$wamp.publish('com.myapp.hello', [
+      Vue.$wamp.publish('com.myapp.addAvailableDevice', [
         JSON.stringify(modes[this.counter % 3]),
       ]);
       this.counter = this.counter + 1;

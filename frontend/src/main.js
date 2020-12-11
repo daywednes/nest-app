@@ -51,7 +51,7 @@ Vue.use(VueWamp, {
 Vue.config.productionTip = false;
 
 Vue.Wamp.subscribe(
-  'com.myapp.hello',
+  'com.myapp.addAvailableDevice',
   function(args, kwArgs, details) {
     var tmp = JSON.parse(args[0]);
     if (tmp && tmp['deviceGroup'] && tmp['isAddNew']) {
