@@ -63,9 +63,6 @@ export class AvailableDevicesService {
   }
 
   async scanAvailableDevices(updateAvailableDevicesDto: Map<string,string>): Promise<AvailableDevicesEntity> {
-    // const { deviceName,connectionStatus,deviceId,deviceGroup,engineStatus,locationType,sensorType,tags, msg } = updateAvailableDevicesDto;
-    
-    console.log(updateAvailableDevicesDto["deviceId"])
     var availableDevices = await this.getAvailableDevicesByDeviceId(updateAvailableDevicesDto["deviceId"],null);
     
     if(!availableDevices || availableDevices == null || availableDevices == undefined){

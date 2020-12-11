@@ -21,6 +21,14 @@ export function createAutomation(data) {
     })
 }
 
+export function updateautomationsByName(data) {
+    return request({
+        url: '/automations/updateautomationsByName',
+        method: 'post',
+        data
+    })
+}
+
 export function deleteAutomation(id) {
     return request({
         url: '/automations/' + id,

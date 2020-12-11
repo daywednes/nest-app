@@ -575,7 +575,6 @@ export default {
         });
     },
     deleteDeviceEntity(item) {
-      console.log(item)
       if (item.id >= 0) {
         deleteDevice(item.id).then(response => {
           this.$emit('refreshUI');

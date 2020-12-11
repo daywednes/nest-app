@@ -1,21 +1,42 @@
 <template>
   <div class="chart-wrapper" style="overflow: auto;">
-    DISARMED
-    <br />
-    <img class="img-circle" style="background: #13ce66;margin:10px;" />
-    <p>Ready to Arm</p>
-    <el-button
-      style="font-size: large; padding: 10px 0px; width:240px;"
-      type="primary"
-      round
-      @click="
-        () => {
-          activeScreen = 0;
-          dialogVisible = true;
-        }
-      "
-      >ARM</el-button
-    >
+    <div v-if="isARM">
+      DISARMED
+      <br />
+      <img class="img-circle" style="background: #13ce66;margin:10px;" />
+      <p>Ready to Arm</p>
+      <el-button
+        style="font-size: large; padding: 10px 0px; width:240px;"
+        type="primary"
+        round
+        @click="
+          () => {
+            activeScreen = 0;
+            dialogVisible = true;
+          }
+        "
+        >ARM</el-button
+      >
+    </div>
+    <div v-if="isDISARMED">
+      ARMED [ AWAY, STAY OR SLEEP ]
+      <br />
+      <img class="img-circle" style="background: RED; margin:10px;" />
+
+      <p>[ Date and Time Arrived ]</p>
+      <el-button
+        style="font-size: large; padding: 10px 0px; width:240px;"
+        type="primary"
+        round
+        @click="
+          () => {
+            activeScreenDISARMED = 1;
+            dialogVisibleDISARMED = true;
+          }
+        "
+        >DISSARM</el-button
+      >
+    </div>
     <el-dialog
       :visible.sync="dialogVisible"
       width="50%"
@@ -96,28 +117,53 @@
               style="font-size: xx-large; color white"
               ref="countDown"
               :startVal="startVal"
-              :decimals="2"
+              :decimals="0"
               :endVal="endVal"
-              :duration="20000"
-              :autoplay="false"
+              :duration="duration"
+              :autoplay="true"
               :useEasing="false"
+              @callback="finishARM"
             ></countTo>
           </div>
         </div>
-        <el-button
+        <!-- <el-button
           style="font-size: large; padding: 10px 0px; margin:10px; width:100px;"
           type="warning"
           round
           @click="startCountDown"
           >Start</el-button
         >
-        <br />
+        <br /> -->
         <el-button
           style="font-size: large; padding: 10px 0px; width:300px;"
           type="primary"
           round
           @click="pauseResume"
           >Cancel</el-button
+        >
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="dialogVisibleDISARMED"
+      width="50%"
+      :before-close="handleClose"
+      append-to-body
+      style="text-align: center"
+    >
+      <!-- Enter Password -->
+      <div v-if="activeScreenDISARMED == 1">
+        <h1>ENTER YOUR PIN</h1>
+        <div class="input-wrapper">
+          <PincodeInput :secure="true" v-model="code" />
+        </div>
+        <br />
+        <el-button
+          style="font-size: large; padding: 10px 0px; width:240px;"
+          type="primary"
+          round
+          @click="finishDISARM"
+          >NEXT</el-button
         >
       </div>
     </el-dialog>
@@ -157,14 +203,21 @@ p {
 import countTo from 'vue-count-to';
 import PincodeInput from 'vue-pincode-input';
 import logoSimpleThings from '@/assets/img_src/simple_things_logo.png';
+import { updateautomationsByName } from '@/api/automations';
 export default {
   components: { countTo, PincodeInput },
   data() {
     return {
-      startVal: 20,
+      startVal: 5,
       endVal: 0,
+      duration: 5000,
       activeScreen: 0,
+      activeScreenDISARMED: 0,
+      dialogVisibleDISARMED: false,
+      code: '',
       dialogVisible: false,
+      isARM: true,
+      isDISARMED: false,
       innerVisible: false,
       logo: logoSimpleThings,
       items: [
@@ -201,12 +254,61 @@ export default {
       ],
     };
   },
+  computed: {
+    orgId() {
+      if (this.$store.getters.orgId == null) {
+        this.$alert('empty');
+      }
+
+      return this.$store.getters.orgId;
+    },
+  },
+
   methods: {
     startCountDown() {
       this.$refs.countDown.start();
     },
+    finishARM() {
+      if (this.updateStatus(false)) {
+        this.isARM = false;
+        this.isDISARMED = true;
+      }
+      this.dialogVisible = false;
+    },
+    finishDISARM() {
+      if (this.updateStatus(true)) {
+        this.isARM = true;
+        this.isDISARMED = false;
+      }
+      this.dialogVisibleDISARMED = false;
+    },
     pauseResume() {
+      this.dialogVisible = false;
       this.$refs.countDown.pauseResume();
+    },
+    updateStatus(status) {
+      const loadingAutomation = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      });
+      updateautomationsByName({
+        name: 'away',
+        description: 'away',
+        activated: status,
+        orgId: this.orgId,
+      })
+        .then(response => {
+          return true;
+        })
+        .catch(mess => {
+          this.$alert('This organization did not set up this alarm mode');
+          return false;
+        })
+        .finally(() => {
+          loadingAutomation.close();
+        });
     },
     handleClose(done) {
       this.$confirm('Are you sure to close this dialog?')

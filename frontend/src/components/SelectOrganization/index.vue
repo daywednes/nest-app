@@ -502,10 +502,18 @@ export default {
         this.$alert('Please input description');
         return;
       }
-      createOrg(this.organizationForm).then(response => {
-        this.getOrgList();
-        this.showAddDialog = false;
-      });
+      createOrg(this.organizationForm)
+        .then(response => {
+          this.getOrgList();
+          this.showAddDialog = false;
+          this.organizationForm.name = '';
+          this.organizationForm.description = '';
+        })
+        .catch((mess) => {
+          this.organizationForm.name = '';
+          this.organizationForm.description = '';
+          this.$alert('Try another name');
+        });
     },
     editOrganization() {
       if (!this.organization.name || this.organization.name.length < 1) {

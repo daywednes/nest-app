@@ -699,7 +699,6 @@ export default {
           hubId: this.currentHubId,
         }).then(response => {
           tmp.id = response.id;
-          console.log(tmp.id);
         });
       }
     },
@@ -736,7 +735,6 @@ export default {
           count++;
           name = 'Untitled Group' + ' ( ' + count + ' )';
         }
-        console.log(name);
 
         this.zonesList.unshift({
           id: -1,

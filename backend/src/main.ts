@@ -45,21 +45,15 @@ async function bootstrap() {
   connection.onopen = function(session) {
     // 1) subscribe to a topic
     async function onevent(args) {
-      console.log('onevent:');
       const service = app.get(AvailableDevicesService);
-      // console.log('Event:', args[0]);
       let mess = JSON.parse(args[0]);
       var res = await service.scanAvailableDevices(mess);
-      console.log(serverConfig.publishTopic);
       session.publish(serverConfig.publishTopic, [JSON.stringify(res)]);
     }
     async function oneventActivity(args) {
-      console.log('oneventActivity:');
       const service = app.get(ActivityService);
-      //console.log('Event:', args[0]);
       let mess = JSON.parse(args[0]);
       var res = await service.createActivityByTrigger(mess);
-      console.log(serverConfig.publishTopicActivity);
       session.publish(serverConfig.publishTopicActivity, [JSON.stringify(res)]);
     }
     session.subscribe(serverConfig.subscribeTopic, onevent);

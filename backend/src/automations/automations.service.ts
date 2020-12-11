@@ -42,6 +42,15 @@ export class AutomationsService {
     createautomationsDto: CreateAutomationsDto,
     user: User,
   ): Promise<AutomationsEntity> {
+    const found = await this.automationsRepository.findOne({
+      where: { name: createautomationsDto.name },
+    });
+    if (found) {
+      throw new NotFoundException(
+        `Oranization with name: ${createautomationsDto.name} is exist`,
+      );
+    }
+
     const org = await this.orgRepository.findOne({
       where: { id: createautomationsDto.orgId, userId: user.id },
     });
@@ -73,5 +82,22 @@ export class AutomationsService {
     automations.lastTimeUpdate = new Date();
     await automations.save();
     return automations;
+  }
+  async updateautomationsByName(
+    createautomationsDto: CreateAutomationsDto,
+  ): Promise<AutomationsEntity> {
+    const automation = await this.automationsRepository.findOne({
+      where: {
+        name: createautomationsDto.name,
+        orgId: createautomationsDto.orgId,
+      },
+    });
+    if (!automation) {
+      throw new NotFoundException(` ${createautomationsDto.name} not found`);
+    }
+    automation.activated = createautomationsDto.activated;
+    automation.lastTimeUpdate = new Date();
+    await automation.save();
+    return automation;
   }
 }

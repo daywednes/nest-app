@@ -7,13 +7,16 @@ export class CreateAutomationsDto {
   @IsNotEmpty()
   @ApiProperty()
   description: string;
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
   type: number;
   @IsOptional()
   @ApiProperty()
   status: string;
-  
+  @IsOptional()
+  @ApiProperty()
+  activated: boolean;
+
   @IsOptional()
   @ApiProperty()
   data: string;

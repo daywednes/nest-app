@@ -231,7 +231,6 @@ export default {
             Date.parse(x.lastTimeUpdate) <= toDate,
         );
       }
-      console.log(this.valueHub)
       if (this.textSearch) {
         this.timelineFilter = this.timelineFilter.filter(
           x =>

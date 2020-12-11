@@ -368,6 +368,11 @@ export default {
         .then(response => {
           this.refreshUI();
         })
+        .catch((mess) => {
+          this.AutomationForm.name ='';
+          this.AutomationForm.description ='';
+          this.$alert('This automation name is exist');
+        })
         .finally(() => {
           loadingAutomation.close();
         });
@@ -397,6 +402,11 @@ export default {
       createAutomation(this.AlarmForm)
         .then(response => {
           this.refreshUI();
+        })
+        .catch((mess) => {
+          this.AlarmForm.name ='';
+          this.AlarmForm.description ='';
+          this.$alert('This alarm mode name is exist');
         })
         .finally(() => {
           loadingAlarm.close();

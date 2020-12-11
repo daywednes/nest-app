@@ -53,7 +53,6 @@ Vue.config.productionTip = false;
 Vue.Wamp.subscribe(
   'com.myapp.hello',
   function(args, kwArgs, details) {
-    console.log('hello');
     var tmp = JSON.parse(args[0]);
     if (tmp && tmp['deviceGroup'] && tmp['isAddNew']) {
       store.dispatch('user/addAvailableDevice', tmp['deviceGroup']);
@@ -69,9 +68,7 @@ Vue.Wamp.subscribe(
 Vue.Wamp.subscribe(
   'com.myapp.activity',
   function(args, kwArgs, details) {
-    console.log('activity');
     var tmp = JSON.parse(args[0]);
-    console.log(tmp);
     store.dispatch('user/updateActivity');
   },
   {

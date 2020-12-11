@@ -18,16 +18,16 @@ export class AutomationsEntity extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: "" })
   description: string;
   
   @Column({ default: 0 })
   type: number;
 
-  @Column()
+  @Column({ default: "" })
   status: string;
 
-  @Column()
+  @Column({ default: "" })
   data: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -47,4 +47,8 @@ export class AutomationsEntity extends BaseEntity {
 
   @Column()
   orgId: number;
+
+  
+  @Column({ type: Boolean, default: () => false })
+  activated: boolean;
 }

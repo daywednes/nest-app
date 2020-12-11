@@ -11,63 +11,22 @@
       round
       @click="
         () => {
-          activeScreen = 1;
-          dialogVisible = true;
+          activeScreenDISARMED = 1;
+          dialogVisibleDISARMED = true;
         }
       "
       >DISSARM</el-button
     >
     <el-dialog
-      :visible.sync="dialogVisible"
+      :visible.sync="dialogVisibleDISARMED"
       width="50%"
       :before-close="handleClose"
       append-to-body
       style="text-align: center"
     >
-      <!-- Select mode -->
-      <!-- <div v-if="activeScreen == 0">
-        <h1>CHOOSE AN ARMING MODE</h1>
-        <br />
-        <el-button
-          style="font-size: large; padding: 10px 0px; width:240px;"
-          type="primary"
-          round
-          @click="
-            () => {
-              activeScreen = 1;
-            }
-          "
-          >AWAY</el-button
-        >
-        <p>All sensors trigger alarm</p>
-        <el-button
-          style="font-size: large; padding: 10px 0px; width:240px;"
-          type="primary"
-          round
-          @click="
-            () => {
-              activeScreen = 1;
-            }
-          "
-          >STAY</el-button
-        >
-        <p>only stay mode sensors trigger alarm</p>
-        <el-button
-          style="font-size: large; padding: 10px 0px; width:240px;"
-          type="primary"
-          round
-          @click="
-            () => {
-              activeScreen = 1;
-            }
-          "
-          >SLEEP</el-button
-        >
-        <p>sleep mode sensors trigger alarm with no entry delay</p>
-      </div> -->
 
       <!-- Enter Password -->
-      <div v-if="activeScreen == 1">
+      <div v-if="activeScreenDISARMED == 1">
         <h1>ENTER YOUR PIN</h1>
         <div class="input-wrapper">
           <PincodeInput :secure="true" v-model="code" />
@@ -79,7 +38,7 @@
           round
           @click="
             () => {
-              dialogVisible = false;
+              dialogVisibleDISARMED = false;
             }
           "
           >NEXT</el-button
@@ -87,7 +46,7 @@
       </div>
 
       <!-- Custom Arm -->
-      <div v-if="activeScreen == 2">
+      <div v-if="activeScreenDISARMED == 2">
         <h3>ARM BLOCKING ZONES MUST BE CLEARED OR BYPASSED BEFORE ARMING</h3>
 
         <el-row>
@@ -237,8 +196,8 @@ export default {
     return {
       startVal: 20,
       endVal: 0,
-      activeScreen: 0,
-      dialogVisible: false,
+      activeScreenDISARMED: 0,
+      dialogVisibleDISARMED: false,
       innerVisible: false,
       logo: logoSimpleThings,
       items: [

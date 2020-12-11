@@ -201,8 +201,8 @@ export default {
           y: 0,
           w: 2,
           h: 2,
-          i: 'DISARMED',
-          component: 'DISARMED',
+          i: 'ARM',
+          component: 'ARM',
           isStatic: true,
         },
         {
@@ -277,29 +277,29 @@ export default {
         },
       ],
       widgetsList: [
-        {
-          x: 0,
-          y: 0,
-          w: 2,
-          h: 2,
-          i: 'DISARMED',
-          component: 'DISARMED',
-          isStatic: true,
-        },
-        {
-          w: 2,
-          h: 2,
-          i: 'ARM',
-          component: 'ARM',
-          isStatic: true,
-        },
-        {
-          w: 2,
-          h: 2,
-          i: 'ARMBYPASS',
-          component: 'ARMBYPASS',
-          isStatic: true,
-        },
+        // {
+        //   x: 0,
+        //   y: 0,
+        //   w: 2,
+        //   h: 2,
+        //   i: 'DISARMED',
+        //   component: 'DISARMED',
+        //   isStatic: true,
+        // },
+        // {
+        //   w: 2,
+        //   h: 2,
+        //   i: 'ARM',
+        //   component: 'ARM',
+        //   isStatic: true,
+        // },
+        // {
+        //   w: 2,
+        //   h: 2,
+        //   i: 'ARMBYPASS',
+        //   component: 'ARMBYPASS',
+        //   isStatic: true,
+        // },
         {
           x: 0,
           y: 2,
@@ -457,7 +457,6 @@ export default {
       }
     },
     dragend: function(item) {
-      // console.log(this.dragItem)
       let parentRect = document
         .getElementById('content')
         .getBoundingClientRect();

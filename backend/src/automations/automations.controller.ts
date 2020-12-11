@@ -78,4 +78,13 @@ export class AutomationsController {
     //Get Org from here
     return this.automationssService.updateautomations(id, createautomationsDto);
   }
+  @Post('/updateautomationsByName')
+  @ApiOperation({ summary: 'Update Automation By Name' })
+  updateautomationsByName(
+    @Body() createautomationsDto: CreateAutomationsDto,
+    @GetUser() user: User,
+  ): Promise<AutomationsEntity> {
+    //Get Org from here
+    return this.automationssService.updateautomationsByName(createautomationsDto);
+  }
 }
