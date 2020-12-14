@@ -9,6 +9,7 @@ import {
 import { OrgEntity } from '../org/org.entity';
 import { ZoneEntity } from '../zone/zone.entity';
 import { ActivityEntity } from '../activity/activity.entity';
+import { DeviceStatusEntity } from '../deviceStatus/deviceStatus.entity';
 
 @Entity()
 export class HubsEntity extends BaseEntity {
@@ -44,4 +45,10 @@ export class HubsEntity extends BaseEntity {
     { eager: false },
   )
   activities: ActivityEntity[];
+  @OneToMany(
+    type => DeviceStatusEntity,
+    activity => activity.hub,
+    { eager: false },
+  )
+  deviceStatus: DeviceStatusEntity[];
 }

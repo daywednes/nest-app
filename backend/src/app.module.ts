@@ -11,6 +11,7 @@ import { DeviceModule } from './device/device.module';
 import { TagsModule } from './tags/tags.module';
 import { AvailableDevicesModule } from './availableDevice/availableDevice.module';
 import { ActivityModule } from './activity/activity.module';
+import { DeviceStatusModule } from './deviceStatus/deviceStatus.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ActivityModule } from './activity/activity.module';
     TagsModule,
     AvailableDevicesModule,
     ActivityModule,
+    DeviceStatusModule,
     DeviceModule
   ],
   exports:[AvailableDevicesModule, ActivityModule]
